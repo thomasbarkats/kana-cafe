@@ -1,8 +1,12 @@
 import { useState } from 'react';
+import { Clock, Lock } from 'lucide-react';
 import { useAuth } from '../../contexts/AuthContext';
 import { useTranslation } from '../../contexts/I18nContext';
 import { OAuthButtons } from '../OAuthButtons';
 import { UnlockModal } from '../UnlockModal';
+
+
+const isStripeEnabled = import.meta.env.VITE_STRIPE_ENABLED === 'true';
 
 
 export const ReviewProgressHeader = ({ theme, darkMode, progressPercentage = 0, children, haveAccess = false, onModalOpenChange }) => {
@@ -39,19 +43,29 @@ export const ReviewProgressHeader = ({ theme, darkMode, progressPercentage = 0, 
     return (
       <>
         <div className={`mb-6 py-3 px-4 ${theme.sectionBg} rounded-lg flex flex-col sm:flex-row items-center justify-between gap-3`}>
-          <span className={`text-sm ${theme.text}`}>{t('review.subscribeToTrackProgress')}</span>
+          <span className={`text-sm ${theme.text}`}>
+            {isStripeEnabled ? t('review.subscribeToTrackProgress') : t('review.loginToTrackProgress')}
+          </span>
           <button
-            onClick={() => handleModalChange(true)}
-            className="px-4 py-3 bg-gradient-to-r from-amber-500 to-orange-600 hover:from-amber-600 hover:to-orange-700 text-white font-semibold rounded-lg transition-all cursor-pointer text-sm whitespace-nowrap"
+            onClick={isStripeEnabled ? () => handleModalChange(true) : undefined}
+            disabled={!isStripeEnabled}
+            className={`px-4 py-3 font-semibold rounded-lg transition-all text-sm whitespace-nowrap flex items-center gap-2 ${
+              isStripeEnabled
+                ? 'bg-gradient-to-r from-amber-500 to-orange-600 hover:from-amber-600 hover:to-orange-700 text-white cursor-pointer'
+                : 'bg-gray-400 text-white cursor-not-allowed'
+            }`}
           >
-            {t('common.unlockAllLists')}
+            {isStripeEnabled ? <Lock className="w-4 h-4" /> : <Clock className="w-4 h-4" />}
+            <span>{isStripeEnabled ? t('common.unlockAllLists') : t('subscription.comingSoon')}</span>
           </button>
         </div>
-        <UnlockModal
-          isOpen={showUnlockModal}
-          onClose={() => handleModalChange(false)}
-          theme={theme}
-        />
+        {isStripeEnabled && (
+          <UnlockModal
+            isOpen={showUnlockModal}
+            onClose={() => handleModalChange(false)}
+            theme={theme}
+          />
+        )}
       </>
     );
   }
