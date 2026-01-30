@@ -15,7 +15,7 @@ import { ReviewProgressHeader } from './ui/ReviewProgressHeader';
 
 export const ReviewKanji = () => {
   const { t } = useTranslation();
-  const { theme, language, darkMode } = usePreferences();
+  const { theme, translationLanguage, darkMode } = usePreferences();
   const { reviewExpectedCountKanji } = useGameContext();
   const {
     kanjiLists,
@@ -40,7 +40,7 @@ export const ReviewKanji = () => {
     cache: kanjiCache,
     setCache: setKanjiCache,
     setSessionFavorites: setSessionFavoritesKanji,
-    language,
+    language: translationLanguage,
   });
 
   // Load data when selection changes

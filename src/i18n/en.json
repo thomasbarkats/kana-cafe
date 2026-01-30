@@ -184,7 +184,11 @@
   },
   "settings": {
     "language": "Language",
-    "selectLanguage": "Select language"
+    "selectLanguage": "Select language",
+    "languageSettings": "Language Settings",
+    "translationLanguage": "Translation language",
+    "uiLanguage": "Interface language",
+    "auto": "Auto. (Translations)"
   },
   "keyboardHelp": {
     "title": "Japanese Input Setup",

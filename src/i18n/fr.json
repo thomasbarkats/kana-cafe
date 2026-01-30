@@ -164,7 +164,11 @@
   },
   "settings": {
     "language": "Langue",
-    "selectLanguage": "Sélectionner la langue"
+    "selectLanguage": "Sélectionner la langue",
+    "languageSettings": "Configuration des langues",
+    "translationLanguage": "Langue des traductions",
+    "uiLanguage": "Langue de l'interface",
+    "auto": "Auto. (Traductions)"
   },
   "keyboardHelp": {
     "title": "Configuration du clavier japonais",
