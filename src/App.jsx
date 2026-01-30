@@ -19,7 +19,6 @@ import {
   ProfileButton,
   MobileWarning,
   ServerErrorModal,
-  SlowLoadingOverlay,
   FloatingButtonsContainer,
   BuyMeACoffeeButton,
 } from './components';
@@ -189,7 +188,6 @@ function App() {
     <>
       <MobileWarning />
       <ServerErrorModal />
-      {gameState === GAME_STATES.MENU && <SlowLoadingOverlay isLoading={isLoading} />}
       {renderContent()}
     </>
   );

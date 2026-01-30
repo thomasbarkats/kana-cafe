@@ -33,13 +33,6 @@ export const MobileWarning = () => {
   return (
     <div className="fixed inset-0 z-[9999] flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
       <div className={`${theme.cardBg} rounded-2xl shadow-2xl max-w-md w-full p-6 relative`}>
-        <button
-          onClick={handleDismiss}
-          className={`absolute top-4 right-4 p-2 ${theme.buttonSecondary} rounded-full transition-colors cursor-pointer`}
-        >
-          <X className="w-5 h-5" />
-        </button>
-
         <div className="text-center">
           <div className={`inline-flex items-center justify-center w-16 h-16 ${darkMode ? 'bg-yellow-500/20' : 'bg-yellow-100'} rounded-full mb-4`}>
             <Smartphone className={`w-8 h-8 ${darkMode ? 'text-yellow-400' : 'text-yellow-600'}`} />

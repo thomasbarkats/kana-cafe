@@ -3,6 +3,7 @@ import { useState, useEffect } from 'react';
 import { useTranslation } from '../../contexts/I18nContext';
 import { usePreferences } from '../../contexts/PreferencesContext';
 import { hasServerError, clearServerError } from '../../services/apiService';
+import { EscapeKey } from './EscapeKey';
 
 
 export const ServerErrorModal = () => {
@@ -37,6 +38,9 @@ export const ServerErrorModal = () => {
   return (
     <div className="fixed inset-0 z-[9999] flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
       <div className={`${theme.cardBg} rounded-2xl shadow-2xl max-w-md w-full p-6 relative`}>
+        <div className="absolute top-4 right-6">
+          <EscapeKey />
+        </div>
         <div className="text-center">
           <div className={`inline-flex items-center justify-center w-16 h-16 ${darkMode ? 'bg-red-500/20' : 'bg-red-100'} rounded-full mb-4`}>
             <WifiOff className={`w-8 h-8 ${darkMode ? 'text-red-400' : 'text-red-600'}`} />
@@ -51,18 +55,12 @@ export const ServerErrorModal = () => {
           </p>
 
           <div className="flex gap-3">
-            <button
-              onClick={handleDismiss}
-              className={`flex-1 font-semibold py-3 px-6 rounded-xl transition-all duration-200 cursor-pointer border ${theme.border} ${theme.text} hover:opacity-80`}
-            >
+            <Button onClick={handleDismiss} variant="ghost" className="flex-1 h-12">
               {t('serverError.dismiss')}
-            </button>
-            <button
-              onClick={handleRetry}
-              className="flex-1 bg-gradient-to-r from-blue-500 to-purple-600 text-white font-semibold py-3 px-6 rounded-xl hover:from-blue-600 hover:to-purple-700 transform hover:scale-105 transition-all duration-200 shadow-lg cursor-pointer"
-            >
+            </Button>
+            <Button onClick={handleRetry} variant="primary" className="flex-1 h-12">
               {t('serverError.retry')}
-            </button>
+            </Button>
           </div>
         </div>
       </div>

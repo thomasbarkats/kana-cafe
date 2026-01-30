@@ -3,11 +3,12 @@ import { useEffect, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { useTranslation } from '../../contexts/I18nContext';
 import { subscriptionAPI } from '../../services/apiService';
+import { EscapeKey } from './EscapeKey';
 
 
 export const LegalModal = ({ show, onClose, theme }) => {
   const { t } = useTranslation();
-  const [expandedSection, setExpandedSection] = useState('legal');
+  const [expandedSection, setExpandedSection] = useState(null);
   const [pricingOptions, setPricingOptions] = useState([]);
 
   // Legal information from environment variables
@@ -83,12 +84,15 @@ export const LegalModal = ({ show, onClose, theme }) => {
           <h3 className={`text-lg font-semibold ${theme.text}`}>
             {t('legal.title')}
           </h3>
-          <button
-            onClick={onClose}
-            className={`p-1 rounded ${theme.text} cursor-pointer hover:opacity-70 transition-opacity`}
-          >
-            <X className="w-5 h-5" />
-          </button>
+          <div className="flex items-start gap-2">
+            <EscapeKey />
+            <button
+              onClick={onClose}
+              className={`p-1 rounded ${theme.text} cursor-pointer hover:opacity-70 transition-opacity`}
+            >
+              <X className="w-5 h-5" />
+            </button>
+          </div>
         </div>
 
         {/* Content - Scrollable */}

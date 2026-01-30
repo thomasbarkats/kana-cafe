@@ -38,7 +38,8 @@
     "enterMeanings": "Enter all meanings",
     "inReadingOrder": "(in reading order)",
     "switchToLightMode": "Switch to light mode",
-    "switchToDarkMode": "Switch to dark mode"
+    "switchToDarkMode": "Switch to dark mode",
+    "escapeKey": "Esc"
   },
   "menu": {
     "selectLists": "Select lists",

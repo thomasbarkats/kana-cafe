@@ -2,10 +2,10 @@ import { AlertCircle } from 'lucide-react';
 import { useEffect } from 'react';
 import { useTranslation } from '../../contexts/I18nContext';
 import { usePreferences } from '../../contexts/PreferencesContext';
+import { EscapeKey } from './EscapeKey';
+import { Button } from './Button';
 
-/**
- * Confirmation modal when stopping a game session
- */
+
 export const StopGameModal = ({ isOpen, onConfirm, onCancel }) => {
   const { t } = useTranslation();
   const { theme, darkMode } = usePreferences();
@@ -30,6 +30,9 @@ export const StopGameModal = ({ isOpen, onConfirm, onCancel }) => {
   return (
     <div className="fixed inset-0 z-[9999] flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
       <div className={`${theme.cardBg} rounded-2xl shadow-2xl max-w-md w-full p-6 relative`}>
+        <div className="absolute top-4 right-6">
+          <EscapeKey />
+        </div>
         <div className="text-center">
           <div className={`inline-flex items-center justify-center w-16 h-16 ${darkMode ? 'bg-orange-500/20' : 'bg-orange-100'} rounded-full mb-4`}>
             <AlertCircle className={`w-8 h-8 ${darkMode ? 'text-orange-400' : 'text-orange-600'}`} />
@@ -44,18 +47,12 @@ export const StopGameModal = ({ isOpen, onConfirm, onCancel }) => {
           </p>
 
           <div className="flex gap-3">
-            <button
-              onClick={onCancel}
-              className={`flex-1 font-semibold py-3 px-6 rounded-xl transition-all duration-200 cursor-pointer border ${theme.border} ${theme.text} hover:opacity-80`}
-            >
+            <Button onClick={onCancel} variant="ghost" className="flex-1 h-12">
               {t('stopGame.cancel')}
-            </button>
-            <button
-              onClick={onConfirm}
-              className="flex-1 bg-gradient-to-r from-red-500 to-orange-600 text-white font-semibold py-3 px-6 rounded-xl hover:from-red-600 hover:to-orange-700 transform hover:scale-105 transition-all duration-200 shadow-lg cursor-pointer"
-            >
+            </Button>
+            <Button onClick={onConfirm} variant="danger" className="flex-1 h-12">
               {t('stopGame.confirm')}
-            </button>
+            </Button>
           </div>
         </div>
       </div>

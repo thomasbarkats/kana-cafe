@@ -38,7 +38,8 @@
     "enterMeanings": "全ての意味を入力",
     "inReadingOrder": "（読み順）",
     "switchToLightMode": "ライトモードに切替",
-    "switchToDarkMode": "ダークモードに切替"
+    "switchToDarkMode": "ダークモードに切替",
+    "escapeKey": "Esc"
   },
   "menu": {
     "selectLists": "リストを選択",
