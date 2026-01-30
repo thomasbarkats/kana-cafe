@@ -15,8 +15,8 @@ import { PreferencesProvider, usePreferences } from './contexts/PreferencesConte
 const GOOGLE_CLIENT_ID = import.meta.env.VITE_GOOGLE_CLIENT_ID || '';
 
 function I18nWrapper({ children }) {
-  const { language } = usePreferences();
-  return <I18nProvider language={language}>{children}</I18nProvider>;
+  const { effectiveUiLanguage } = usePreferences();
+  return <I18nProvider language={effectiveUiLanguage}>{children}</I18nProvider>;
 }
 
 const root = ReactDOM.createRoot(document.getElementById('root'));

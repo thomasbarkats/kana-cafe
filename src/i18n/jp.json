@@ -184,7 +184,11 @@
   },
   "settings": {
     "language": "言語",
-    "selectLanguage": "言語を選択"
+    "selectLanguage": "言語を選択",
+    "languageSettings": "言語設定",
+    "translationLanguage": "翻訳言語",
+    "uiLanguage": "インターフェース言語",
+    "auto": "自動（翻訳）"
   },
   "keyboardHelp": {
     "title": "日本語入力の設定",

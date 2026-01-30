@@ -38,7 +38,7 @@ export const useGameLogicKanji = () => {
     setKanjiCache,
   } = useGameContextKanji();
 
-  const { language } = usePreferences();
+  const { translationLanguage } = usePreferences();
 
 
   const initializeKanjiGame = async (selectedLists) => {
@@ -51,7 +51,7 @@ export const useGameLogicKanji = () => {
       selectedLists,
       cache: kanjiCache,
       setCache: setKanjiCache,
-      language,
+      language: translationLanguage,
       fetchFn: kanjiAPI.getKanji,
       dataKey: 'kanji',
     });

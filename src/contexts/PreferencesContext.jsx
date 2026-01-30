@@ -25,7 +25,8 @@ const DEFAULT_PREFERENCES = {
   kanjiMode: KANJI_MODES.ALL,
   kanjiLoopMode: false,
   showFurigana: true,
-  language: LANGUAGES.EN,
+  translationLanguage: LANGUAGES.EN,
+  uiLanguage: 'auto',
 };
 
 export const PreferencesProvider = ({ children }) => {
@@ -35,7 +36,9 @@ export const PreferencesProvider = ({ children }) => {
   const [preferences, setPreferences] = useState(() => {
     try {
       const stored = localStorage.getItem(STORAGE_KEY);
-      return stored ? { ...DEFAULT_PREFERENCES, ...JSON.parse(stored) } : DEFAULT_PREFERENCES;
+      if (!stored) return DEFAULT_PREFERENCES;
+      const parsed = JSON.parse(stored);
+      return { ...DEFAULT_PREFERENCES, ...parsed };
     } catch {
       return DEFAULT_PREFERENCES;
     }
@@ -94,9 +97,18 @@ export const PreferencesProvider = ({ children }) => {
     updatePreferences({ showFurigana: value });
   };
 
-  const handleLanguageChange = (value) => {
-    updatePreferences({ language: value });
+  const handleTranslationLanguageChange = (value) => {
+    updatePreferences({ translationLanguage: value });
   };
+
+  const handleUiLanguageChange = (value) => {
+    updatePreferences({ uiLanguage: value });
+  };
+
+  // Compute effective UI language (resolve 'auto' to actual translation language)
+  const effectiveUiLanguage = preferences.uiLanguage === LANGUAGES.JP
+    ? LANGUAGES.JP
+    : preferences.translationLanguage;
 
   const value = {
     preferences,
@@ -115,7 +127,9 @@ export const PreferencesProvider = ({ children }) => {
     kanjiMode: preferences.kanjiMode,
     kanjiLoopMode: preferences.kanjiLoopMode,
     showFurigana: preferences.showFurigana,
-    language: preferences.language,
+    translationLanguage: preferences.translationLanguage,
+    uiLanguage: preferences.uiLanguage,
+    effectiveUiLanguage, // Computed: resolves 'auto' to actual language
 
     // Handlers
     updatePreferences,
@@ -128,7 +142,8 @@ export const PreferencesProvider = ({ children }) => {
     handleKanjiModeChange,
     handleKanjiLoopModeChange,
     handleShowFuriganaChange,
-    handleLanguageChange,
+    handleTranslationLanguageChange,
+    handleUiLanguageChange,
     toggleDarkMode,
     cycleSoundMode,
     setSoundModeValue,

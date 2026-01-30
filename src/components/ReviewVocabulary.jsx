@@ -14,7 +14,7 @@ import { ReviewProgressHeader } from './ui/ReviewProgressHeader';
 
 export const ReviewVocabulary = () => {
   const { t } = useTranslation();
-  const { theme, language, showFurigana, vocabularyMode, darkMode } = usePreferences();
+  const { theme, translationLanguage, showFurigana, vocabularyMode, darkMode } = usePreferences();
   const {
     vocabularyLists,
     wordsSelectedLists,
@@ -40,7 +40,7 @@ export const ReviewVocabulary = () => {
     cache: wordsCache,
     setCache: setWordsCache,
     setSessionFavorites: setSessionFavoritesVocabulary,
-    language,
+    language: translationLanguage,
   });
 
   // Load data when selection changes
@@ -103,7 +103,7 @@ export const ReviewVocabulary = () => {
         listKey: w.isFavorite ? 'favorites' : w.listId,
         listName: w.isFavorite ? vocabularyLists['favorites']?.name : vocabularyLists[w.listId]?.name,
         originalIndex: idx,
-        parsed: parseVocabularyEntry(w, language)
+        parsed: parseVocabularyEntry(w, translationLanguage)
       })).sort((a, b) =>
         a.parsed.cleanedJp.localeCompare(b.parsed.cleanedJp, 'ja')
       );
@@ -149,7 +149,7 @@ export const ReviewVocabulary = () => {
         listKey,
         listName: vocabularyLists[listKey]?.name || listKey,
         originalIndex: idx,
-        parsed: parseVocabularyEntry(w, language)
+        parsed: parseVocabularyEntry(w, translationLanguage)
       }));
     });
   };

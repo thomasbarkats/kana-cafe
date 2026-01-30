@@ -11,10 +11,10 @@ import { usePreferences } from './PreferencesContext';
 const GameContextVocabulary = createContext();
 
 export const VocabularyGameProvider = ({ children }) => {
-  const { language } = usePreferences();
+  const { translationLanguage } = usePreferences();
   const { isAuthenticated } = useAuth();
   const { gameState, setGameMode, setGameState } = useGameContext();
-  const { vocabularyLists, loading: vocabularyLoading, error: vocabularyError } = useDataVocabulary(language, isAuthenticated);
+  const { vocabularyLists, loading: vocabularyLoading, error: vocabularyError } = useDataVocabulary(translationLanguage, isAuthenticated);
 
   // Vocabulary-specific selections
   const [wordsSelectedLists, setWordsSelectedLists] = useState([]);

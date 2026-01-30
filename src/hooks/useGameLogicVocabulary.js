@@ -36,7 +36,7 @@ export const useGameLogicVocabulary = () => {
     setWordsCache,
   } = useGameContextVocabulary();
 
-  const { vocabularyMode, soundMode, setSoundModeValue, language } = usePreferences();
+  const { vocabularyMode, soundMode, setSoundModeValue, translationLanguage } = usePreferences();
 
 
   const initializeVocabularyGame = async (selectedListKeys) => {
@@ -52,7 +52,7 @@ export const useGameLogicVocabulary = () => {
       selectedLists: selectedListKeys,
       cache: wordsCache,
       setCache: setWordsCache,
-      language,
+      language: translationLanguage,
       fetchFn: vocabularyAPI.getWords,
       dataKey: 'words',
     });
@@ -60,7 +60,7 @@ export const useGameLogicVocabulary = () => {
     const words = rawWords.map(word => {
       try {
         return {
-          ...parseVocabularyEntry(word, language),
+          ...parseVocabularyEntry(word, translationLanguage),
           id: word.id,
           listId: word.listId,
         };
