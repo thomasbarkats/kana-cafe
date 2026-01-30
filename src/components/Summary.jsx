@@ -1,4 +1,4 @@
-import { Trophy, Target, BarChart3, Clock, ChevronDown } from 'lucide-react';
+import { Trophy, Target, BarChart3, Clock } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { GAME_MODES, ITEM_TYPES, KANJI_PROGRESS_TYPES, KANJI_STEPS, KANJI_MODES } from '../constants';
 import { useAuth } from '../contexts/AuthContext';
@@ -8,8 +8,9 @@ import { usePreferences } from '../contexts/PreferencesContext';
 import { useProgress } from '../hooks';
 import { calculateTintStyle } from '../services/statsService';
 import { formatTime, triggerConfetti } from '../utils';
-import { Button, StatsCard, ScoreProgressBar } from '.';
+import { Button, StatsCard, ScoreProgressBar, Select } from '.';
 import { ReviewProgressHeader } from './ui/ReviewProgressHeader';
+import { EscapeKey } from './ui/EscapeKey';
 
 
 export const Summary = ({ onNewSession, onRestartSameMode, sortedStats }) => {
@@ -72,7 +73,8 @@ export const Summary = ({ onNewSession, onRestartSameMode, sortedStats }) => {
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [onNewSession, isModalOpen]);
 
-  const total = Object.values(sessionStats).length;
+  // Count only items that were actually practiced (timeSpent > 0)
+  const total = Object.values(sessionStats).filter(s => s.timeSpent > 0).length;
   const totalFailures = Object.values(sessionStats).reduce((sum, s) => sum + (s.failures || 0), 0);
   const elapsedTime = Object.values(sessionStats).reduce((sum, s) => sum + (s.timeSpent || 0), 0);
   const isVocabularyMode = gameMode === GAME_MODES.VOCABULARY;
@@ -103,12 +105,6 @@ export const Summary = ({ onNewSession, onRestartSameMode, sortedStats }) => {
     if (isVocabularyMode) return t('summary.wordsStudied');
     if (isKanjiMode) return t('summary.kanjiStudied');
     return t('summary.kanaStudied');
-  };
-
-  const getBreakdownTitle = () => {
-    if (isVocabularyMode) return t('summary.breakdownByWord');
-    if (isKanjiMode) return t('summary.breakdownByKanji');
-    return t('summary.breakdownByKana');
   };
 
   const getSortOptions = () => {
@@ -183,7 +179,22 @@ export const Summary = ({ onNewSession, onRestartSameMode, sortedStats }) => {
   return (
     <div className={`min-h-screen ${theme.bg} p-4 flex items-center -mb-8`}>
       <div className="w-full max-w-4xl mx-auto">
-        <div className={`${theme.cardBg} backdrop-blur-sm rounded-3xl shadow-2xl p-8`}>
+        <div className={`${theme.cardBg} backdrop-blur-sm rounded-3xl shadow-2xl p-8 relative`}>
+
+          {/* Header with title and selector */}
+          <div className="flex justify-between items-start mb-8">
+            <div className="flex items-start gap-3">
+              <h2 className={`text-2xl font-bold ${theme.text}`}>{t('summary.title')}</h2>
+              <EscapeKey />
+            </div>
+            <Select
+              value={sortBy}
+              onChange={setSortBy}
+              options={getSortOptions()}
+              translateLabels={false}
+            />
+          </div>
+
           {!stoppedEarly && (
             <div className="text-center mb-8">
               <div className="flex justify-center mb-4">
@@ -191,12 +202,6 @@ export const Summary = ({ onNewSession, onRestartSameMode, sortedStats }) => {
               </div>
               <h2 className={`text-3xl font-bold ${theme.text} mb-2`}>{t('summary.congratulations')}</h2>
               <p className={theme.textSecondary}>{getFinalSummaryText()}</p>
-            </div>
-          )}
-
-          {stoppedEarly && (
-            <div className="text-center mb-8">
-              <h2 className={`text-3xl font-bold ${theme.text} mb-2`}>{t('summary.title')}</h2>
             </div>
           )}
 
@@ -222,22 +227,6 @@ export const Summary = ({ onNewSession, onRestartSameMode, sortedStats }) => {
               bgColor={theme.statsBg.green}
               textColor={theme.statsText.green}
             />
-          </div>
-
-          <div className="flex justify-between items-center mb-6">
-            <h3 className={`text-xl font-semibold ${theme.text}`}>{getBreakdownTitle()}</h3>
-            <div className="relative">
-              <select
-                value={sortBy}
-                onChange={(e) => setSortBy(e.target.value)}
-                className={`appearance-none ${theme.sectionBg} ${theme.border} ${theme.text} rounded-lg px-4 py-2 pr-10 focus:outline-none focus:ring-2 focus:ring-blue-500 cursor-pointer`}
-              >
-                {getSortOptions().map(option => (
-                  <option key={option.value} value={option.value}>{option.label}</option>
-                ))}
-              </select>
-              <ChevronDown className={`w-5 h-5 ${theme.textMuted} absolute right-2 top-1/2 transform -translate-y-1/2 pointer-events-none`} />
-            </div>
           </div>
 
           {renderGlobalProgressHeader()}
@@ -293,10 +282,10 @@ export const Summary = ({ onNewSession, onRestartSameMode, sortedStats }) => {
           </div>
 
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Button onClick={onNewSession} variant="primary">
+            <Button onClick={onNewSession} variant="primary" className="h-12">
               {t('summary.newSession')}
             </Button>
-            <Button onClick={onRestartSameMode} variant="success">
+            <Button onClick={onRestartSameMode} variant="success" className="h-12">
               {t('summary.restartSameMode')}
             </Button>
           </div>

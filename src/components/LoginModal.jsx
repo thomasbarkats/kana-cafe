@@ -3,6 +3,7 @@ import { useEffect } from 'react';
 import { createPortal } from 'react-dom';
 import { useTranslation } from '../contexts/I18nContext';
 import { OAuthButtons } from './OAuthButtons';
+import { EscapeKey } from './ui/EscapeKey';
 
 
 export const LoginModal = ({
@@ -40,12 +41,15 @@ export const LoginModal = ({
           <h3 className={`text-lg font-semibold ${theme.text}`}>
             {t('auth.signIn')}
           </h3>
-          <button
-            onClick={onClose}
-            className={`p-1 rounded ${theme.text} cursor-pointer hover:opacity-70 transition-opacity`}
-          >
-            <X className="w-5 h-5" />
-          </button>
+          <div className="flex items-start gap-2">
+            <EscapeKey />
+            <button
+              onClick={onClose}
+              className={`p-1 rounded ${theme.text} cursor-pointer hover:opacity-70 transition-opacity`}
+            >
+              <X className="w-5 h-5" />
+            </button>
+          </div>
         </div>
 
         {/* Content */}

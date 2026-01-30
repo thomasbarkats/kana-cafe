@@ -1,4 +1,4 @@
-import { Volume2, ArrowLeft } from 'lucide-react';
+import { Volume2 } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { GAME_STATES, KANA_TYPES, ITEM_TYPES } from '../constants';
 import { useAuth } from '../contexts/AuthContext';
@@ -7,8 +7,10 @@ import { useTranslation } from '../contexts/I18nContext';
 import { usePreferences } from '../contexts/PreferencesContext';
 import { useProgress } from '../hooks';
 import { speakReading, organizeKanaByRows, initFilterSelection } from '../utils';
-import { MultiSelection } from '.';
+import { MultiSelection, Button } from '.';
 import { ReviewProgressHeader } from './ui/ReviewProgressHeader';
+import { EscapeKey } from './ui/EscapeKey';
+
 
 // Get background color based on score (transparent versions of progress bar colors)
 const getScoreBackgroundColor = (score) => {
@@ -147,13 +149,12 @@ export const ReviewKana = () => {
         <div className={`${theme.cardBg} backdrop-blur-sm rounded-3xl shadow-2xl p-8`}>
 
           <div className="flex justify-between items-center mb-6">
-            <button
-              onClick={() => setGameState(GAME_STATES.MENU)}
-              className={`flex items-center gap-2 ${theme.text} hover:${theme.textSecondary} transition-colors cursor-pointer`}
-            >
-              <ArrowLeft className="w-5 h-5" />
-              <span>{t('common.backToMenu')}</span>
-            </button>
+            <div className="flex items-start gap-2">
+              <Button onClick={() => setGameState(GAME_STATES.MENU)} variant="primary">
+                {t('common.backToMenu')}
+              </Button>
+              <EscapeKey />
+            </div>
 
             <div className="w-80">
               <MultiSelection

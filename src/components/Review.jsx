@@ -1,10 +1,12 @@
-import { ArrowLeft, ChevronDown } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { GAME_STATES, SORT_MODES } from '../constants';
 import { useGameContext } from '../contexts/GameContext';
 import { useTranslation } from '../contexts/I18nContext';
 import { usePreferences } from '../contexts/PreferencesContext';
 import { SkeletonTable } from './ui/SkeletonLoading';
+import { Button } from './ui/Button';
+import { EscapeKey } from './ui/EscapeKey';
+import { Select } from './ui/Select';
 
 
 export const ReviewLayout = ({
@@ -14,9 +16,9 @@ export const ReviewLayout = ({
   isMergedSort,
   loading = false,
   expectedCount = 0,
-  renderControls = null, // Optional additional controls to render next to sort selector
-  renderGlobalProgress = null, // Optional global progress header
-  isModalOpen = false, // Whether a modal is currently open
+  renderControls = null,
+  renderGlobalProgress = null,
+  isModalOpen = false,
 }) => {
   const { t } = useTranslation();
   const { theme } = usePreferences();
@@ -43,30 +45,20 @@ export const ReviewLayout = ({
         <div className={`${theme.cardBg} backdrop-blur-sm rounded-3xl shadow-2xl p-8`}>
 
           <div className="flex justify-between items-center mb-6">
-            <button
-              onClick={() => setGameState(GAME_STATES.MENU)}
-              className={`flex items-center gap-2 ${theme.text} hover:${theme.textSecondary} transition-colors cursor-pointer`}
-            >
-              <ArrowLeft className="w-5 h-5" />
-              <span>{t('common.backToMenu')}</span>
-            </button>
+            <div className="flex items-start gap-2">
+              <Button onClick={() => setGameState(GAME_STATES.MENU)} variant="primary">
+                {t('common.backToMenu')}
+              </Button>
+              <EscapeKey />
+            </div>
 
             <div className="flex items-center gap-3">
               {renderControls && renderControls()}
-              <div className="relative">
-                <select
-                  value={sortBy}
-                  onChange={(e) => setSortBy(e.target.value)}
-                  className={`appearance-none ${theme.sectionBg} ${theme.border} ${theme.text} rounded-lg px-4 py-2 pr-10 focus:outline-none focus:ring-2 focus:ring-blue-500 cursor-pointer`}
-                >
-                  {sortOptions.map(option => (
-                    <option key={option.value} value={option.value}>
-                      {t(option.label)}
-                    </option>
-                  ))}
-                </select>
-                <ChevronDown className={`w-5 h-5 ${theme.textMuted} absolute right-2 top-1/2 transform -translate-y-1/2 pointer-events-none`} />
-              </div>
+              <Select
+                value={sortBy}
+                onChange={setSortBy}
+                options={sortOptions}
+              />
             </div>
           </div>
 

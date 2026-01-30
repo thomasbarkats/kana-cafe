@@ -38,7 +38,8 @@
     "enterMeanings": "Entrez toutes les significations",
     "inReadingOrder": "(dans l'ordre des lectures)",
     "switchToLightMode": "Passer en mode clair",
-    "switchToDarkMode": "Passer en mode sombre"
+    "switchToDarkMode": "Passer en mode sombre",
+    "escapeKey": "Échap"
   },
   "menu": {
     "selectListsOf": "Sélectionner des listes de",

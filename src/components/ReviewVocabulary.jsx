@@ -1,4 +1,4 @@
-import { Volume2, Bookmark, ChevronDown } from 'lucide-react';
+import { Volume2, Bookmark } from 'lucide-react';
 import { useState, useEffect } from 'react';
 import { SORT_MODES, ITEM_TYPES, VOCABULARY_MODES } from '../constants';
 import { useAuth } from '../contexts/AuthContext';
@@ -8,7 +8,7 @@ import { usePreferences } from '../contexts/PreferencesContext';
 import { useDataLoader, useProgress } from '../hooks';
 import { vocabularyAPI } from '../services/apiService';
 import { speakReading, parseVocabularyEntry } from '../utils';
-import { ReviewLayout, ScoreProgressBar } from './';
+import { ReviewLayout, ScoreProgressBar, Select } from './';
 import { ReviewProgressHeader } from './ui/ReviewProgressHeader';
 
 
@@ -73,20 +73,11 @@ export const ReviewVocabulary = () => {
     if (!haveAccess) return null;
 
     return (
-      <div className="relative">
-        <select
-          value={reviewVocabMode}
-          onChange={(e) => setReviewVocabMode(e.target.value)}
-          className={`appearance-none ${theme.sectionBg} ${theme.border} ${theme.text} rounded-lg px-4 py-2 pr-10 focus:outline-none focus:ring-2 focus:ring-blue-500 cursor-pointer`}
-        >
-          {vocabModeOptions.map(option => (
-            <option key={option.value} value={option.value}>
-              {t(option.label)}
-            </option>
-          ))}
-        </select>
-        <ChevronDown className={`w-5 h-5 ${theme.textMuted} absolute right-2 top-1/2 transform -translate-y-1/2 pointer-events-none`} />
-      </div>
+      <Select
+        value={reviewVocabMode}
+        onChange={setReviewVocabMode}
+        options={vocabModeOptions}
+      />
     );
   };
 

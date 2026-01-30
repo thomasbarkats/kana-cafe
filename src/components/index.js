@@ -1,4 +1,6 @@
 export { Button } from './ui/Button';
+export { EscapeKey } from './ui/EscapeKey';
+export { Select } from './ui/Select';
 export { StatsCard } from './ui/StatsCard';
 export { ProgressBar } from './ui/ProgressBar';
 export { ScoreProgressBar } from './ui/ScoreProgressBar';
@@ -26,7 +28,6 @@ export { ProfileButton } from './ui/ProfileButton';
 export { LockedContentSection } from './ui/LockedContentSection';
 export { MobileWarning } from './ui/MobileWarning';
 export { ServerErrorModal } from './ui/ServerErrorModal';
-export { SlowLoadingOverlay } from './ui/SlowLoadingOverlay';
 export { FloatingButtonsContainer } from './ui/FloatingButtonsContainer';
 export { BuyMeACoffeeButton } from './ui/BuyMeACoffeeButton';
 export { ReviewProgressHeader } from './ui/ReviewProgressHeader';

@@ -2,6 +2,7 @@ import { X } from 'lucide-react';
 import { useEffect } from 'react';
 import { createPortal } from 'react-dom';
 import { usePreferences } from '../../contexts/PreferencesContext';
+import { EscapeKey } from './EscapeKey';
 
 
 export const HelpModal = ({ show, onClose, title, children }) => {
@@ -27,12 +28,15 @@ export const HelpModal = ({ show, onClose, title, children }) => {
           <h3 className={`text-lg font-semibold ${theme.text}`}>
             {title}
           </h3>
-          <button
-            onClick={onClose}
-            className={`p-1 rounded ${theme.text} cursor-pointer hover:opacity-70 transition-opacity`}
-          >
-            <X className="w-5 h-5" />
-          </button>
+          <div className="flex items-start gap-2">
+            <EscapeKey />
+            <button
+              onClick={onClose}
+              className={`p-1 rounded ${theme.text} cursor-pointer hover:opacity-70 transition-opacity`}
+            >
+              <X className="w-5 h-5" />
+            </button>
+          </div>
         </div>
 
         <div className={`space-y-4 ${theme.textSecondary}`}>
