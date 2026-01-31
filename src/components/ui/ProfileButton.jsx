@@ -315,7 +315,7 @@ export const ProfileButton = ({ showLegalButton = false }) => {
 
       {/* Redirecting Modal */}
       {isRedirecting && createPortal(
-        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50">
+        <div className="fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center z-50">
           <div className={`${theme.modalBg} ${theme.text} rounded-2xl p-8 shadow-2xl max-w-md mx-4`}>
             <div className="flex flex-col items-center gap-4">
               <Loader2 className="w-12 h-12 text-blue-500 animate-spin" />

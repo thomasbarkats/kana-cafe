@@ -90,7 +90,7 @@ export const UnlockModal = ({ isOpen, onClose, theme }) => {
   if (!isOpen) return null;
 
   return createPortal(
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50" onClick={onClose}>
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm" onClick={onClose}>
       <div className={`${theme.modalBg} rounded-xl p-6 max-w-md w-full max-h-[90vh] overflow-y-auto shadow-2xl`} onClick={(e) => e.stopPropagation()}>
         {/* Header */}
         <div className="flex justify-between items-start mb-4">
