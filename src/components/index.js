@@ -1,5 +1,6 @@
 export { Button } from './ui/Button';
 export { EscapeKey } from './ui/EscapeKey';
+export { KeyboardKey } from './ui/KeyboardKey';
 export { Select } from './ui/Select';
 export { StatsCard } from './ui/StatsCard';
 export { ProgressBar } from './ui/ProgressBar';
