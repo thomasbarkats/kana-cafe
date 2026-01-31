@@ -77,7 +77,7 @@ export const LegalModal = ({ show, onClose, theme }) => {
   );
 
   return createPortal(
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50" onClick={onClose}>
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm" onClick={onClose}>
       <div className={`${theme.modalBg} rounded-xl max-w-2xl w-full shadow-2xl max-h-[85vh] flex flex-col`} onClick={(e) => e.stopPropagation()}>
         {/* Header */}
         <div className={`flex justify-between items-center p-6 pb-5 border-b ${theme.border}`}>
