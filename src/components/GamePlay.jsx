@@ -6,9 +6,9 @@ import { useGameContextKanji } from '../contexts/GameContextKanji';
 import { useGameContextVocabulary } from '../contexts/GameContextVocabulary';
 import { useTranslation } from '../contexts/I18nContext';
 import { usePreferences } from '../contexts/PreferencesContext';
-import { useGameActions } from '../hooks';
+import { useGameActions, useKeyboardShortcuts } from '../hooks';
 import { formatTime, cleanJapaneseText, speakReading } from '../utils';
-import { ProgressBar } from '.';
+import { ProgressBar, KeyboardKey } from '.';
 import { StopGameModal } from './ui/StopGameModal';
 import {
   FEEDBACK_TYPES,
@@ -61,6 +61,8 @@ export const GamePlay = () => {
   const inputRef = useRef(null);
   const [liveTime, setLiveTime] = useState(0);
   const [showStopModal, setShowStopModal] = useState(false);
+
+  useKeyboardShortcuts();
 
 
   useEffect(() => {
@@ -191,23 +193,33 @@ export const GamePlay = () => {
               <span className="text-sm">{formatTime(liveTime)}</span>
             </div>
             <div className="flex items-center space-x-2">
-              <button
-                onClick={() => cycleSoundMode(isSoundOnlyMode)}
-                className={`p-2 ${theme.buttonSecondary} rounded-full transition-colors cursor-pointer`}
-                title={getSoundModeIcon().tooltip}
-              >
-                {getSoundModeIcon().icon}
-              </button>
-              <button
-                onClick={toggleDarkMode}
-                className={`p-2 ${theme.buttonSecondary} rounded-full transition-colors cursor-pointer`}
-                title={darkMode ? t('gameplay.switchToLightMode') : t('gameplay.switchToDarkMode')}
-              >
-                {darkMode
-                  ? <Sun className="w-5 h-5" />
-                  : <Moon className="w-5 h-5" />
-                }
-              </button>
+              <div className="relative group">
+                <button
+                  onClick={() => cycleSoundMode(isSoundOnlyMode)}
+                  className={`p-2 ${theme.buttonSecondary} rounded-full transition-colors cursor-pointer`}
+                  title={getSoundModeIcon().tooltip}
+                >
+                  {getSoundModeIcon().icon}
+                </button>
+                <div className="opacity-0 group-hover:opacity-100 transition-opacity duration-200 absolute inset-0 pointer-events-none flex items-center justify-center">
+                  <KeyboardKey keyLabel="M" position="above" />
+                </div>
+              </div>
+              <div className="relative group">
+                <button
+                  onClick={toggleDarkMode}
+                  className={`p-2 ${theme.buttonSecondary} rounded-full transition-colors cursor-pointer`}
+                  title={darkMode ? t('gameplay.switchToLightMode') : t('gameplay.switchToDarkMode')}
+                >
+                  {darkMode
+                    ? <Sun className="w-5 h-5" />
+                    : <Moon className="w-5 h-5" />
+                  }
+                </button>
+                <div className="opacity-0 group-hover:opacity-100 transition-opacity duration-200 absolute inset-0 pointer-events-none flex items-center justify-center">
+                  <KeyboardKey keyLabel="L" position="above" />
+                </div>
+              </div>
               {isVocabularyMode && vocabularyMode === VOCABULARY_MODES.FROM_JAPANESE && (
                 <button
                   onClick={() => handleShowFuriganaChange(!showFurigana)}
@@ -222,12 +234,17 @@ export const GamePlay = () => {
                   )}
                 </button>
               )}
-              <button
-                onClick={() => setShowStopModal(true)}
-                className={`p-2 ${theme.buttonSecondary} rounded-full transition-colors cursor-pointer hover:text-red-500`}
-              >
-                <Square className="w-5 h-5" />
-              </button>
+              <div className="relative group">
+                <button
+                  onClick={() => setShowStopModal(true)}
+                  className={`p-2 ${theme.buttonSecondary} rounded-full transition-colors cursor-pointer hover:text-red-500`}
+                >
+                  <Square className="w-5 h-5" />
+                </button>
+                <div className="opacity-0 group-hover:opacity-100 transition-opacity duration-200 absolute inset-0 pointer-events-none flex items-center justify-center">
+                  <KeyboardKey keyLabel="Esc" position="above" />
+                </div>
+              </div>
             </div>
           </div>
 

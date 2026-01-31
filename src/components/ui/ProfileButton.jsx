@@ -9,14 +9,14 @@ import { LoginModal } from '../LoginModal';
 import { UnlockModal } from '../UnlockModal';
 import { HelpModal } from './HelpModal';
 import { LegalModal } from './LegalModal';
+import { KeyboardKey } from './KeyboardKey';
 
 
-export const ProfileButton = ({ showLegalButton = false }) => {
+export const ProfileButton = ({ showLegalButton = false, showLoginModal, onToggleLoginModal }) => {
   const { user, isAuthenticated, hasActiveSubscription, hasLifetimeAccess, logout } = useAuth();
   const { theme, darkMode } = usePreferences();
   const { t } = useTranslation();
   const [showMenu, setShowMenu] = useState(false);
-  const [showLoginModal, setShowLoginModal] = useState(false);
   const [showUnlockModal, setShowUnlockModal] = useState(false);
   const [showContactModal, setShowContactModal] = useState(false);
   const [showLegalModal, setShowLegalModal] = useState(false);
@@ -67,11 +67,15 @@ export const ProfileButton = ({ showLegalButton = false }) => {
   };
 
   const handleLogin = () => {
-    setShowLoginModal(true);
+    if (onToggleLoginModal) {
+      onToggleLoginModal();
+    }
   };
 
   const handleLoginSuccess = () => {
-    setShowLoginModal(false);
+    if (onToggleLoginModal) {
+      onToggleLoginModal();
+    }
   };
 
   const handleContactSupport = () => {
@@ -102,7 +106,12 @@ export const ProfileButton = ({ showLegalButton = false }) => {
     <>
       <div className="flex flex-col gap-2 items-end">
         {/* Profile Button with Menu */}
-        <div ref={menuRef} className="relative">
+        <div ref={menuRef} className="relative group">
+          {!isAuthenticated && (
+            <div className="opacity-0 group-hover:opacity-100 transition-opacity duration-200 absolute top-0 left-0 w-12 h-12 pointer-events-none flex items-center justify-center">
+              <KeyboardKey keyLabel="U" position="left" />
+            </div>
+          )}
           <button
             onClick={() => isAuthenticated ? setShowMenu(!showMenu) : handleLogin()}
             className={`w-12 h-12 p-3 rounded-full ${theme.buttonSecondaryBg} ${theme.text} shadow-lg hover:shadow-xl transition-all cursor-pointer flex items-center justify-center`}
@@ -224,7 +233,7 @@ export const ProfileButton = ({ showLegalButton = false }) => {
       {/* Modals */}
       <LoginModal
         isOpen={showLoginModal}
-        onClose={() => setShowLoginModal(false)}
+        onClose={onToggleLoginModal}
         onSuccess={handleLoginSuccess}
         theme={theme}
         darkMode={darkMode}

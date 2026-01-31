@@ -4,6 +4,7 @@ import { LANGUAGES, REQUIRED_SUCCESSES_LIMITS } from '../../constants';
 import { useTranslation } from '../../contexts/I18nContext';
 import { usePreferences } from '../../contexts/PreferencesContext';
 import { Select } from './Select';
+import { KeyboardKey } from './KeyboardKey';
 
 
 export const MenuControls = ({
@@ -42,21 +43,31 @@ export const MenuControls = ({
     <div className="mt-8 flex justify-between items-center">
       <div className="flex items-center space-x-2">
 
-        <button
-          onClick={() => cycleSoundMode()}
-          className={`p-2 ${theme.buttonSecondary} rounded-full transition-colors cursor-pointer`}
-          title={getSoundModeIcon().tooltip}
-        >
-          {getSoundModeIcon().icon}
-        </button>
+        <div className="relative group">
+          <button
+            onClick={() => cycleSoundMode()}
+            className={`p-2 ${theme.buttonSecondary} rounded-full transition-colors cursor-pointer`}
+            title={getSoundModeIcon().tooltip}
+          >
+            {getSoundModeIcon().icon}
+          </button>
+          <div className="opacity-0 group-hover:opacity-100 transition-opacity duration-200 absolute inset-0 pointer-events-none flex items-center justify-center">
+            <KeyboardKey keyLabel="M" position="below" />
+          </div>
+        </div>
 
-        <button
-          onClick={toggleDarkMode}
-          className={`p-2 ${theme.buttonSecondary} rounded-full transition-colors cursor-pointer`}
-          title={darkMode ? 'Switch to light mode' : 'Switch to dark mode'}
-        >
-          {darkMode ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
-        </button>
+        <div className="relative group">
+          <button
+            onClick={toggleDarkMode}
+            className={`p-2 ${theme.buttonSecondary} rounded-full transition-colors cursor-pointer`}
+            title={darkMode ? 'Switch to light mode' : 'Switch to dark mode'}
+          >
+            {darkMode ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
+          </button>
+          <div className="opacity-0 group-hover:opacity-100 transition-opacity duration-200 absolute inset-0 pointer-events-none flex items-center justify-center">
+            <KeyboardKey keyLabel="L" position="below" />
+          </div>
+        </div>
 
         <div className="relative" ref={menuRef}>
           <button
@@ -142,16 +153,18 @@ export const MenuControls = ({
             className={`${theme.inputBg} ${theme.border} rounded-lg px-1 py-2 w-12 text-sm text-center focus:outline-none focus:ring-2 focus:ring-blue-500 shadow-sm ${theme.text}`}
           />
           {showLoopMode && (
-            <button
-              onClick={() => onLoopModeChange && onLoopModeChange(!loopMode)}
-              className={`p-2 rounded-full transition-colors cursor-pointer ${loopMode
-                  ? `${theme.buttonSecondaryBg} ${theme.textSecondary} ${theme.selectorHover}`
-                  : `${theme.buttonSecondary}`
-                }`}
-              title={t('tooltips.loopMode')}
-            >
-              <Repeat2 className="w-5 h-5" />
-            </button>
+            <div className="relative group">
+              <button
+                onClick={() => onLoopModeChange && onLoopModeChange(!loopMode)}
+                className={`p-2 rounded-full transition-colors cursor-pointer ${loopMode ? theme.buttonActive : theme.buttonSecondary}`}
+                title={t('tooltips.loopMode')}
+              >
+                <Repeat2 className="w-5 h-5" />
+              </button>
+              <div className="opacity-0 group-hover:opacity-100 transition-opacity duration-200 absolute inset-0 pointer-events-none flex items-center justify-center">
+                <KeyboardKey keyLabel="R" position="below" />
+              </div>
+            </div>
           )}
         </div>
       </div>

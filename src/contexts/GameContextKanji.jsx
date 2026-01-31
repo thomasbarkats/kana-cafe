@@ -19,7 +19,7 @@ export const KanjiGameProvider = ({ children }) => {
   const { kanjiMode, translationLanguage } = usePreferences();
   const { isAuthenticated } = useAuth();
   const { gameState } = useGameContext();
-  const { kanjiLists, loading: kanjiLoading, error: kanjiError } = useDataKanji(translationLanguage, isAuthenticated);
+  const { kanjiLists } = useDataKanji(translationLanguage, isAuthenticated);
 
   // Step management for multi-step kanji validation
   const [currentStep, setCurrentStep] = useState(KANJI_STEPS.KUN_READINGS);
@@ -99,8 +99,6 @@ export const KanjiGameProvider = ({ children }) => {
   const value = {
     // Data
     kanjiLists,
-    kanjiLoading,
-    kanjiError,
 
     // Step state
     currentStep,
