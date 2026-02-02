@@ -1,4 +1,4 @@
-import { HelpCircle, Keyboard, User } from 'lucide-react';
+import { HelpCircle, Keyboard } from 'lucide-react';
 import { useRef, useState } from 'react';
 import { GAME_STATES, APP_MODES, GAME_MODES } from './constants';
 import { useGameContext } from './contexts/GameContext';
