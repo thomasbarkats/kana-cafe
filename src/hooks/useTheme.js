@@ -59,12 +59,14 @@ export const useTheme = () => {
         feedbackSuccess: {
           bg: 'bg-green-900/50 border-green-400',
           title: 'text-green-300',
-          text: 'text-green-400'
+          text: 'text-green-400',
+          progressBar: 'bg-green-400'
         },
         feedbackError: {
           bg: 'bg-red-900/50 border-red-400',
           title: 'text-red-300',
-          text: 'text-red-400'
+          text: 'text-red-400',
+          progressBar: 'bg-red-400'
         },
       };
     } else {
@@ -106,12 +108,14 @@ export const useTheme = () => {
         feedbackSuccess: {
           bg: 'bg-green-100 border-green-300',
           title: 'text-green-800',
-          text: 'text-green-700'
+          text: 'text-green-700',
+          progressBar: 'bg-green-300'
         },
         feedbackError: {
           bg: 'bg-red-100 border-red-300',
           title: 'text-red-800',
-          text: 'text-red-700'
+          text: 'text-red-700',
+          progressBar: 'bg-red-300'
         },
       };
     }

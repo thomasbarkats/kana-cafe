@@ -28,9 +28,8 @@
     "validate": "Validate (Enter)",
     "skip": "Skip",
     "correct": "Correct!",
-    "incorrect": "Incorrect",
     "youWrote": "You wrote:",
-    "correctAnswer": "Correct answer:",
+    "correctAnswer": "Expected response:",
     "mastered": "mastered",
     "errors": "errors",
     "enterAll": "Enter all",
@@ -39,7 +38,9 @@
     "inReadingOrder": "(in reading order)",
     "switchToLightMode": "Switch to light mode",
     "switchToDarkMode": "Switch to dark mode",
-    "escapeKey": "Esc"
+    "escapeKey": "Esc",
+    "enterKey": "Enter",
+    "skipFeedback": "Ignore correction"
   },
   "menu": {
     "selectLists": "Select lists",

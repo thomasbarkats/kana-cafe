@@ -28,9 +28,8 @@
     "validate": "Valider (Entrée)",
     "skip": "Passer",
     "correct": "Correct !",
-    "incorrect": "Incorrect",
     "youWrote": "Vous avez écrit :",
-    "correctAnswer": "Bonne réponse :",
+    "correctAnswer": "Réponse attendue :",
     "mastered": "maîtrisé",
     "errors": "erreurs",
     "enterAll": "Entrez toutes les",
@@ -39,7 +38,9 @@
     "inReadingOrder": "(dans l'ordre des lectures)",
     "switchToLightMode": "Passer en mode clair",
     "switchToDarkMode": "Passer en mode sombre",
-    "escapeKey": "Échap"
+    "escapeKey": "Échap",
+    "enterKey": "Entrée",
+    "skipFeedback": "Ignorer la correction"
   },
   "menu": {
     "selectListsOf": "Sélectionner des listes de",

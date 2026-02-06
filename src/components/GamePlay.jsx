@@ -7,8 +7,8 @@ import { useGameContextVocabulary } from '../contexts/GameContextVocabulary';
 import { useTranslation } from '../contexts/I18nContext';
 import { usePreferences } from '../contexts/PreferencesContext';
 import { useGameActions, useKeyboardShortcuts } from '../hooks';
-import { formatTime, cleanJapaneseText, speakReading } from '../utils';
-import { ProgressBar, KeyboardKey } from '.';
+import { formatTime, cleanJapaneseText, speakReading, containsKana } from '../utils';
+import { ProgressBar, KeyboardKey, FeedbackProgressBar } from '.';
 import { StopGameModal } from './ui/StopGameModal';
 import {
   FEEDBACK_TYPES,
@@ -49,6 +49,9 @@ export const GamePlay = () => {
     progress,
     sessionStats,
     startTime,
+    skipFeedback,
+    feedbackProgressDuration,
+    feedbackProgressActive,
   } = useGameContext();
 
   const {
@@ -59,6 +62,7 @@ export const GamePlay = () => {
   const { isAuthenticated } = useAuth();
 
   const inputRef = useRef(null);
+  const skipListenerCleanupRef = useRef(null);
   const [liveTime, setLiveTime] = useState(0);
   const [showStopModal, setShowStopModal] = useState(false);
 
@@ -94,9 +98,35 @@ export const GamePlay = () => {
     return () => window.removeEventListener('keydown', handleGlobalKeyDown);
   }, [showStopModal]);
 
+  // Enter key to skip feedback (with delay to avoid capturing submit Enter)
+  useEffect(() => {
+    if (!feedback || showStopModal) return;
+
+    const attachDelay = setTimeout(() => {
+      const handleFeedbackSkip = (e) => {
+        if (e.key === 'Enter') {
+          e.preventDefault();
+          skipFeedback();
+        }
+      };
+
+      window.addEventListener('keydown', handleFeedbackSkip);
+      skipListenerCleanupRef.current = () => {
+        window.removeEventListener('keydown', handleFeedbackSkip);
+      };
+    }, 200);
+
+    return () => {
+      clearTimeout(attachDelay);
+      if (skipListenerCleanupRef.current) {
+        skipListenerCleanupRef.current();
+        skipListenerCleanupRef.current = null;
+      }
+    };
+  }, [feedback, skipFeedback, showStopModal]);
 
   const handleKeyDown = (e) => {
-    if ((e.key === 'Enter') && !feedback) {
+    if ((e.key === 'Enter') && !feedback && !showStopModal) {
       e.preventDefault();
       handleSubmit();
     }
@@ -141,6 +171,16 @@ export const GamePlay = () => {
   const displayCorrectAnswer = feedback && isVocabularyMode && vocabularyMode === VOCABULARY_MODES.TO_JAPANESE
     ? cleanJapaneseText(feedback.correctAnswer)
     : feedback?.correctAnswer;
+
+  const isInfoTextDisplayedDuringQuestion = isVocabularyMode &&
+    currentItem?.infoText &&
+    !isSoundOnlyMode &&
+    ((containsKana(currentItem.infoText) && vocabularyMode === VOCABULARY_MODES.FROM_JAPANESE) ||
+     (!containsKana(currentItem.infoText) && vocabularyMode === VOCABULARY_MODES.TO_JAPANESE));
+
+  const shouldShowInfoTextInFeedback = isVocabularyMode &&
+    currentItem?.infoText &&
+    !isInfoTextDisplayedDuringQuestion;
 
   const displayKanjiTextHelperText = (currentStep) => {
     switch (currentStep) {
@@ -257,7 +297,7 @@ export const GamePlay = () => {
         </div>
 
         {currentItem && (
-          <div className="text-center mb-8">
+          <div className="text-center mb-6">
             <div className={`
               ${isVocabularyMode ? (vocabularyMode === VOCABULARY_MODES.FROM_JAPANESE ? 'text-[2.5rem]' : 'text-[2rem]') : 'text-8xl'}
               font-light ${theme.text} select-none mb-2`}>
@@ -278,8 +318,10 @@ export const GamePlay = () => {
 
             {
               isVocabularyMode &&
-              vocabularyMode === VOCABULARY_MODES.TO_JAPANESE &&
-              currentItem.infoText && (
+              currentItem.infoText &&
+              !isSoundOnlyMode &&
+              ((containsKana(currentItem.infoText) && vocabularyMode === VOCABULARY_MODES.FROM_JAPANESE) ||
+               (!containsKana(currentItem.infoText) && vocabularyMode === VOCABULARY_MODES.TO_JAPANESE)) && (
                 <div className={`text-sm ${theme.textMuted} mb-4 italic`}>
                   {currentItem.infoText}
                 </div>
@@ -299,38 +341,53 @@ export const GamePlay = () => {
 
             {feedback ? (
               <div className="pt-2 mb-6">
-                {feedback.type === FEEDBACK_TYPES.SUCCESS ? (
-                  <div className={`${theme.feedbackSuccess.bg} border-2 rounded-xl p-6 animate-pulse`}>
-                    <div className="text-6xl mb-2">✅</div>
-                    <div className={`text-2xl font-bold ${theme.feedbackSuccess.title} mb-2`}>{t('gameplay.correct')}</div>
-                    <div className={`text-lg ${theme.feedbackSuccess.text}`}>"{displayCorrectAnswer}"</div>
-                    {
-                      isVocabularyMode &&
-                      (vocabularyMode === VOCABULARY_MODES.FROM_JAPANESE || isSoundOnlyMode) &&
-                      currentItem.infoText && (
-                        <div className={`text-sm ${theme.textMuted} mt-3 italic`}>
-                          {currentItem.infoText}
-                        </div>
-                      )
-                    }
+                <div>
+                  {feedback.type === FEEDBACK_TYPES.SUCCESS ? (
+                    <div className={`${theme.feedbackSuccess.bg} border-2 rounded-xl p-6 animate-pulse`}>
+                      <div className={`text-2xl font-bold ${theme.feedbackSuccess.title} mb-2`}>{t('gameplay.correct')}</div>
+                      <div className={`text-lg ${theme.feedbackSuccess.text}`}>"{displayCorrectAnswer}"</div>
+                      {
+                        shouldShowInfoTextInFeedback && (
+                          <div className={`text-sm ${theme.textMuted} mt-3 italic`}>
+                            {currentItem.infoText}
+                          </div>
+                        )
+                      }
+                      {/* Feedback Progress Bar */}
+                      <FeedbackProgressBar
+                        duration={feedbackProgressDuration}
+                        isActive={feedbackProgressActive}
+                        feedbackType={feedback?.type}
+                        theme={theme}
+                      />
+                    </div>
+                  ) : (
+                    <div className={`${theme.feedbackError.bg} border-2 rounded-xl p-6 animate-pulse`}>
+                      <div className={`text-lg ${theme.feedbackError.text} mb-1`}>{t('gameplay.youWrote')} "{feedback.userAnswer}"</div>
+                      <div className={`text-lg ${theme.feedbackError.title} font-semibold`}>{t('gameplay.correctAnswer')} "{displayCorrectAnswer}"</div>
+                      {
+                        shouldShowInfoTextInFeedback && (
+                          <div className={`text-sm ${theme.textMuted} mt-3 italic`}>
+                            {currentItem.infoText}
+                          </div>
+                        )
+                      }
+                      {/* Feedback Progress Bar */}
+                      <FeedbackProgressBar
+                        duration={feedbackProgressDuration}
+                        isActive={feedbackProgressActive}
+                        feedbackType={feedback?.type}
+                        theme={theme}
+                      />
+                    </div>
+                  )}
+
+                  {/* Skip hint */}
+                  <div className={`flex items-center justify-center gap-2 mt-3 ${theme.textSecondary} text-sm`}>
+                    <span className={`${theme.text} opacity-40`}>{t('gameplay.skipFeedback')}</span>
+                    <KeyboardKey keyLabel={t('gameplay.enterKey')} position="inline" />
                   </div>
-                ) : (
-                  <div className={`${theme.feedbackError.bg} border-2 rounded-xl p-6 animate-pulse`}>
-                    <div className="text-6xl mb-2">❌</div>
-                    <div className={`text-2xl font-bold ${theme.feedbackError.title} mb-2`}>{t('gameplay.incorrect')}</div>
-                    <div className={`text-lg ${theme.feedbackError.text} mb-1`}>{t('gameplay.youWrote')} "{feedback.userAnswer}"</div>
-                    <div className={`text-lg ${theme.feedbackError.title} font-semibold`}>{t('gameplay.correctAnswer')} "{displayCorrectAnswer}"</div>
-                    {
-                      isVocabularyMode &&
-                      (vocabularyMode === VOCABULARY_MODES.FROM_JAPANESE || isSoundOnlyMode) &&
-                      currentItem.infoText && (
-                        <div className={`text-sm ${theme.textMuted} mt-3 italic`}>
-                          {currentItem.infoText}
-                        </div>
-                      )
-                    }
-                  </div>
-                )}
+                </div>
               </div>
             ) : (
               <div className="pt-2 mb-6">

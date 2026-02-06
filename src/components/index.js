@@ -5,6 +5,7 @@ export { Select } from './ui/Select';
 export { StatsCard } from './ui/StatsCard';
 export { ProgressBar } from './ui/ProgressBar';
 export { ScoreProgressBar } from './ui/ScoreProgressBar';
+export { FeedbackProgressBar } from './ui/FeedbackProgressBar';
 export { GameMenuKana } from './GameMenuKana';
 export { GamePlay } from './GamePlay';
 export { Summary } from './Summary';

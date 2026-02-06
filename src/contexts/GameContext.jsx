@@ -21,6 +21,30 @@ export const GameProvider = ({ children }) => {
   const [feedback, setFeedback] = useState(null);
   const currentItemStartRef = useRef(null);
 
+  // Feedback skip mechanism
+  const feedbackTimeoutRef = useRef(null);
+  const feedbackProceedFnRef = useRef(null);
+
+  // Feedback progress bar state
+  const [feedbackProgressDuration, setFeedbackProgressDuration] = useState(0);
+  const [feedbackProgressActive, setFeedbackProgressActive] = useState(false);
+
+  const skipFeedback = () => {
+    if (feedbackTimeoutRef.current) {
+      clearTimeout(feedbackTimeoutRef.current);
+      feedbackTimeoutRef.current = null;
+    }
+
+    window.speechSynthesis?.cancel();
+
+    // Deactivate progress bar
+    setFeedbackProgressActive(false);
+
+    if (feedbackProceedFnRef.current) {
+      feedbackProceedFnRef.current(true); // Pass true to skip delays
+    }
+  };
+
   // Progress & stats
   const [progress, setProgress] = useState({});
   const [sessionStats, setSessionStats] = useState({});
@@ -70,6 +94,17 @@ export const GameProvider = ({ children }) => {
     feedback,
     setFeedback,
     currentItemStartRef,
+
+    // Feedback skip
+    feedbackTimeoutRef,
+    feedbackProceedFnRef,
+    skipFeedback,
+
+    // Feedback progress bar
+    feedbackProgressDuration,
+    setFeedbackProgressDuration,
+    feedbackProgressActive,
+    setFeedbackProgressActive,
 
     // Progress
     progress,

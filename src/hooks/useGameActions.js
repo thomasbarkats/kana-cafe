@@ -40,6 +40,8 @@ export const useGameActions = () => {
     progress,
     sessionStats,
     currentItemStartRef,
+    feedbackTimeoutRef,
+    feedbackProceedFnRef,
     setGameState,
     setGameMode,
     setCurrentItem,
@@ -49,6 +51,8 @@ export const useGameActions = () => {
     setStartTime,
     setFeedback,
     setStoppedEarly,
+    setFeedbackProgressDuration,
+    setFeedbackProgressActive,
   } = useGameContext();
 
   const {
@@ -228,23 +232,34 @@ export const useGameActions = () => {
     const shouldPlaySpeech = (soundMode === SOUND_MODES.BOTH || soundMode === SOUND_MODES.SPEECH_ONLY) && !isLastStep;
     const nextDelay = isCorrect ? TIMING.SUCCESS_FEEDBACK_DELAY : (TIMING.ERROR_FEEDBACK_DELAY + (correctAnswer.length * 40));
 
+    const hasProceededRef = { current: false };
+
     const proceedToNext = () => {
+      if (hasProceededRef.current) return;
+      hasProceededRef.current = true;
+
+      feedbackProceedFnRef.current = null;
+      feedbackTimeoutRef.current = null;
+
+      // Clean feedback and progress bar
+      setFeedback(null);
+      setUserInput('');
+      setFeedbackProgressActive(false);
+
       if (!isCorrect || isLastStep) {
         // Loop mode: repeat current step on failure
         if (!isCorrect && kanjiLoopMode) {
-          setUserInput('');
-          setFeedback(null);
           proceedToNextItem(newProgress, currentItem.key, currentStep);
           return;
         }
 
         proceedToNextItem(newProgress);
       } else {
-        setUserInput('');
-        setFeedback(null);
         proceedToNextStep(currentItem);
       }
     };
+
+    feedbackProceedFnRef.current = proceedToNext;
 
     if (shouldPlaySpeech) {
       const readingsToSpeak = currentStep === KANJI_STEPS.KUN_READINGS
@@ -252,16 +267,30 @@ export const useGameActions = () => {
         : getOnReadingsForAudio(currentItem.readings);
       const textToSpeak = readingsToSpeak.join(',').replace(/[()]/g, '');
 
+      const afterSpeech = () => {
+        // Check if we already proceeded (e.g., user skipped feedback)
+        if (hasProceededRef.current) {
+          return;
+        }
+        // After speech ends, show progress bar and start delay
+        setFeedbackProgressDuration(nextDelay);
+        setFeedbackProgressActive(true);
+        feedbackTimeoutRef.current = setTimeout(proceedToNext, nextDelay);
+      };
+
       if (soundMode === SOUND_MODES.SPEECH_ONLY) {
-        speakReading(textToSpeak, 1, proceedToNext);
+        speakReading(textToSpeak, 1, afterSpeech);
       } else {
         const speechDelay = isCorrect ? 150 : 280;
-        setTimeout(() => {
-          speakReading(textToSpeak, 1, proceedToNext);
+        feedbackTimeoutRef.current = setTimeout(() => {
+          speakReading(textToSpeak, 1, afterSpeech);
         }, speechDelay);
       }
     } else {
-      setTimeout(proceedToNext, nextDelay);
+      // No speech, show progress bar immediately
+      setFeedbackProgressDuration(nextDelay);
+      setFeedbackProgressActive(true);
+      feedbackTimeoutRef.current = setTimeout(proceedToNext, nextDelay);
     }
   };
 
@@ -307,34 +336,77 @@ export const useGameActions = () => {
     const infoTextDelay = hasInfoText ? 1500 : 0;
     const nextDelay = (isCorrect ? TIMING.SUCCESS_FEEDBACK_DELAY : TIMING.ERROR_FEEDBACK_DELAY) + infoTextDelay;
 
-    const proceedToNext = () => {
+    const hasProceededRef = { current: false };
+
+    const proceedToNext = (skipDelays = false) => {
+      if (hasProceededRef.current) return;
+      hasProceededRef.current = true;
+
+      feedbackProceedFnRef.current = null;
+      feedbackTimeoutRef.current = null;
+
+      // Clean feedback and progress bar
+      setFeedback(null);
+      setUserInput('');
+      setFeedbackProgressActive(false);
+
+      const delay = skipDelays ? 0 : infoTextDelay;
+
       // Loop mode for vocabulary: repeat same word on failure
       if (!isCorrect && isVocabularyMode && vocabularyLoopMode) {
-        setTimeout(() => proceedToNextItem(newProgress, null, null, currentItem.key), infoTextDelay);
+        if (delay > 0) {
+          setTimeout(() => proceedToNextItem(newProgress, null, null, currentItem.key), delay);
+        } else {
+          proceedToNextItem(newProgress, null, null, currentItem.key);
+        }
       }
       // Loop mode for kana: repeat same kana on failure
       else if (!isCorrect && !isVocabularyMode && kanaLoopMode) {
-        setTimeout(() => proceedToNextItem(newProgress, null, null, null, currentItem.key), infoTextDelay);
+        if (delay > 0) {
+          setTimeout(() => proceedToNextItem(newProgress, null, null, null, currentItem.key), delay);
+        } else {
+          proceedToNextItem(newProgress, null, null, null, currentItem.key);
+        }
       } else {
-        setTimeout(() => proceedToNextItem(newProgress), infoTextDelay);
+        if (delay > 0) {
+          setTimeout(() => proceedToNextItem(newProgress), delay);
+        } else {
+          proceedToNextItem(newProgress);
+        }
       }
     };
+
+    feedbackProceedFnRef.current = proceedToNext;
 
     if (shouldPlaySpeech) {
       const textToSpeak = (isVocabularyMode && vocabularyMode === VOCABULARY_MODES.TO_JAPANESE)
         ? currentItem.speechText
         : currentItem.question;
 
+      const afterSpeech = () => {
+        // Check if we already proceeded (e.g., user skipped feedback)
+        if (hasProceededRef.current) {
+          return;
+        }
+        // After speech ends, show progress bar and start delay
+        setFeedbackProgressDuration(nextDelay);
+        setFeedbackProgressActive(true);
+        feedbackTimeoutRef.current = setTimeout(proceedToNext, nextDelay);
+      };
+
       if (soundMode === SOUND_MODES.SPEECH_ONLY) {
-        speakReading(textToSpeak, isVocabularyMode ? 1 : 0.5, proceedToNext);
+        speakReading(textToSpeak, isVocabularyMode ? 1 : 0.5, afterSpeech);
       } else {
         const speechDelay = (isCorrect && !isVocabularyMode) ? 150 : 280;
-        setTimeout(() => {
-          speakReading(textToSpeak, isVocabularyMode ? 1 : 0.5, proceedToNext);
+        feedbackTimeoutRef.current = setTimeout(() => {
+          speakReading(textToSpeak, isVocabularyMode ? 1 : 0.5, afterSpeech);
         }, speechDelay);
       }
     } else {
-      setTimeout(proceedToNext, nextDelay);
+      // No speech, show progress bar immediately
+      setFeedbackProgressDuration(nextDelay);
+      setFeedbackProgressActive(true);
+      feedbackTimeoutRef.current = setTimeout(proceedToNext, nextDelay);
     }
   };
 

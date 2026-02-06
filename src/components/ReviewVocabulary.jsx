@@ -174,8 +174,8 @@ export const ReviewVocabulary = () => {
                   return (
                     <span
                       key={idx}
-                      className={showFurigana ? "underline decoration-dotted cursor-help" : ""}
-                      title={showFurigana ? part.reading : undefined}
+                      className="underline decoration-dotted cursor-help"
+                      title={part.reading}
                     >
                       {part.text}
                     </span>
