@@ -1,6 +1,6 @@
 import { HelpCircle, Keyboard } from 'lucide-react';
-import { useRef, useState } from 'react';
-import { GAME_STATES, APP_MODES, GAME_MODES } from './constants';
+import { useEffect, useRef, useState } from 'react';
+import { GAME_STATES, APP_MODES, GAME_MODES, STORAGE_KEYS } from './constants';
 import { useGameContext } from './contexts/GameContext';
 import { useGameContextKanji } from './contexts/GameContextKanji';
 import { useGameContextVocabulary } from './contexts/GameContextVocabulary';
@@ -61,8 +61,19 @@ function App() {
 
   useKeyboardNavigation();
 
+  useEffect(() => {
+    const pendingLogin = localStorage.getItem(STORAGE_KEYS.PENDING_GOOGLE_LOGIN);
+    if (pendingLogin && !isAuthenticated) {
+      localStorage.removeItem(STORAGE_KEYS.PENDING_GOOGLE_LOGIN);
+      setShowLoginModal(true);
+    }
+  }, [isAuthenticated]);
+
   const toggleLoginModal = () => {
     if (!isAuthenticated) {
+      if (showLoginModal) {
+        localStorage.removeItem(STORAGE_KEYS.PENDING_GOOGLE_LOGIN);
+      }
       setShowLoginModal(!showLoginModal);
     }
   };
