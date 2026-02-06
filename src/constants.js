@@ -116,3 +116,7 @@ export const KANJI_PROGRESS_TYPES = {
   [KANJI_STEPS.ON_READINGS]: 'on_readings',
   [KANJI_STEPS.MEANINGS]: 'meanings',
 };
+
+export const STORAGE_KEYS = {
+  PENDING_GOOGLE_LOGIN: 'pendingGoogleLogin',
+};

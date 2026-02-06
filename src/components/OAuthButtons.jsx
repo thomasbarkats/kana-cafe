@@ -1,6 +1,7 @@
 import { useGoogleLogin } from '@react-oauth/google';
 import { Loader2 } from 'lucide-react';
 import { useState } from 'react';
+import { STORAGE_KEYS } from '../constants';
 import { useAuth } from '../contexts/AuthContext';
 import { getDeviceInfo } from '../utils/deviceHelper';
 
@@ -12,14 +13,14 @@ export const OAuthButtons = ({ onSuccess, theme }) => {
 
   // Google OAuth hook
   const googleLogin = useGoogleLogin({
-    // Use implicit flow to get access_token directly
-    flow: 'implicit',
+    flow: 'implicit', // Use implicit flow to get access_token directly
+    ux_mode: 'popup', // Force popup mode to prevent redirects
     onSuccess: async (tokenResponse) => {
       try {
         setLoading(true);
         setError(null);
 
-        // Send access_token to backend (backend supports both id_token and access_token)
+        localStorage.removeItem(STORAGE_KEYS.PENDING_GOOGLE_LOGIN);
         await loginWithGoogle(tokenResponse.access_token, getDeviceInfo());
         onSuccess?.();
       } catch (err) {
@@ -29,13 +30,14 @@ export const OAuthButtons = ({ onSuccess, theme }) => {
       }
     },
     onError: (error) => {
-      console.error('Google login failed:', error);
       setError('Google login failed. Please try again.');
       setLoading(false);
     },
     onNonOAuthError: (nonOAuthError) => {
-      if (nonOAuthError.type === 'popup_closed') {
-        setLoading(false);
+      setLoading(false);
+      if (nonOAuthError.type === 'popup_failed_to_open') {
+        localStorage.setItem(STORAGE_KEYS.PENDING_GOOGLE_LOGIN, 'true');
+        setError('Please allow popups for this site to sign in with Google.');
       }
     },
   });
@@ -66,7 +68,6 @@ export const OAuthButtons = ({ onSuccess, theme }) => {
         throw new Error('No authorization token received from Apple');
       }
     } catch (err) {
-      console.error('Apple login failed:', err);
       setError(err.message || 'Apple login failed. Please try again.');
     } finally {
       setLoading(false);
