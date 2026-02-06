@@ -115,7 +115,7 @@ export const parseJapaneseText = (text) => {
 };
 
 // ============================================
-// TEXT CLEANING
+// TEXT UTILS
 // ============================================
 
 export const cleanJapaneseText = (text) => {
@@ -123,10 +123,6 @@ export const cleanJapaneseText = (text) => {
     .replace(/\{([^}]+)\}\[([^\]]+)\]/g, '$1')
     .replace(/\{([^}]+)\}/g, '$1');
 };
-
-// ============================================
-// NORMALIZATION
-// ============================================
 
 export const normalizeAnswer = (text) => {
   return text
@@ -140,7 +136,7 @@ export const normalizeAnswer = (text) => {
 }
 
 // ============================================
-// OPTIONAL VARIANTS GENERATION
+// UTILS / OTHERS
 // ============================================
 
 export const generateOptionalVariants = (text) => {
@@ -163,28 +159,16 @@ export const generateOptionalVariants = (text) => {
   return [...new Set(variants)];
 };
 
-// ============================================
-// WORD SORTING FOR ORDER-INDEPENDENT MATCHING
-// ============================================
-
 export const sortWords = (text) => {
   return text.split(' ').filter(w => w).sort().join(' ');
 };
 
-// ============================================
-// CARTESIAN PRODUCT FOR VARIANT COMBINATIONS
-// ============================================
+export const containsKana = (text) => {
+  if (!text) return false;
 
-const cartesianProduct = (arrays) => {
-  if (arrays.length === 0) return [[]];
-  if (arrays.length === 1) return arrays[0].map(item => [item]);
-
-  const [first, ...rest] = arrays;
-  const restProduct = cartesianProduct(rest);
-
-  return first.flatMap(item =>
-    restProduct.map(combo => [item, ...combo])
-  );
+  // Hiragana: U+3040-U+309F, Katakana: U+30A0-U+30FF
+  const kanaRegex = /[\u3040-\u309F\u30A0-\u30FF]/;
+  return kanaRegex.test(text);
 };
 
 // ============================================
@@ -218,4 +202,16 @@ export const checkVocabularyAnswer = (userAnswer, correctAnswer) => {
 
   // Check if user's sorted words match any valid combination
   return sortedCorrectCombinations.includes(sortedUserWords);
+};
+
+const cartesianProduct = (arrays) => {
+  if (arrays.length === 0) return [[]];
+  if (arrays.length === 1) return arrays[0].map(item => [item]);
+
+  const [first, ...rest] = arrays;
+  const restProduct = cartesianProduct(rest);
+
+  return first.flatMap(item =>
+    restProduct.map(combo => [item, ...combo])
+  );
 };

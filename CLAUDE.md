@@ -17,7 +17,6 @@
 
 **Theme System**
 - NEVER hardcode colors - extract from `theme` (usePreferences hook)
-- Convert classes if needed (e.g., `border-green-400` → `bg-green-400`)
 - If color isn't in theme, ask user before adding
 
 **i18n**

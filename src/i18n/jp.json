@@ -28,9 +28,8 @@
     "validate": "確認 (Enter)",
     "skip": "スキップ",
     "correct": "正解！",
-    "incorrect": "不正解",
     "youWrote": "あなたの答え：",
-    "correctAnswer": "正しい答え：",
+    "correctAnswer": "期待される応答：",
     "mastered": "マスター",
     "errors": "ミス",
     "enterAll": "全ての",
@@ -39,7 +38,9 @@
     "inReadingOrder": "（読み順）",
     "switchToLightMode": "ライトモードに切替",
     "switchToDarkMode": "ダークモードに切替",
-    "escapeKey": "Esc"
+    "escapeKey": "Esc",
+    "enterKey": "Enter",
+    "skipFeedback": "訂正を無視する"
   },
   "menu": {
     "selectLists": "リストを選択",
