@@ -151,6 +151,7 @@
     "progression": "Progrès"
   },
   "progress": {
+    "score": "Score de progression",
     "notPracticed": " - Pas encore pratiqué",
     "mastered": " - Maîtrisé !",
     "keepPracticing": " - Continuez à pratiquer !"

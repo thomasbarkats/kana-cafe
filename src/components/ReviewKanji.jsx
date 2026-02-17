@@ -235,7 +235,7 @@ export const ReviewKanji = () => {
                     <div>{kanji.kun.split(', ').join('\n') || '-'}</div>
                     {haveAccess && (
                       <div className="mt-2">
-                        <ScoreProgressBar score={kunProgress.score} theme={theme} tooltipPrefix="Progress score - " />
+                        <ScoreProgressBar score={kunProgress.score} theme={theme} tooltipPrefix={`${t('progress.score')}: `} />
                       </div>
                     )}
                   </td>
@@ -243,7 +243,7 @@ export const ReviewKanji = () => {
                     <div>{kanji.on.split(', ').join('\n') || '-'}</div>
                     {haveAccess && (
                       <div className="mt-2">
-                        <ScoreProgressBar score={onProgress.score} theme={theme} tooltipPrefix="Progress score - " />
+                        <ScoreProgressBar score={onProgress.score} theme={theme} tooltipPrefix={`${t('progress.score')}: `} />
                       </div>
                     )}
                   </td>
@@ -262,7 +262,7 @@ export const ReviewKanji = () => {
                     </div>
                     {haveAccess && (
                       <div className="mt-2">
-                        <ScoreProgressBar score={meaningsProgress.score} theme={theme} tooltipPrefix="Progress score - " />
+                        <ScoreProgressBar score={meaningsProgress.score} theme={theme} tooltipPrefix={`${t('progress.score')}: `} />
                       </div>
                     )}
                   </td>

@@ -171,6 +171,7 @@
     "progression": "進捗"
   },
   "progress": {
+    "score": "進捗スコア",
     "notPracticed": " - 未学習",
     "mastered": " - マスター！",
     "keepPracticing": " - 練習を続けよう！"

@@ -171,6 +171,7 @@
     "progression": "Progress"
   },
   "progress": {
+    "score": "Progress score",
     "notPracticed": " - Not yet practiced",
     "mastered": " - Mastered!",
     "keepPracticing": " - Keep practicing!"

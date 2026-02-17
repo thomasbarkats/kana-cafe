@@ -10,8 +10,15 @@ export const useProgress = (itemType) => {
   const [loading, setLoading] = useState(false);
 
   const fetchProgress = useCallback(async () => {
-    // Only fetch progress for premium users
-    if (!isAuthenticated || !haveAccess) {
+    // Only fetch progress for authenticated users
+    // - Premium users can fetch all types
+    // - Free users can only fetch KANA progress
+    if (!isAuthenticated) {
+      setProgressData({});
+      return;
+    }
+
+    if (!haveAccess && itemType !== 'kana') {
       setProgressData({});
       return;
     }

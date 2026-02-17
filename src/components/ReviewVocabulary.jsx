@@ -198,7 +198,7 @@ export const ReviewVocabulary = () => {
         {haveAccess && (
           <td className="p-4">
             <div className="flex items-center justify-center">
-              <ScoreProgressBar score={progress.score} theme={theme} />
+              <ScoreProgressBar score={progress.score} theme={theme} tooltipPrefix={`${t('progress.score')}: `} />
             </div>
           </td>
         )}
