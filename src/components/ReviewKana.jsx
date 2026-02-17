@@ -22,6 +22,13 @@ const getScoreBackgroundColor = (score) => {
   return 'rgba(34, 197, 94, 0.15)'; // green-500
 };
 
+// Get status text based on score
+const getStatusText = (score, maxScore, t) => {
+  if (score === 0) return t('progress.notPracticed');
+  if (score === maxScore) return t('progress.mastered');
+  return t('progress.keepPracticing');
+};
+
 
 export const ReviewKana = () => {
   const { t } = useTranslation();
@@ -81,6 +88,10 @@ export const ReviewKana = () => {
             {row.cells.map((kana, cellIdx) => {
               const progress = kana ? getProgress(kana.id, 'kana') : { score: 0 };
               const bgColor = getScoreBackgroundColor(progress.score);
+              const maxScore = 5;
+              const tooltipText = kana
+                ? `${progress.score}/${maxScore}${getStatusText(progress.score, maxScore, t)}`
+                : '';
               return (
                 <div
                   key={cellIdx}
@@ -89,6 +100,7 @@ export const ReviewKana = () => {
                     ${kana ? 'cursor-pointer hover:scale-105 transition-transform' : 'invisible'}
                   `}
                   style={{ backgroundColor: bgColor }}
+                  title={tooltipText}
                   onClick={() => kana && speakReading(kana.char, 0.5)}
                 >
                   {kana && (

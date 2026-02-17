@@ -79,7 +79,7 @@ export const Summary = ({ onNewSession, onRestartSameMode, sortedStats }) => {
   const elapsedTime = Object.values(sessionStats).reduce((sum, s) => sum + (s.timeSpent || 0), 0);
   const isVocabularyMode = gameMode === GAME_MODES.VOCABULARY;
   const isKanjiMode = gameMode === GAME_MODES.KANJI;
-  const isKanaMode = !isVocabularyMode || !isKanjiMode;
+  const isKanaMode = !isVocabularyMode && !isKanjiMode;
 
 
   const getFinalSummaryText = () => {
@@ -273,7 +273,7 @@ export const Summary = ({ onNewSession, onRestartSameMode, sortedStats }) => {
                   </div>
                   {canShowProgress && (
                     <div className="mt-2">
-                      <ScoreProgressBar score={progressScore} theme={theme} />
+                      <ScoreProgressBar score={progressScore} theme={theme} tooltipPrefix={`${t('progress.score')}: `} />
                     </div>
                   )}
                 </div>
