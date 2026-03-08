@@ -154,7 +154,8 @@
     "score": "Score de progression",
     "notPracticed": " - Pas encore pratiqué",
     "mastered": " - Maîtrisé !",
-    "keepPracticing": " - Continuez à pratiquer !"
+    "keepPracticing": " - Continuez à pratiquer !",
+    "average": "moy."
   },
   "review": {
     "loginToTrackProgress": "Connectez-vous pour suivre votre progression",

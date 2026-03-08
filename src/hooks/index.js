@@ -10,5 +10,5 @@ export { useGameLogicKanji } from './useGameLogicKanji';
 export { useKeyboardNavigation } from './useKeyboardNavigation';
 export { useFavoritesManagement } from './useFavoritesManagement';
 export { useDataLoader } from './useDataLoader';
-export { useProgress } from './useProgress';
+export { useProgress, invalidateProgressCache } from './useProgress';
 export { useKeyboardShortcuts } from './useKeyboardShortcuts';

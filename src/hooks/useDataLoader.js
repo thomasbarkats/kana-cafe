@@ -1,4 +1,4 @@
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useRef } from 'react';
 import { getCacheKey, initializeFavoritesMap } from '../utils/cacheHelpers';
 
 
@@ -9,6 +9,8 @@ export const useDataLoader = ({
   language,
 }) => {
   const [loading, setLoading] = useState(true);
+  const cacheRef = useRef(cache);
+  cacheRef.current = cache;
 
   const loadData = useCallback(async ({
     selectedLists,
@@ -23,8 +25,8 @@ export const useDataLoader = ({
     const cacheKey = getCacheKey(selectedLists, language);
     const isFavoritesIncluded = selectedLists.includes('favorites');
 
-    if (cache[cacheKey]) {
-      const cachedData = cache[cacheKey];
+    if (cacheRef.current[cacheKey]) {
+      const cachedData = cacheRef.current[cacheKey];
       if (isFavoritesIncluded && setSessionFavorites) {
         setSessionFavorites(initializeFavoritesMap(cachedData));
       }
@@ -56,7 +58,7 @@ export const useDataLoader = ({
         setLoading(false);
       }
     }
-  }, [cache, setCache, setSessionFavorites, language]);
+  }, [setCache, setSessionFavorites, language]);
 
   const getFromCache = useCallback((selectedLists) => {
     if (!selectedLists || selectedLists.length === 0) {
@@ -64,8 +66,8 @@ export const useDataLoader = ({
     }
 
     const cacheKey = getCacheKey(selectedLists, language);
-    return cache[cacheKey] || null;
-  }, [cache, language]);
+    return cacheRef.current[cacheKey] || null;
+  }, [language]);
 
   return {
     loading,

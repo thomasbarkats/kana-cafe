@@ -1,5 +1,7 @@
+import { ITEM_TYPES } from '../constants';
 import { useGameContext } from '../contexts/GameContext';
 import { usePreferences } from '../contexts/PreferencesContext';
+import { invalidateProgressCache } from './useProgress';
 import {
   getAllKanaForMode,
   initializeKanaData,
@@ -28,6 +30,8 @@ export const useGameLogicKana = () => {
 
 
   const initializeKanaGame = (mode) => {
+    invalidateProgressCache(ITEM_TYPES.KANA);
+
     const setters = { setGameMode, setGameState, setUserInput, setStartTime, setFeedback };
     initializeGameState(setters, mode);
 

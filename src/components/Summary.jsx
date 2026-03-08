@@ -42,8 +42,8 @@ export const Summary = ({ onNewSession, onRestartSameMode, sortedStats }) => {
     }
 
     // Mode ALL: calculate average of kun, on, and meanings
-    const kunProgress = getProgress(itemId, KANJI_PROGRESS_TYPES[KANJI_STEPS.KUN]);
-    const onProgress = getProgress(itemId, KANJI_PROGRESS_TYPES[KANJI_STEPS.ON]);
+    const kunProgress = getProgress(itemId, KANJI_PROGRESS_TYPES[KANJI_STEPS.KUN_READINGS]);
+    const onProgress = getProgress(itemId, KANJI_PROGRESS_TYPES[KANJI_STEPS.ON_READINGS]);
     const meaningsProgress = getProgress(itemId, KANJI_PROGRESS_TYPES[KANJI_STEPS.MEANINGS]);
 
     const kunScore = kunProgress?.score || 0;
@@ -273,7 +273,11 @@ export const Summary = ({ onNewSession, onRestartSameMode, sortedStats }) => {
                   </div>
                   {canShowProgress && (
                     <div className="mt-2">
-                      <ScoreProgressBar score={progressScore} theme={theme} tooltipPrefix={`${t('progress.score')}: `} />
+                      <ScoreProgressBar
+                        score={progressScore}
+                        theme={theme}
+                        tooltipPrefix={`${t('progress.score')}${isKanjiMode && kanjiMode !== KANJI_MODES.MEANINGS_ONLY ? ` (${t('progress.average')})` : ''}: `}
+                      />
                     </div>
                   )}
                 </div>

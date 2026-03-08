@@ -174,7 +174,8 @@
     "score": "進捗スコア",
     "notPracticed": " - 未学習",
     "mastered": " - マスター！",
-    "keepPracticing": " - 練習を続けよう！"
+    "keepPracticing": " - 練習を続けよう！",
+    "average": "平均"
   },
   "review": {
     "loginToTrackProgress": "ログインして進捗を記録",

@@ -1,7 +1,8 @@
-import { GAME_MODES, VOCABULARY_MODES, SOUND_MODES } from '../constants';
+import { GAME_MODES, VOCABULARY_MODES, SOUND_MODES, ITEM_TYPES } from '../constants';
 import { useGameContext } from '../contexts/GameContext';
 import { useGameContextVocabulary } from '../contexts/GameContextVocabulary';
 import { usePreferences } from '../contexts/PreferencesContext';
+import { invalidateProgressCache } from './useProgress';
 import { vocabularyAPI } from '../services/apiService';
 import { parseVocabularyEntry } from '../utils/vocabularyHelpers';
 import {
@@ -12,6 +13,7 @@ import {
   initializeVocabularyData,
   initializeFavoritesMap,
   loadDataWithCache,
+  getCacheKey,
 } from '../utils';
 
 
@@ -56,6 +58,15 @@ export const useGameLogicVocabulary = () => {
       fetchFn: vocabularyAPI.getWords,
       dataKey: 'words',
     });
+
+    // Invalidate caches so Review page refetches with updated data after this session
+    const cacheKey = getCacheKey(selectedListKeys, translationLanguage);
+    setWordsCache(prev => {
+      const next = { ...prev };
+      delete next[cacheKey];
+      return next;
+    });
+    invalidateProgressCache(ITEM_TYPES.VOCABULARY);
 
     const words = rawWords.map(word => {
       try {

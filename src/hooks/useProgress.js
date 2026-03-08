@@ -1,18 +1,21 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import { useAuth } from '../contexts/AuthContext';
 import { progressAPI } from '../services/apiService';
 
+const progressCache = {};
+
+export const invalidateProgressCache = (itemType) => {
+  delete progressCache[itemType];
+};
 
 export const useProgress = (itemType) => {
   const { isAuthenticated, hasActiveSubscription, hasLifetimeAccess } = useAuth();
   const haveAccess = hasActiveSubscription || hasLifetimeAccess;
-  const [progressData, setProgressData] = useState({});
+  const [progressData, setProgressData] = useState(() => progressCache[itemType] || {});
   const [loading, setLoading] = useState(false);
+  const isFetchingRef = useRef(false);
 
   const fetchProgress = useCallback(async () => {
-    // Only fetch progress for authenticated users
-    // - Premium users can fetch all types
-    // - Free users can only fetch KANA progress
     if (!isAuthenticated) {
       setProgressData({});
       return;
@@ -22,6 +25,14 @@ export const useProgress = (itemType) => {
       setProgressData({});
       return;
     }
+
+    if (progressCache[itemType]) {
+      setProgressData(progressCache[itemType]);
+      return;
+    }
+
+    if (isFetchingRef.current) return;
+    isFetchingRef.current = true;
 
     setLoading(true);
     try {
@@ -42,12 +53,14 @@ export const useProgress = (itemType) => {
         };
       });
 
+      progressCache[itemType] = merged;
       setProgressData(merged);
     } catch (error) {
       console.error('Failed to fetch progress:', error);
       setProgressData({});
     } finally {
       setLoading(false);
+      isFetchingRef.current = false;
     }
   }, [isAuthenticated, haveAccess, itemType]);
 
@@ -55,12 +68,6 @@ export const useProgress = (itemType) => {
     fetchProgress();
   }, [fetchProgress]);
 
-  /**
-   * Get progress for a specific item and progress type
-   * @param {string} itemId - The item ID
-   * @param {string} progressType - The progress type (e.g., 'kun_readings', 'to_japanese')
-   * @returns {Object} { score: number }
-   */
   const getProgress = useCallback((itemId, progressType) => {
     const key = String(itemId);
     const itemProgress = progressData[key];

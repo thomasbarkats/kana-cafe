@@ -1,16 +1,17 @@
-import { GAME_MODES, KANJI_STEPS } from '../constants';
+import { GAME_MODES, KANJI_STEPS, ITEM_TYPES } from '../constants';
 import { useGameContext } from '../contexts/GameContext';
 import { useGameContextKanji } from '../contexts/GameContextKanji';
 import { usePreferences } from '../contexts/PreferencesContext';
+import { invalidateProgressCache } from './useProgress';
 import { kanjiAPI } from '../services/apiService';
 import {
   selectNextItem,
   initializeGameState,
   finalizeItemSelection,
   initializeKanjiData,
-  getFirstStepForKanji,
   initializeFavoritesMap,
   loadDataWithCache,
+  getCacheKey,
 } from '../utils';
 
 
@@ -55,6 +56,15 @@ export const useGameLogicKanji = () => {
       fetchFn: kanjiAPI.getKanji,
       dataKey: 'kanji',
     });
+
+    // Invalidate caches so Review page refetches with updated data after this session
+    const cacheKey = getCacheKey(selectedLists, translationLanguage);
+    setKanjiCache(prev => {
+      const next = { ...prev };
+      delete next[cacheKey];
+      return next;
+    });
+    invalidateProgressCache(ITEM_TYPES.KANJI);
 
     // Initialize session favorites using isFavorite field
     if (isFavoritesIncluded) {
