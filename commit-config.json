@@ -11,10 +11,6 @@
       "description": "New feature(s)"
     },
     {
-      "value": "core",
-      "description": "Change(s) on the application core"
-    },
-    {
       "value": "test",
       "description": "Change(s) related to tests"
     },
@@ -25,6 +21,10 @@
     {
       "value": "doc",
       "description": "Documentation / comment(s)"
+    },
+    {
+      "value": "data",
+      "description": "Data addition(s) or update(s)"
     }
   ],
   "minLength": 8,
