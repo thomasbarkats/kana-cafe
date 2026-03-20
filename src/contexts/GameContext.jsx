@@ -28,6 +28,10 @@ export const GameProvider = ({ children }) => {
   // Feedback progress bar state
   const [feedbackProgressDuration, setFeedbackProgressDuration] = useState(0);
   const [feedbackProgressActive, setFeedbackProgressActive] = useState(false);
+  const [feedbackPaused, setFeedbackPaused] = useState(false);
+  const feedbackPausedRef = useRef(false);
+  const feedbackTimeoutStartRef = useRef(null);
+  const feedbackRemainingRef = useRef(null);
 
   const skipFeedback = () => {
     if (feedbackTimeoutRef.current) {
@@ -37,11 +41,55 @@ export const GameProvider = ({ children }) => {
 
     window.speechSynthesis?.cancel();
 
-    // Deactivate progress bar
     setFeedbackProgressActive(false);
+    feedbackPausedRef.current = false;
+    setFeedbackPaused(false);
+    feedbackTimeoutStartRef.current = null;
+    feedbackRemainingRef.current = null;
 
     if (feedbackProceedFnRef.current) {
-      feedbackProceedFnRef.current(true); // Pass true to skip delays
+      feedbackProceedFnRef.current(true);
+    }
+  };
+
+  const pauseFeedback = () => {
+    if (feedbackPaused) return;
+
+    // Calculate remaining time
+    let remaining = feedbackProgressDuration;
+    if (feedbackTimeoutStartRef.current) {
+      const elapsed = Date.now() - feedbackTimeoutStartRef.current;
+      remaining = Math.max(0, feedbackProgressDuration - elapsed);
+    }
+    feedbackRemainingRef.current = remaining;
+
+    // Clear any active timeout
+    if (feedbackTimeoutRef.current) {
+      clearTimeout(feedbackTimeoutRef.current);
+      feedbackTimeoutRef.current = null;
+    }
+    feedbackTimeoutStartRef.current = null;
+
+    window.speechSynthesis?.cancel();
+    feedbackPausedRef.current = true;
+    setFeedbackPaused(true);
+  };
+
+  const resumeFeedback = () => {
+    if (!feedbackPaused) return;
+
+    feedbackPausedRef.current = false;
+    setFeedbackPaused(false);
+
+    const remaining = feedbackRemainingRef.current;
+    if (remaining > 0 && feedbackProceedFnRef.current) {
+      if (!feedbackProgressActive) {
+        // Paused before progress bar started (during speech phase)
+        setFeedbackProgressDuration(remaining);
+        setFeedbackProgressActive(true);
+      }
+      feedbackTimeoutStartRef.current = Date.now();
+      feedbackTimeoutRef.current = setTimeout(feedbackProceedFnRef.current, remaining);
     }
   };
 
@@ -105,6 +153,12 @@ export const GameProvider = ({ children }) => {
     setFeedbackProgressDuration,
     feedbackProgressActive,
     setFeedbackProgressActive,
+    feedbackPaused,
+    feedbackPausedRef,
+    setFeedbackPaused,
+    pauseFeedback,
+    resumeFeedback,
+    feedbackTimeoutStartRef,
 
     // Progress
     progress,

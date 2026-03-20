@@ -53,6 +53,9 @@ export const useGameActions = () => {
     setStoppedEarly,
     setFeedbackProgressDuration,
     setFeedbackProgressActive,
+    setFeedbackPaused,
+    feedbackPausedRef,
+    feedbackTimeoutStartRef,
   } = useGameContext();
 
   const {
@@ -205,6 +208,8 @@ export const useGameActions = () => {
 
     playFeedbackSound(feedbackType, soundMode);
 
+    feedbackPausedRef.current = false;
+    setFeedbackPaused(false);
     setFeedback({
       type: feedbackType,
       correctAnswer,
@@ -231,6 +236,7 @@ export const useGameActions = () => {
 
     const shouldPlaySpeech = (soundMode === SOUND_MODES.BOTH || soundMode === SOUND_MODES.SPEECH_ONLY) && !isLastStep;
     const nextDelay = isCorrect ? TIMING.SUCCESS_FEEDBACK_DELAY : (TIMING.ERROR_FEEDBACK_DELAY + (correctAnswer.length * 40));
+    setFeedbackProgressDuration(nextDelay);
 
     const hasProceededRef = { current: false };
 
@@ -240,6 +246,7 @@ export const useGameActions = () => {
 
       feedbackProceedFnRef.current = null;
       feedbackTimeoutRef.current = null;
+      feedbackTimeoutStartRef.current = null;
 
       // Clean feedback and progress bar
       setFeedback(null);
@@ -268,13 +275,12 @@ export const useGameActions = () => {
       const textToSpeak = readingsToSpeak.join(',').replace(/[()]/g, '');
 
       const afterSpeech = () => {
-        // Check if we already proceeded (e.g., user skipped feedback)
-        if (hasProceededRef.current) {
+        if (hasProceededRef.current || feedbackPausedRef.current) {
           return;
         }
-        // After speech ends, show progress bar and start delay
         setFeedbackProgressDuration(nextDelay);
         setFeedbackProgressActive(true);
+        feedbackTimeoutStartRef.current = Date.now();
         feedbackTimeoutRef.current = setTimeout(proceedToNext, nextDelay);
       };
 
@@ -314,6 +320,8 @@ export const useGameActions = () => {
 
     playFeedbackSound(feedbackType, soundMode);
 
+    feedbackPausedRef.current = false;
+    setFeedbackPaused(false);
     setFeedback({
       type: feedbackType,
       correctAnswer: correctAnswer,
@@ -335,6 +343,7 @@ export const useGameActions = () => {
     const hasInfoText = isVocabularyMode && currentItem.infoText;
     const infoTextDelay = hasInfoText ? 1500 : 0;
     const nextDelay = (isCorrect ? TIMING.SUCCESS_FEEDBACK_DELAY : TIMING.ERROR_FEEDBACK_DELAY) + infoTextDelay;
+    setFeedbackProgressDuration(nextDelay);
 
     const hasProceededRef = { current: false };
 
@@ -344,6 +353,7 @@ export const useGameActions = () => {
 
       feedbackProceedFnRef.current = null;
       feedbackTimeoutRef.current = null;
+      feedbackTimeoutStartRef.current = null;
 
       // Clean feedback and progress bar
       setFeedback(null);
@@ -384,13 +394,12 @@ export const useGameActions = () => {
         : currentItem.question;
 
       const afterSpeech = () => {
-        // Check if we already proceeded (e.g., user skipped feedback)
-        if (hasProceededRef.current) {
+        if (hasProceededRef.current || feedbackPausedRef.current) {
           return;
         }
-        // After speech ends, show progress bar and start delay
         setFeedbackProgressDuration(nextDelay);
         setFeedbackProgressActive(true);
+        feedbackTimeoutStartRef.current = Date.now();
         feedbackTimeoutRef.current = setTimeout(proceedToNext, nextDelay);
       };
 

@@ -40,7 +40,8 @@
     "switchToDarkMode": "Passer en mode sombre",
     "escapeKey": "Échap",
     "enterKey": "Entrée",
-    "skipFeedback": "Ignorer la correction"
+    "skipFeedback": "Ignorer la correction",
+    "spaceKey": "Espace"
   },
   "menu": {
     "selectListsOf": "Sélectionner des listes de",

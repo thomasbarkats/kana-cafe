@@ -40,7 +40,8 @@
     "switchToDarkMode": "ダークモードに切替",
     "escapeKey": "Esc",
     "enterKey": "Enter",
-    "skipFeedback": "訂正を無視する"
+    "skipFeedback": "訂正を無視する",
+    "spaceKey": "スペース"
   },
   "menu": {
     "selectLists": "リストを選択",

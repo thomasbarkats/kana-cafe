@@ -40,7 +40,8 @@
     "switchToDarkMode": "Switch to dark mode",
     "escapeKey": "Esc",
     "enterKey": "Enter",
-    "skipFeedback": "Ignore correction"
+    "skipFeedback": "Ignore correction",
+    "spaceKey": "Space"
   },
   "menu": {
     "selectLists": "Select lists",

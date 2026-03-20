@@ -1,4 +1,4 @@
-import { Clock, Square, Sun, Moon, Volume2, Bookmark, Languages } from 'lucide-react';
+import { Clock, Square, Sun, Moon, Volume2, Bookmark, Languages, Pause, Play } from 'lucide-react';
 import { useRef, useEffect, useState } from 'react';
 import { useAuth } from '../contexts/AuthContext';
 import { useGameContext } from '../contexts/GameContext';
@@ -52,6 +52,9 @@ export const GamePlay = () => {
     skipFeedback,
     feedbackProgressDuration,
     feedbackProgressActive,
+    feedbackPaused,
+    pauseFeedback,
+    resumeFeedback,
   } = useGameContext();
 
   const {
@@ -98,21 +101,28 @@ export const GamePlay = () => {
     return () => window.removeEventListener('keydown', handleGlobalKeyDown);
   }, [showStopModal]);
 
-  // Enter key to skip feedback (with delay to avoid capturing submit Enter)
+  // Enter/Space key to skip/pause feedback (with delay to avoid capturing submit Enter)
   useEffect(() => {
     if (!feedback || showStopModal) return;
 
     const attachDelay = setTimeout(() => {
-      const handleFeedbackSkip = (e) => {
+      const handleFeedbackKeys = (e) => {
         if (e.key === 'Enter') {
           e.preventDefault();
           skipFeedback();
+        } else if (e.key === ' ') {
+          e.preventDefault();
+          if (feedbackPaused) {
+            resumeFeedback();
+          } else {
+            pauseFeedback();
+          }
         }
       };
 
-      window.addEventListener('keydown', handleFeedbackSkip);
+      window.addEventListener('keydown', handleFeedbackKeys);
       skipListenerCleanupRef.current = () => {
-        window.removeEventListener('keydown', handleFeedbackSkip);
+        window.removeEventListener('keydown', handleFeedbackKeys);
       };
     }, 200);
 
@@ -123,7 +133,7 @@ export const GamePlay = () => {
         skipListenerCleanupRef.current = null;
       }
     };
-  }, [feedback, skipFeedback, showStopModal]);
+  }, [feedback, skipFeedback, pauseFeedback, resumeFeedback, feedbackPaused, showStopModal]);
 
   const handleKeyDown = (e) => {
     if ((e.key === 'Enter') && !feedback && !showStopModal) {
@@ -229,8 +239,27 @@ export const GamePlay = () => {
                   />
                 </button>
               )}
-              <Clock className="w-4 h-4" />
-              <span className="text-sm">{formatTime(liveTime)}</span>
+              {feedback ? (
+                <div className="relative group">
+                  <button
+                    onClick={() => feedbackPaused ? resumeFeedback() : pauseFeedback()}
+                    className={`p-2 ${feedbackPaused ? theme.feedbackPausedButton : theme.buttonSecondary} rounded-full transition-colors cursor-pointer`}
+                  >
+                    {feedbackPaused
+                      ? <Play className="w-5 h-5" />
+                      : <Pause className="w-5 h-5" />
+                    }
+                  </button>
+                  <div className="opacity-0 group-hover:opacity-100 transition-opacity duration-200 absolute inset-0 pointer-events-none flex items-center justify-center">
+                    <KeyboardKey keyLabel={t('gameplay.spaceKey')} position="above" />
+                  </div>
+                </div>
+              ) : (
+                <>
+                  <Clock className="w-4 h-4" />
+                  <span className="text-sm">{formatTime(liveTime)}</span>
+                </>
+              )}
             </div>
             <div className="flex items-center space-x-2">
               <div className="relative group">
@@ -357,6 +386,7 @@ export const GamePlay = () => {
                       <FeedbackProgressBar
                         duration={feedbackProgressDuration}
                         isActive={feedbackProgressActive}
+                        paused={feedbackPaused}
                         feedbackType={feedback?.type}
                         theme={theme}
                       />
@@ -376,6 +406,7 @@ export const GamePlay = () => {
                       <FeedbackProgressBar
                         duration={feedbackProgressDuration}
                         isActive={feedbackProgressActive}
+                        paused={feedbackPaused}
                         feedbackType={feedback?.type}
                         theme={theme}
                       />

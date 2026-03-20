@@ -68,6 +68,7 @@ export const useTheme = () => {
           text: 'text-red-400',
           progressBar: 'bg-red-400'
         },
+        feedbackPausedButton: 'text-amber-400 hover:text-amber-300 hover:bg-amber-900/50',
       };
     } else {
       return {
@@ -117,6 +118,7 @@ export const useTheme = () => {
           text: 'text-red-700',
           progressBar: 'bg-red-300'
         },
+        feedbackPausedButton: 'text-amber-500 hover:text-amber-600 hover:bg-amber-100',
       };
     }
   };
