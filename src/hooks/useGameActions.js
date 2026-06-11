@@ -324,8 +324,9 @@ export const useGameActions = () => {
     const isVocabularyMode = gameMode === GAME_MODES.VOCABULARY;
 
     const correctAnswer = currentItem.answer;
+    const isToJapanese = isVocabularyMode && vocabularyMode === VOCABULARY_MODES.TO_JAPANESE;
     const isCorrect = isVocabularyMode
-      ? checkVocabularyAnswer(userInput, correctAnswer)
+      ? checkVocabularyAnswer(userInput, correctAnswer, isToJapanese ? currentItem.speechText : null)
       : userInput.toLowerCase().trim() === correctAnswer.toLowerCase();
 
     const feedbackType = isCorrect ? FEEDBACK_TYPES.SUCCESS : FEEDBACK_TYPES.ERROR;

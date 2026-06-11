@@ -1,3 +1,4 @@
+import * as wanakana from 'wanakana';
 import { Clock, Square, Sun, Moon, Volume2, Bookmark, Languages, Pause, Play } from 'lucide-react';
 import { useRef, useEffect, useState } from 'react';
 import { useAuth } from '../contexts/AuthContext';
@@ -178,7 +179,9 @@ export const GamePlay = () => {
     }
   };
 
-  const displayCorrectAnswer = feedback && isVocabularyMode && vocabularyMode === VOCABULARY_MODES.TO_JAPANESE
+  const isToJapaneseVocabulary = isVocabularyMode && vocabularyMode === VOCABULARY_MODES.TO_JAPANESE;
+
+  const displayCorrectAnswer = feedback && isToJapaneseVocabulary
     ? cleanJapaneseText(feedback.correctAnswer)
     : feedback?.correctAnswer;
 
@@ -376,6 +379,10 @@ export const GamePlay = () => {
                       <div className={`text-2xl font-bold ${theme.feedbackSuccess.title} mb-2`}>{t('gameplay.correct')}</div>
                       {isKanjiMode && currentStep === KANJI_STEPS.MEANINGS ? (
                         <KanjiMeaningsSuccess readings={currentItem.readings} theme={theme} />
+                      ) : isToJapaneseVocabulary ? (
+                        <div className={`text-2xl ${theme.feedbackSuccess.text}`}>
+                          <JapaneseTextDisplay parts={currentItem.parts} theme={theme} showFurigana={true} />
+                        </div>
                       ) : (
                         <div className={`text-lg ${theme.feedbackSuccess.text}`}>"{displayCorrectAnswer}"</div>
                       )}
@@ -402,6 +409,13 @@ export const GamePlay = () => {
                         <div className="mt-1">
                           <div className={`text-sm ${theme.feedbackError.title} font-semibold mb-2`}>{t('gameplay.correctAnswer')}</div>
                           <KanjiMeaningsFeedback readings={currentItem.readings} userAnswer={feedback.userAnswer} theme={theme} />
+                        </div>
+                      ) : isToJapaneseVocabulary ? (
+                        <div className="mt-1">
+                          <div className={`text-sm ${theme.feedbackError.title} font-semibold mb-2`}>{t('gameplay.correctAnswer')}</div>
+                          <div className="text-2xl">
+                            <JapaneseTextDisplay parts={currentItem.parts} theme={theme} showFurigana={true} />
+                          </div>
                         </div>
                       ) : (
                         <div className={`text-lg ${theme.feedbackError.title} font-semibold`}>{t('gameplay.correctAnswer')} "{displayCorrectAnswer}"</div>
@@ -499,7 +513,7 @@ const JapaneseTextDisplay = ({ parts, theme, showFurigana = true }) => {
             <span key={idx} className="inline-block align-bottom text-center">
               {showFurigana && (
                 <span className={`block text-sm ${theme.textMuted}`}>
-                  {part.reading}
+                  {wanakana.toHiragana(part.reading)}
                 </span>
               )}
               <span className="block">

@@ -1,3 +1,5 @@
+import * as wanakana from 'wanakana';
+
 // ============================================
 // PARSING
 // ============================================
@@ -175,7 +177,7 @@ export const containsKana = (text) => {
 // VALIDATION
 // ============================================
 
-export const checkVocabularyAnswer = (userAnswer, correctAnswer) => {
+export const checkVocabularyAnswer = (userAnswer, correctAnswer, speechText = null) => {
   // Split by / to get all required translations
   const correctParts = correctAnswer.split('/').map(part => part.trim());
 
@@ -201,7 +203,20 @@ export const checkVocabularyAnswer = (userAnswer, correctAnswer) => {
   const sortedUserWords = sortWords(normalizedUser);
 
   // Check if user's sorted words match any valid combination
-  return sortedCorrectCombinations.includes(sortedUserWords);
+  if (sortedCorrectCombinations.includes(sortedUserWords)) return true;
+
+  // For TO_JAPANESE mode: also accept full hiragana or romaji
+  if (speechText) {
+    const normalizedSpeech = normalizeAnswer(wanakana.toHiragana(speechText));
+    const speechNoSpaces = normalizedSpeech.replace(/\s/g, '');
+
+    // Accept kana or romaji input — toHiragana normalizes hiragana, katakana, and romaji all to hiragana
+    const normalizedUserKana = normalizeAnswer(wanakana.toHiragana(userAnswer.trim()));
+    if (normalizedUserKana === normalizedSpeech) return true;
+    if (normalizedUserKana.replace(/\s/g, '') === speechNoSpaces) return true;
+  }
+
+  return false;
 };
 
 const cartesianProduct = (arrays) => {
