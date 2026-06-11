@@ -28,6 +28,9 @@ export const KanjiGameProvider = ({ children }) => {
     onReadings: []
   });
 
+  // Kanji where readings were validated but not meanings
+  const [pendingMeaningsSet, setPendingMeaningsSet] = useState(new Set());
+
   // Kanji-specific selections
   const [kanjiSelectedLists, setKanjiSelectedLists] = useState([]);
   const [currentKanjiList, setCurrentKanjiList] = useState([]);
@@ -64,11 +67,24 @@ export const KanjiGameProvider = ({ children }) => {
     setCache: setKanjiCache,
   });
 
+  const addPendingMeanings = (kanjiKey) => {
+    setPendingMeaningsSet(prev => new Set([...prev, kanjiKey]));
+  };
+
+  const clearPendingMeanings = (kanjiKey) => {
+    setPendingMeaningsSet(prev => {
+      const next = new Set(prev);
+      next.delete(kanjiKey);
+      return next;
+    });
+  };
+
   // Reset steps when moving to a new kanji
   const resetSteps = (currentKanji = null) => {
     if (!currentKanji) {
       setCurrentStep(KANJI_STEPS.KUN_READINGS);
       setStepData({ readingGroups: [] });
+      setPendingMeaningsSet(new Set());
       return;
     }
 
@@ -127,6 +143,11 @@ export const KanjiGameProvider = ({ children }) => {
     // Step actions
     resetSteps,
     proceedToNextStep,
+
+    // Pending meanings tracking
+    pendingMeaningsSet,
+    addPendingMeanings,
+    clearPendingMeanings,
   };
 
   return (

@@ -68,6 +68,8 @@ export const useGameActions = () => {
     currentKanjiList,
     proceedToNextStep,
     resetSteps,
+    addPendingMeanings,
+    clearPendingMeanings,
   } = useGameContextKanji();
 
   const {
@@ -223,6 +225,16 @@ export const useGameActions = () => {
 
     // Always record progress for each kanji step (kun, on, meanings)
     recordProgress(currentItem, isCorrect, currentStep);
+
+    if (isLastStep) {
+      if (!isCorrect) {
+        // Readings were already validated, skip them on next appearance
+        addPendingMeanings(currentItem.key);
+      } else {
+        // Meanings succeeded: new cycle begins
+        clearPendingMeanings(currentItem.key);
+      }
+    }
 
     if (!isCorrect || isLastStep) {
       const timeSpent = calculateTimeSpent();

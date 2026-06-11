@@ -37,6 +37,8 @@ export const useGameLogicKanji = () => {
     setSessionFavoritesKanji,
     kanjiCache,
     setKanjiCache,
+    pendingMeaningsSet,
+    clearPendingMeanings,
   } = useGameContextKanji();
 
   const { translationLanguage } = usePreferences();
@@ -116,18 +118,24 @@ export const useGameLogicKanji = () => {
     // Reset steps normally first
     resetSteps(nextKanji);
 
-    // If there's a restart step specified, override it and update stepData if needed
-    if (forceRestartStep !== null) {
-      setCurrentStep(forceRestartStep);
+    // Determine which step to start at:
+    // - forceRestartStep (loop mode) takes precedence
+    // - otherwise, if readings were already validated but meanings failed, jump to meanings
+    const pendingMeanings = forceRepeatKanji === null && pendingMeaningsSet.has(nextKanji.character);
+    const effectiveStep = forceRestartStep ?? (pendingMeanings ? KANJI_STEPS.MEANINGS : null);
 
-      // If restarting at meanings step, we need to set the reading groups
-      if (forceRestartStep === KANJI_STEPS.MEANINGS) {
+    if (effectiveStep !== null) {
+      setCurrentStep(effectiveStep);
+
+      if (effectiveStep === KANJI_STEPS.MEANINGS) {
         const readingGroups = nextKanji.readings.map(r => ({
           kun: r.kun && Array.isArray(r.kun) && r.kun.length > 0 ? r.kun : null,
           on: r.on && Array.isArray(r.on) && r.on.length > 0 ? r.on : null
         }));
         setStepData({ readingGroups });
       }
+
+      if (pendingMeanings) clearPendingMeanings(nextKanji.character);
     }
 
     const setters = { setCurrentItem, setUserInput, setFeedback, setProgress };
