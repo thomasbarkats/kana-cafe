@@ -9,17 +9,21 @@ export const AuthProvider = ({ children }) => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  // Initialize auth state on mount
   useEffect(() => {
     initializeAuth();
+  }, []);
+
+  useEffect(() => {
+    const handleAuthExpired = () => setUser(null);
+    window.addEventListener('auth-expired', handleAuthExpired);
+    return () => window.removeEventListener('auth-expired', handleAuthExpired);
   }, []);
 
   const initializeAuth = async () => {
     try {
       setLoading(true);
 
-      // Check if user is authenticated (without triggering refresh attempt)
-      const userData = await authAPI.checkCurrentUser();
+      const userData = await authAPI.getCurrentUser();
       setUser(userData);
 
       // Refresh subscription status on startup (per API docs)

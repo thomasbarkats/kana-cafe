@@ -40,14 +40,12 @@ const request = async (endpoint, options = {}) => {
       credentials: 'include', // Send cookies with requests
     });
 
-    // Handle 401 - try to refresh token (cookies sent automatically)
-    // Skip if this is a retry attempt or skipRetry flag is set
     if (response.status === 401 && !fetchOptions._retry && !skipRetry) {
       const refreshed = await refreshAccessToken();
       if (refreshed) {
-        // Retry original request with new token (in cookie)
         return request(endpoint, { ...fetchOptions, _retry: true });
       }
+      window.dispatchEvent(new Event('auth-expired'));
     }
 
     if (!response.ok) {
