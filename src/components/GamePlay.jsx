@@ -7,7 +7,7 @@ import { useGameContextVocabulary } from '../contexts/GameContextVocabulary';
 import { useTranslation } from '../contexts/I18nContext';
 import { usePreferences } from '../contexts/PreferencesContext';
 import { useGameActions, useKeyboardShortcuts } from '../hooks';
-import { formatTime, cleanJapaneseText, speakReading, containsKana } from '../utils';
+import { formatTime, cleanJapaneseText, speakReading, containsKana, getMeaningsFeedbackGroups } from '../utils';
 import { ProgressBar, KeyboardKey, FeedbackProgressBar } from '.';
 import { StopGameModal } from './ui/StopGameModal';
 import {
@@ -374,7 +374,11 @@ export const GamePlay = () => {
                   {feedback.type === FEEDBACK_TYPES.SUCCESS ? (
                     <div className={`${theme.feedbackSuccess.bg} border-2 rounded-xl p-6 animate-pulse`}>
                       <div className={`text-2xl font-bold ${theme.feedbackSuccess.title} mb-2`}>{t('gameplay.correct')}</div>
-                      <div className={`text-lg ${theme.feedbackSuccess.text}`}>"{displayCorrectAnswer}"</div>
+                      {isKanjiMode && currentStep === KANJI_STEPS.MEANINGS ? (
+                        <KanjiMeaningsSuccess readings={currentItem.readings} theme={theme} />
+                      ) : (
+                        <div className={`text-lg ${theme.feedbackSuccess.text}`}>"{displayCorrectAnswer}"</div>
+                      )}
                       {
                         shouldShowInfoTextInFeedback && (
                           <div className={`text-sm ${theme.textMuted} mt-3 italic`}>
@@ -394,7 +398,14 @@ export const GamePlay = () => {
                   ) : (
                     <div className={`${theme.feedbackError.bg} border-2 rounded-xl p-6 animate-pulse`}>
                       <div className={`text-lg ${theme.feedbackError.text} mb-1`}>{t('gameplay.youWrote')} "{feedback.userAnswer}"</div>
-                      <div className={`text-lg ${theme.feedbackError.title} font-semibold`}>{t('gameplay.correctAnswer')} "{displayCorrectAnswer}"</div>
+                      {isKanjiMode && currentStep === KANJI_STEPS.MEANINGS ? (
+                        <div className="mt-1">
+                          <div className={`text-sm ${theme.feedbackError.title} font-semibold mb-2`}>{t('gameplay.correctAnswer')}</div>
+                          <KanjiMeaningsFeedback readings={currentItem.readings} userAnswer={feedback.userAnswer} theme={theme} />
+                        </div>
+                      ) : (
+                        <div className={`text-lg ${theme.feedbackError.title} font-semibold`}>{t('gameplay.correctAnswer')} "{displayCorrectAnswer}"</div>
+                      )}
                       {
                         shouldShowInfoTextInFeedback && (
                           <div className={`text-sm ${theme.textMuted} mt-3 italic`}>
@@ -511,6 +522,56 @@ const JapaneseTextDisplay = ({ parts, theme, showFurigana = true }) => {
         );
       })}
     </span>
+  );
+};
+
+const KanjiMeaningsSuccess = ({ readings, theme }) => {
+  const groups = getMeaningsFeedbackGroups(readings, null);
+
+  return (
+    <div className={`text-sm ${theme.feedbackSuccess.text}`}>
+      {groups.map((group, gIdx) => (
+        <span key={gIdx}>
+          {gIdx > 0 && '  ·  '}
+          {group.items.map(({ meaning }, mIdx) => (
+            <span key={mIdx}>{mIdx > 0 && ', '}{meaning}</span>
+          ))}
+          {group.readingLabel && (
+            <span className="opacity-60 text-sm"> ({group.readingLabel})</span>
+          )}
+        </span>
+      ))}
+    </div>
+  );
+};
+
+const KanjiMeaningsFeedback = ({ readings, userAnswer, theme }) => {
+  const groups = getMeaningsFeedbackGroups(readings, userAnswer);
+
+  return (
+    <div className="flex flex-wrap gap-3 justify-center">
+      {groups.map((group, gIdx) => (
+        <div key={gIdx} className="flex items-baseline gap-1">
+          <div className="flex flex-wrap gap-1">
+            {group.items.map(({ meaning, found }, mIdx) => (
+              <span
+                key={mIdx}
+                className={`px-2 py-1 rounded-lg text-sm ${
+                  found
+                    ? `${theme.emptyBg} ${theme.textMuted}`
+                    : `${theme.statsBg.red} ${theme.statsText.red} border border-current`
+                }`}
+              >
+                {meaning}
+              </span>
+            ))}
+          </div>
+          {group.readingLabel && (
+            <span className={`text-sm ${theme.textMuted} opacity-70`}>({group.readingLabel})</span>
+          )}
+        </div>
+      ))}
+    </div>
   );
 };
 

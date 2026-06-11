@@ -256,6 +256,36 @@ export const getNextStepForKanji = (currentStep, readings, kanjiMode = KANJI_MOD
 };
 
 // ============================================
+// MEANINGS FEEDBACK HELPERS
+// ============================================
+
+export const getMeaningsFeedbackGroups = (readings, userAnswer = null) => {
+  const userAnswers = userAnswer ? parseUserAnswers(userAnswer, true) : [];
+  const normalize = (s) => s.normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase().replace(/[()]/g, '').trim();
+
+  let userIndex = 0;
+  return readings.map(r => {
+    const expectedMeanings = r.meanings || [];
+    const userGroup = userAnswers.slice(userIndex, userIndex + expectedMeanings.length);
+    userIndex += expectedMeanings.length;
+
+    const normalizedUser = new Set(userGroup.map(normalize));
+
+    const items = expectedMeanings.map(meaning => ({
+      meaning,
+      found: userAnswer === null || normalizedUser.has(normalize(meaning)),
+    }));
+
+    const readingLabel = [
+      ...(r.kun && Array.isArray(r.kun) ? r.kun : []),
+      ...(r.on && Array.isArray(r.on) ? r.on : []),
+    ].join(' / ');
+
+    return { items, readingLabel };
+  });
+};
+
+// ============================================
 // REVIEW FORMATTING
 // ============================================
 
