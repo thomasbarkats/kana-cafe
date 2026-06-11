@@ -14,6 +14,12 @@ const PreferencesContext = createContext();
 
 const STORAGE_KEY = 'preferences';
 
+const getBrowserLanguage = () => {
+  const lang = navigator.language?.toLowerCase() || '';
+  if (lang.startsWith('fr')) return LANGUAGES.FR;
+  return LANGUAGES.EN;
+};
+
 const DEFAULT_PREFERENCES = {
   defaultAppMode: APP_MODES.KANA,
   requiredSuccesses: 3,
@@ -25,7 +31,7 @@ const DEFAULT_PREFERENCES = {
   kanjiMode: KANJI_MODES.ALL,
   kanjiLoopMode: false,
   showFurigana: true,
-  translationLanguage: LANGUAGES.EN,
+  translationLanguage: getBrowserLanguage(),
   uiLanguage: 'auto',
 };
 
