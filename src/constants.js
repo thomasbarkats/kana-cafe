@@ -66,6 +66,28 @@ export const FEEDBACK_TYPES = {
   ERROR: 'error'
 };
 
+export const MASCOT_MOODS = {
+  HAPPY: 'happy',
+  SAD: 'sad',
+  GRIN: 'grin',
+  SHOCKED: 'shocked'
+};
+
+// Ahoge: stray strand on top of the head, set independently of the mood.
+export const MASCOT_AHOGE = {
+  PLAIN: 'plain',
+  PERKY: 'perky',
+  WILTED: 'wilted',
+  QUIVER: 'quiver'
+};
+
+// MascotTrigger click timing (slide duration lives in index.css)
+export const MASCOT_GRIN_LEAD_MS = 80;   // expression change before the slide starts
+export const MASCOT_NAV_DELAY_MS = 200;  // into the slide before navigating
+
+// Session failures on an item past which getting it right is a "comeback" (SHOCKED, not GRIN)
+export const MASCOT_COMEBACK_FAILURES = 2;
+
 export const REQUIRED_SUCCESSES_LIMITS = {
   MIN: 1,
   MAX: 10
@@ -91,9 +113,19 @@ export const TINT_CONFIG = {
 export const SPEECH_CONFIG = {
   JAPANESE: {
     lang: 'ja-JP',
-    rate: 0.5,
-    pitch: 1.2,
-    volume: 1.5
+    rate: 1.0,
+    pitch: 1.25,
+    volume: 1.0,
+    // Preferred on-device female voices by name, ordered by quality across
+    // platforms (first installed match wins). Falls back to the browser
+    // default if none are available.
+    preferredVoices: [
+      'Kyoko',            // macOS / iOS
+      'Microsoft Nanami', // Windows / Edge (neural)
+      'Microsoft Ayumi',  // Windows
+      'Microsoft Haruka', // Windows
+      'Microsoft Sayaka'  // Windows
+    ]
   }
 };
 

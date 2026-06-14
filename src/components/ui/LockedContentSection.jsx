@@ -4,6 +4,7 @@ import { useAuth } from '../../contexts/AuthContext';
 import { useTranslation } from '../../contexts/I18nContext';
 import { OAuthButtons } from '../OAuthButtons';
 import { UnlockModal } from '../UnlockModal';
+import { MASCOT_TRIGGER, MascotTrigger } from './MascotTrigger';
 
 
 const isStripeEnabled = import.meta.env.VITE_STRIPE_ENABLED === 'true';
@@ -28,15 +29,11 @@ export const LockedContentSection = ({
     <>
       <div className="space-y-4">
         {/* Review Button */}
-        <button
-          onClick={() => {
-            const canReview = selectedLists.length > 0 && !hasLockedSelection;
-            if (canReview) onReview();
-          }}
+        <MascotTrigger
+          onActivate={onReview}
           disabled={selectedLists.length === 0 || hasLockedSelection}
-          className={`w-full ${theme.sectionBg} ${theme.text} font-semibold py-3 px-6 rounded-xl transition-all duration-200 shadow-lg ${
-            selectedLists.length > 0 && !hasLockedSelection
-              ? 'transform hover:scale-105 cursor-pointer'
+          className={`w-full ${theme.sectionBg} ${theme.text} font-semibold py-3 px-6 rounded-xl transition-all duration-200 shadow-lg ${selectedLists.length > 0 && !hasLockedSelection
+              ? `transform hover:scale-105 cursor-pointer ${MASCOT_TRIGGER.HOVER}`
               : 'opacity-50 cursor-not-allowed'
             }`}
         >
@@ -44,7 +41,7 @@ export const LockedContentSection = ({
             <BookOpen className="w-4 h-4" />
             <span className="text-sm">{reviewLabel}</span>
           </div>
-        </button>
+        </MascotTrigger>
 
         {/* Show OAuth buttons if not authenticated and locked list selected */}
         {hasLockedSelection && !isAuthenticated && (
@@ -61,11 +58,10 @@ export const LockedContentSection = ({
           <button
             onClick={isStripeEnabled ? () => setShowUnlockModal(true) : undefined}
             disabled={!isStripeEnabled}
-            className={`w-full text-white font-semibold py-3 px-6 rounded-xl transition-all duration-200 shadow-lg ${
-              isStripeEnabled
+            className={`w-full text-white font-semibold py-3 px-6 rounded-xl transition-all duration-200 shadow-lg ${isStripeEnabled
                 ? 'bg-gradient-to-r from-amber-500 to-orange-600 hover:from-amber-600 hover:to-orange-700 transform hover:scale-105 cursor-pointer'
                 : 'bg-gray-400 cursor-not-allowed'
-            }`}
+              }`}
           >
             <div className="flex items-center justify-center gap-2">
               {isStripeEnabled ? <Lock className="w-5 h-5" /> : <Clock className="w-5 h-5" />}
@@ -78,12 +74,12 @@ export const LockedContentSection = ({
 
         {/* Show normal Start Practice button if no locked selection */}
         {!hasLockedSelection && (
-          <button
-            onClick={() => selectedLists.length > 0 && onStartPractice()}
+          <MascotTrigger
+            onActivate={onStartPractice}
             disabled={selectedLists.length === 0}
             className={`w-full ${startGradient} text-white font-semibold py-3 px-6 rounded-xl transition-all duration-200 shadow-lg ${selectedLists.length > 0
-                ? 'transform hover:scale-105 cursor-pointer'
-                : 'opacity-50 cursor-not-allowed'
+              ? `transform hover:scale-105 cursor-pointer ${MASCOT_TRIGGER.HOVER}`
+              : 'opacity-50 cursor-not-allowed'
               }`}
           >
             <div className="flex items-center justify-center">
@@ -94,7 +90,7 @@ export const LockedContentSection = ({
                 </div>
               </div>
             </div>
-          </button>
+          </MascotTrigger>
         )}
       </div>
 

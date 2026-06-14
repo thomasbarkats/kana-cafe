@@ -34,3 +34,5 @@ export { FloatingButtonsContainer } from './ui/FloatingButtonsContainer';
 export { BuyMeACoffeeButton } from './ui/BuyMeACoffeeButton';
 export { ReviewProgressHeader } from './ui/ReviewProgressHeader';
 export { StopGameModal } from './ui/StopGameModal';
+export { Mascot } from './ui/Mascot';
+export { MascotTrigger } from './ui/MascotTrigger';

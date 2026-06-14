@@ -6,7 +6,8 @@ import { useTranslation } from '../contexts/I18nContext';
 import { usePreferences } from '../contexts/PreferencesContext';
 import { useGameLogicKana } from '../hooks';
 import { getAllKanaForMode } from '../utils';
-import { GameMenu, MenuControls, SegmentedControl, SkeletonButton } from '.';
+import { GameMenu, MascotTrigger, MenuControls, SegmentedControl, SkeletonButton } from '.';
+import { MASCOT_TRIGGER } from './ui/MascotTrigger';
 
 
 export const GameMenuKana = () => {
@@ -82,9 +83,9 @@ export const GameMenuKana = () => {
     const kanaCount = getAllKanaForMode(mode, kanaData, { dakutenMode, combinationsMode })?.length;
 
     return (
-      <button
-        onClick={() => initializeKanaGame(mode)}
-        className={`w-full ${gradientClass} text-white font-semibold py-3 px-6 rounded-xl transform hover:scale-105 transition-all duration-200 shadow-lg cursor-pointer`}
+      <MascotTrigger
+        onActivate={() => initializeKanaGame(mode)}
+        className={`w-full ${gradientClass} text-white font-semibold py-3 px-6 rounded-xl transform hover:scale-105 transition-all duration-200 shadow-lg cursor-pointer ${MASCOT_TRIGGER.HOVER}`}
       >
         <div className="flex items-center justify-center">
           <span className="text-3xl mr-4 font-normal">{icon}</span>
@@ -95,7 +96,7 @@ export const GameMenuKana = () => {
             </span>
           </div>
         </div>
-      </button>
+      </MascotTrigger>
     );
   };
 
@@ -110,12 +111,12 @@ export const GameMenuKana = () => {
       onModeChange={updateAppMode}
     >
       <div className="space-y-4">
-        <button
-          onClick={openReviewKana}
+        <MascotTrigger
+          onActivate={openReviewKana}
           disabled={kanaLoading}
           className={`w-full ${theme.sectionBg} ${theme.text} font-semibold py-3 px-6 rounded-xl transform transition-all duration-200 shadow-lg
             ${!kanaLoading
-              ? 'transform hover:scale-105 cursor-pointer'
+              ? `transform hover:scale-105 cursor-pointer ${MASCOT_TRIGGER.HOVER}`
               : 'opacity-50 cursor-not-allowed'
             }`}
         >
@@ -123,7 +124,7 @@ export const GameMenuKana = () => {
             <BookOpen className="w-4 h-4" />
             <span className="text-sm">{t('common.reviewAllKana')}</span>
           </div>
-        </button>
+        </MascotTrigger>
 
         <div className="flex gap-3">
           {renderModeSection(GAME_MODES.HIRAGANA, 'ひ', 'modes.hiragana', 'bg-gradient-to-r from-pink-500 to-purple-600 hover:from-pink-600 hover:to-purple-700')}

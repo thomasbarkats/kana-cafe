@@ -11,9 +11,12 @@ import { useGameActions, useKeyboardShortcuts } from '../hooks';
 import { formatTime, cleanJapaneseText, speakReading, containsKana, getMeaningsFeedbackGroups } from '../utils';
 import { ProgressBar, KeyboardKey, FeedbackProgressBar } from '.';
 import { StopGameModal } from './ui/StopGameModal';
+import { Mascot } from './ui/Mascot';
 import {
   FEEDBACK_TYPES,
   GAME_MODES,
+  MASCOT_COMEBACK_FAILURES,
+  MASCOT_MOODS,
   VOCABULARY_MODES,
   KANJI_STEPS,
 } from '../constants';
@@ -69,9 +72,30 @@ export const GamePlay = () => {
   const skipListenerCleanupRef = useRef(null);
   const [liveTime, setLiveTime] = useState(0);
   const [showStopModal, setShowStopModal] = useState(false);
+  const [mascotMood, setMascotMood] = useState(MASCOT_MOODS.HAPPY);
+  const [mascotReacting, setMascotReacting] = useState(false);
 
   useKeyboardShortcuts();
 
+  useEffect(() => {
+    if (feedback?.type === FEEDBACK_TYPES.SUCCESS) {
+      // Comeback: getting an item right after failing it several times this session.
+      // SHOCKED (pleasantly surprised) and no bounce; normal wins GRIN + bounce.
+      const failures = sessionStats[currentItem?.key]?.failures || 0;
+      if (failures >= MASCOT_COMEBACK_FAILURES) {
+        setMascotMood(MASCOT_MOODS.SHOCKED);
+        return;
+      }
+      setMascotMood(MASCOT_MOODS.GRIN);
+      setMascotReacting(true);
+      const t = setTimeout(() => setMascotReacting(false), 350);
+      return () => clearTimeout(t);
+    } else if (feedback?.type === FEEDBACK_TYPES.ERROR) {
+      setMascotMood(MASCOT_MOODS.SAD);
+    } else {
+      setMascotMood(MASCOT_MOODS.HAPPY);
+    }
+  }, [feedback]);
 
   useEffect(() => {
     if (!feedback && inputRef.current) {
@@ -189,7 +213,7 @@ export const GamePlay = () => {
     currentItem?.infoText &&
     !isSoundOnlyMode &&
     ((containsKana(currentItem.infoText) && vocabularyMode === VOCABULARY_MODES.FROM_JAPANESE) ||
-     (!containsKana(currentItem.infoText) && vocabularyMode === VOCABULARY_MODES.TO_JAPANESE));
+      (!containsKana(currentItem.infoText) && vocabularyMode === VOCABULARY_MODES.TO_JAPANESE));
 
   const shouldShowInfoTextInFeedback = isVocabularyMode &&
     currentItem?.infoText &&
@@ -226,271 +250,281 @@ export const GamePlay = () => {
 
   return (
     <div className={`min-h-screen ${theme.bg} flex items-center justify-center p-4 -mb-8`}>
-      <div className={`${theme.cardBg} backdrop-blur-sm rounded-3xl shadow-2xl p-8 w-full max-w-lg`}>
-        <div className="mb-8">
-          <div className="flex justify-between items-center mb-4">
-            <div className={`flex items-center space-x-2 ${theme.textSecondary}`}>
-              {(isVocabularyMode || isKanjiMode) && isAuthenticated && currentItem?.id && (
-                <button
-                  onClick={handleToggleFavorite}
-                  className={`p-2 ${theme.buttonSecondary} rounded-full transition-colors cursor-pointer`}
-                  title={(isVocabularyMode ? isFavoriteVocabulary : isFavoriteKanji) ? t('tooltips.removeFromFavorites') : t('tooltips.addToFavorites')}
-                >
-                  <Bookmark
-                    className={`w-5 h-5 ${(isVocabularyMode ? isFavoriteVocabulary : isFavoriteKanji) ? theme.bookmarkColor : ''}`}
-                    fill={(isVocabularyMode ? isFavoriteVocabulary : isFavoriteKanji) ? "currentColor" : "none"}
-                  />
-                </button>
-              )}
-              {feedback ? (
+      <div className="relative w-full max-w-lg">
+        <Mascot
+          scale={1.20}
+          side="right"
+          mood={mascotMood}
+          reacting={mascotReacting}
+          alwaysVisible
+          className="absolute top-24 hidden lg:block"
+        />
+        <div className={`${theme.cardBg} backdrop-blur-sm rounded-3xl shadow-2xl p-8`}>
+          <div className="mb-8">
+            <div className="flex justify-between items-center mb-4">
+              <div className={`flex items-center space-x-2 ${theme.textSecondary}`}>
+                {(isVocabularyMode || isKanjiMode) && isAuthenticated && currentItem?.id && (
+                  <button
+                    onClick={handleToggleFavorite}
+                    className={`p-2 ${theme.buttonSecondary} rounded-full transition-colors cursor-pointer`}
+                    title={(isVocabularyMode ? isFavoriteVocabulary : isFavoriteKanji) ? t('tooltips.removeFromFavorites') : t('tooltips.addToFavorites')}
+                  >
+                    <Bookmark
+                      className={`w-5 h-5 ${(isVocabularyMode ? isFavoriteVocabulary : isFavoriteKanji) ? theme.bookmarkColor : ''}`}
+                      fill={(isVocabularyMode ? isFavoriteVocabulary : isFavoriteKanji) ? "currentColor" : "none"}
+                    />
+                  </button>
+                )}
+                {feedback ? (
+                  <div className="relative group">
+                    <button
+                      onClick={() => feedbackPaused ? resumeFeedback() : pauseFeedback()}
+                      className={`p-2 ${feedbackPaused ? theme.feedbackPausedButton : theme.buttonSecondary} rounded-full transition-colors cursor-pointer`}
+                    >
+                      {feedbackPaused
+                        ? <Play className="w-5 h-5" />
+                        : <Pause className="w-5 h-5" />
+                      }
+                    </button>
+                    <div className="opacity-0 group-hover:opacity-100 transition-opacity duration-200 absolute inset-0 pointer-events-none flex items-center justify-center">
+                      <KeyboardKey keyLabel={t('gameplay.spaceKey')} position="above" />
+                    </div>
+                  </div>
+                ) : (
+                  <>
+                    <Clock className="w-4 h-4" />
+                    <span className="text-sm">{formatTime(liveTime)}</span>
+                  </>
+                )}
+              </div>
+              <div className="flex items-center space-x-2">
                 <div className="relative group">
                   <button
-                    onClick={() => feedbackPaused ? resumeFeedback() : pauseFeedback()}
-                    className={`p-2 ${feedbackPaused ? theme.feedbackPausedButton : theme.buttonSecondary} rounded-full transition-colors cursor-pointer`}
+                    onClick={() => cycleSoundMode(isSoundOnlyMode)}
+                    className={`p-2 ${theme.buttonSecondary} rounded-full transition-colors cursor-pointer`}
+                    title={getSoundModeIcon().tooltip}
                   >
-                    {feedbackPaused
-                      ? <Play className="w-5 h-5" />
-                      : <Pause className="w-5 h-5" />
+                    {getSoundModeIcon().icon}
+                  </button>
+                  <div className="opacity-0 group-hover:opacity-100 transition-opacity duration-200 absolute inset-0 pointer-events-none flex items-center justify-center">
+                    <KeyboardKey keyLabel="M" position="above" />
+                  </div>
+                </div>
+                <div className="relative group">
+                  <button
+                    onClick={toggleDarkMode}
+                    className={`p-2 ${theme.buttonSecondary} rounded-full transition-colors cursor-pointer`}
+                    title={darkMode ? t('gameplay.switchToLightMode') : t('gameplay.switchToDarkMode')}
+                  >
+                    {darkMode
+                      ? <Sun className="w-5 h-5" />
+                      : <Moon className="w-5 h-5" />
                     }
                   </button>
                   <div className="opacity-0 group-hover:opacity-100 transition-opacity duration-200 absolute inset-0 pointer-events-none flex items-center justify-center">
-                    <KeyboardKey keyLabel={t('gameplay.spaceKey')} position="above" />
+                    <KeyboardKey keyLabel="L" position="above" />
                   </div>
                 </div>
-              ) : (
-                <>
-                  <Clock className="w-4 h-4" />
-                  <span className="text-sm">{formatTime(liveTime)}</span>
-                </>
-              )}
-            </div>
-            <div className="flex items-center space-x-2">
-              <div className="relative group">
-                <button
-                  onClick={() => cycleSoundMode(isSoundOnlyMode)}
-                  className={`p-2 ${theme.buttonSecondary} rounded-full transition-colors cursor-pointer`}
-                  title={getSoundModeIcon().tooltip}
-                >
-                  {getSoundModeIcon().icon}
-                </button>
-                <div className="opacity-0 group-hover:opacity-100 transition-opacity duration-200 absolute inset-0 pointer-events-none flex items-center justify-center">
-                  <KeyboardKey keyLabel="M" position="above" />
-                </div>
-              </div>
-              <div className="relative group">
-                <button
-                  onClick={toggleDarkMode}
-                  className={`p-2 ${theme.buttonSecondary} rounded-full transition-colors cursor-pointer`}
-                  title={darkMode ? t('gameplay.switchToLightMode') : t('gameplay.switchToDarkMode')}
-                >
-                  {darkMode
-                    ? <Sun className="w-5 h-5" />
-                    : <Moon className="w-5 h-5" />
-                  }
-                </button>
-                <div className="opacity-0 group-hover:opacity-100 transition-opacity duration-200 absolute inset-0 pointer-events-none flex items-center justify-center">
-                  <KeyboardKey keyLabel="L" position="above" />
-                </div>
-              </div>
-              {isVocabularyMode && vocabularyMode === VOCABULARY_MODES.FROM_JAPANESE && (
-                <button
-                  onClick={() => handleShowFuriganaChange(!showFurigana)}
-                  className={`p-2 ${theme.buttonSecondary} rounded-full transition-colors cursor-pointer relative`}
-                  title={t('tooltips.toggleFurigana')}
-                >
-                  <Languages className="w-5 h-5" />
-                  {!showFurigana && (
-                    <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-                      <div className={`w-6 h-0.5 ${darkMode ? 'bg-gray-200' : 'bg-gray-600'} -rotate-45`} />
-                    </div>
-                  )}
-                </button>
-              )}
-              <div className="relative group">
-                <button
-                  onClick={() => setShowStopModal(true)}
-                  className={`p-2 ${theme.buttonSecondary} rounded-full transition-colors cursor-pointer hover:text-red-500`}
-                >
-                  <Square className="w-5 h-5" />
-                </button>
-                <div className="opacity-0 group-hover:opacity-100 transition-opacity duration-200 absolute inset-0 pointer-events-none flex items-center justify-center">
-                  <KeyboardKey keyLabel="Esc" position="above" />
+                {isVocabularyMode && vocabularyMode === VOCABULARY_MODES.FROM_JAPANESE && (
+                  <button
+                    onClick={() => handleShowFuriganaChange(!showFurigana)}
+                    className={`p-2 ${theme.buttonSecondary} rounded-full transition-colors cursor-pointer relative`}
+                    title={t('tooltips.toggleFurigana')}
+                  >
+                    <Languages className="w-5 h-5" />
+                    {!showFurigana && (
+                      <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+                        <div className={`w-6 h-0.5 ${darkMode ? 'bg-gray-200' : 'bg-gray-600'} -rotate-45`} />
+                      </div>
+                    )}
+                  </button>
+                )}
+                <div className="relative group">
+                  <button
+                    onClick={() => setShowStopModal(true)}
+                    className={`p-2 ${theme.buttonSecondary} rounded-full transition-colors cursor-pointer hover:text-red-500`}
+                  >
+                    <Square className="w-5 h-5" />
+                  </button>
+                  <div className="opacity-0 group-hover:opacity-100 transition-opacity duration-200 absolute inset-0 pointer-events-none flex items-center justify-center">
+                    <KeyboardKey keyLabel="Esc" position="above" />
+                  </div>
                 </div>
               </div>
             </div>
+
+            <ProgressBar percentage={progressPercentage} theme={theme} />
+
+            <div className={`flex justify-between text-sm ${theme.textSecondary}`}>
+              <span>{mastered}/{total} {t('gameplay.mastered')}</span>
+              <span>{totalFailures} {t('gameplay.errors')}</span>
+            </div>
           </div>
 
-          <ProgressBar percentage={progressPercentage} theme={theme} />
-
-          <div className={`flex justify-between text-sm ${theme.textSecondary}`}>
-            <span>{mastered}/{total} {t('gameplay.mastered')}</span>
-            <span>{totalFailures} {t('gameplay.errors')}</span>
-          </div>
-        </div>
-
-        {currentItem && (
-          <div className="text-center mb-6">
-            <div className={`
+          {currentItem && (
+            <div className="text-center mb-6">
+              <div className={`
               ${isVocabularyMode ? (vocabularyMode === VOCABULARY_MODES.FROM_JAPANESE ? 'text-[2.5rem]' : 'text-[2rem]') : 'text-8xl'}
               font-light ${theme.text} select-none mb-2`}>
-              {isSoundOnlyMode ? (
-                <button
-                  onClick={handleReplayAudio}
-                  className={`p-6 ${theme.buttonSecondary} rounded-full transition-all hover:scale-110 cursor-pointer`}
-                  title={t('tooltips.replayAudio')}
-                >
-                  <Volume2 className="w-16 h-16" />
-                </button>
-              ) : isVocabularyMode && vocabularyMode === VOCABULARY_MODES.FROM_JAPANESE ? (
-                <JapaneseTextDisplay parts={currentItem.parts} theme={theme} showFurigana={showFurigana} />
-              ) : (
-                currentItem.question
-              )}
-            </div>
-
-            {
-              isVocabularyMode &&
-              currentItem.infoText &&
-              !isSoundOnlyMode &&
-              ((containsKana(currentItem.infoText) && vocabularyMode === VOCABULARY_MODES.FROM_JAPANESE) ||
-               (!containsKana(currentItem.infoText) && vocabularyMode === VOCABULARY_MODES.TO_JAPANESE)) && (
-                <div className={`text-sm ${theme.textMuted} mb-4 italic`}>
-                  {currentItem.infoText}
-                </div>
-              )
-            }
-
-
-            {isKanjiMode && (
-              <div className={`text-lg ${theme.textSecondary} pt-6 mb-2`}>
-                {displayKanjiTextHelperText(currentStep)}
+                {isSoundOnlyMode ? (
+                  <button
+                    onClick={handleReplayAudio}
+                    className={`p-6 ${theme.buttonSecondary} rounded-full transition-all hover:scale-110 cursor-pointer`}
+                    title={t('tooltips.replayAudio')}
+                  >
+                    <Volume2 className="w-16 h-16" />
+                  </button>
+                ) : isVocabularyMode && vocabularyMode === VOCABULARY_MODES.FROM_JAPANESE ? (
+                  <JapaneseTextDisplay parts={currentItem.parts} theme={theme} showFurigana={showFurigana} />
+                ) : (
+                  currentItem.question
+                )}
               </div>
-            )}
 
-            {isKanjiMode && currentStep === KANJI_STEPS.MEANINGS && (
-              <KanjiReadingsChips stepData={stepData} theme={theme} />
-            )}
+              {
+                isVocabularyMode &&
+                currentItem.infoText &&
+                !isSoundOnlyMode &&
+                ((containsKana(currentItem.infoText) && vocabularyMode === VOCABULARY_MODES.FROM_JAPANESE) ||
+                  (!containsKana(currentItem.infoText) && vocabularyMode === VOCABULARY_MODES.TO_JAPANESE)) && (
+                  <div className={`text-sm ${theme.textMuted} mb-4 italic`}>
+                    {currentItem.infoText}
+                  </div>
+                )
+              }
 
-            {feedback ? (
-              <div className="pt-2 mb-6">
-                <div>
-                  {feedback.type === FEEDBACK_TYPES.SUCCESS ? (
-                    <div className={`${theme.feedbackSuccess.bg} border-2 rounded-xl p-6 animate-pulse`}>
-                      <div className={`text-2xl font-bold ${theme.feedbackSuccess.title} mb-2`}>{t('gameplay.correct')}</div>
-                      {isKanjiMode && currentStep === KANJI_STEPS.MEANINGS ? (
-                        <KanjiMeaningsSuccess readings={currentItem.readings} theme={theme} />
-                      ) : isToJapaneseVocabulary ? (
-                        <div className={`text-2xl ${theme.feedbackSuccess.text}`}>
-                          <JapaneseTextDisplay parts={currentItem.parts} theme={theme} showFurigana={true} />
-                        </div>
-                      ) : (
-                        <div className={`text-lg ${theme.feedbackSuccess.text}`}>"{displayCorrectAnswer}"</div>
-                      )}
-                      {
-                        shouldShowInfoTextInFeedback && (
-                          <div className={`text-sm ${theme.textMuted} mt-3 italic`}>
-                            {currentItem.infoText}
-                          </div>
-                        )
-                      }
-                      {/* Feedback Progress Bar */}
-                      <FeedbackProgressBar
-                        duration={feedbackProgressDuration}
-                        isActive={feedbackProgressActive}
-                        paused={feedbackPaused}
-                        feedbackType={feedback?.type}
-                        theme={theme}
-                      />
-                    </div>
-                  ) : (
-                    <div className={`${theme.feedbackError.bg} border-2 rounded-xl p-6 animate-pulse`}>
-                      <div className={`text-lg ${theme.feedbackError.text} mb-1`}>{t('gameplay.youWrote')} "{feedback.userAnswer}"</div>
-                      {isKanjiMode && currentStep === KANJI_STEPS.MEANINGS ? (
-                        <div className="mt-1">
-                          <div className={`text-sm ${theme.feedbackError.title} font-semibold mb-2`}>{t('gameplay.correctAnswer')}</div>
-                          <KanjiMeaningsFeedback readings={currentItem.readings} userAnswer={feedback.userAnswer} theme={theme} />
-                        </div>
-                      ) : isToJapaneseVocabulary ? (
-                        <div className="mt-1">
-                          <div className={`text-sm ${theme.feedbackError.title} font-semibold mb-2`}>{t('gameplay.correctAnswer')}</div>
-                          <div className="text-2xl">
+
+              {isKanjiMode && (
+                <div className={`text-lg ${theme.textSecondary} pt-6 mb-2`}>
+                  {displayKanjiTextHelperText(currentStep)}
+                </div>
+              )}
+
+              {isKanjiMode && currentStep === KANJI_STEPS.MEANINGS && (
+                <KanjiReadingsChips stepData={stepData} theme={theme} />
+              )}
+
+              {feedback ? (
+                <div className="pt-2 mb-6">
+                  <div>
+                    {feedback.type === FEEDBACK_TYPES.SUCCESS ? (
+                      <div className={`${theme.feedbackSuccess.bg} border-2 rounded-xl p-6 animate-pulse`}>
+                        <div className={`text-2xl font-bold ${theme.feedbackSuccess.title} mb-2`}>{t('gameplay.correct')}</div>
+                        {isKanjiMode && currentStep === KANJI_STEPS.MEANINGS ? (
+                          <KanjiMeaningsSuccess readings={currentItem.readings} theme={theme} />
+                        ) : isToJapaneseVocabulary ? (
+                          <div className={`text-2xl ${theme.feedbackSuccess.text}`}>
                             <JapaneseTextDisplay parts={currentItem.parts} theme={theme} showFurigana={true} />
                           </div>
-                        </div>
-                      ) : (
-                        <div className={`text-lg ${theme.feedbackError.title} font-semibold`}>{t('gameplay.correctAnswer')} "{displayCorrectAnswer}"</div>
-                      )}
-                      {
-                        shouldShowInfoTextInFeedback && (
-                          <div className={`text-sm ${theme.textMuted} mt-3 italic`}>
-                            {currentItem.infoText}
+                        ) : (
+                          <div className={`text-lg ${theme.feedbackSuccess.text}`}>"{displayCorrectAnswer}"</div>
+                        )}
+                        {
+                          shouldShowInfoTextInFeedback && (
+                            <div className={`text-sm ${theme.textMuted} mt-3 italic`}>
+                              {currentItem.infoText}
+                            </div>
+                          )
+                        }
+                        {/* Feedback Progress Bar */}
+                        <FeedbackProgressBar
+                          duration={feedbackProgressDuration}
+                          isActive={feedbackProgressActive}
+                          paused={feedbackPaused}
+                          feedbackType={feedback?.type}
+                          theme={theme}
+                        />
+                      </div>
+                    ) : (
+                      <div className={`${theme.feedbackError.bg} border-2 rounded-xl p-6 animate-pulse`}>
+                        <div className={`text-lg ${theme.feedbackError.text} mb-1`}>{t('gameplay.youWrote')} "{feedback.userAnswer}"</div>
+                        {isKanjiMode && currentStep === KANJI_STEPS.MEANINGS ? (
+                          <div className="mt-1">
+                            <div className={`text-sm ${theme.feedbackError.title} font-semibold mb-2`}>{t('gameplay.correctAnswer')}</div>
+                            <KanjiMeaningsFeedback readings={currentItem.readings} userAnswer={feedback.userAnswer} theme={theme} />
                           </div>
-                        )
-                      }
-                      {/* Feedback Progress Bar */}
-                      <FeedbackProgressBar
-                        duration={feedbackProgressDuration}
-                        isActive={feedbackProgressActive}
-                        paused={feedbackPaused}
-                        feedbackType={feedback?.type}
-                        theme={theme}
-                      />
-                    </div>
-                  )}
+                        ) : isToJapaneseVocabulary ? (
+                          <div className="mt-1">
+                            <div className={`text-sm ${theme.feedbackError.title} font-semibold mb-2`}>{t('gameplay.correctAnswer')}</div>
+                            <div className="text-2xl">
+                              <JapaneseTextDisplay parts={currentItem.parts} theme={theme} showFurigana={true} />
+                            </div>
+                          </div>
+                        ) : (
+                          <div className={`text-lg ${theme.feedbackError.title} font-semibold`}>{t('gameplay.correctAnswer')} "{displayCorrectAnswer}"</div>
+                        )}
+                        {
+                          shouldShowInfoTextInFeedback && (
+                            <div className={`text-sm ${theme.textMuted} mt-3 italic`}>
+                              {currentItem.infoText}
+                            </div>
+                          )
+                        }
+                        {/* Feedback Progress Bar */}
+                        <FeedbackProgressBar
+                          duration={feedbackProgressDuration}
+                          isActive={feedbackProgressActive}
+                          paused={feedbackPaused}
+                          feedbackType={feedback?.type}
+                          theme={theme}
+                        />
+                      </div>
+                    )}
 
-                  {/* Skip hint */}
-                  <div className={`flex items-center justify-center gap-2 mt-3 ${theme.textSecondary} text-sm`}>
-                    <span className={`${theme.text} opacity-40`}>{t('gameplay.skipFeedback')}</span>
-                    <KeyboardKey keyLabel={t('gameplay.enterKey')} position="inline" />
+                    {/* Skip hint */}
+                    <div className={`flex items-center justify-center gap-2 mt-3 ${theme.textSecondary} text-sm`}>
+                      <span className={`${theme.text} opacity-40`}>{t('gameplay.skipFeedback')}</span>
+                      <KeyboardKey keyLabel={t('gameplay.enterKey')} position="inline" />
+                    </div>
                   </div>
                 </div>
+              ) : (
+                <div className="pt-2 mb-6">
+                  <input
+                    ref={inputRef}
+                    type="text"
+                    value={userInput}
+                    onChange={(e) => setUserInput(e.target.value)}
+                    onKeyDown={handleKeyDown}
+                    placeholder={
+                      isKanjiMode
+                        ? t('gameplay.commaSeparated')
+                        : isVocabularyMode
+                          ? t('gameplay.typeTranslation')
+                          : t('gameplay.typeReading')
+                    }
+                    className={`w-full text-2xl text-center py-4 px-6 border-2 ${theme.inputBorder} ${theme.inputBg} ${theme.text} rounded-xl focus:ring-4 focus:ring-blue-200 outline-none transition-all`}
+                    autoComplete="off"
+                    disabled={feedback !== null}
+                  />
+                </div>
+              )}
+
+              {!feedback && (
+                <button
+                  onClick={handleSubmit}
+                  disabled={!userInput.trim()}
+                  className="bg-gradient-to-r from-blue-500 to-purple-600 text-white font-semibold py-3 px-8 rounded-xl hover:from-blue-600 hover:to-purple-700 disabled:opacity-50 disabled:cursor-not-allowed transform hover:scale-105 transition-all duration-200 shadow-lg cursor-pointer"
+                >
+                  {t('gameplay.validate')}
+                </button>
+              )}
+
+              {!feedback && !userInput.trim() && (
+                <button
+                  onClick={() => handleSubmit(true)}
+                  className={`ml-2 font-semibold py-3 px-8 rounded-xl ${theme.buttonSkip} ransform hover:scale-105 transition-all duration-200 shadow-lg cursor-pointer`}
+                >
+                  {t('gameplay.skip')}
+                </button>
+              )}
+
+              <div className={`mt-4 text-sm ${theme.textMuted}`}>
+                {t('titles.success')}: {progress[currentItem.question]?.successes || 0}/{requiredSuccesses} | {t('titles.errors')}: {progress[currentItem.question]?.failures || 0}
               </div>
-            ) : (
-              <div className="pt-2 mb-6">
-                <input
-                  ref={inputRef}
-                  type="text"
-                  value={userInput}
-                  onChange={(e) => setUserInput(e.target.value)}
-                  onKeyDown={handleKeyDown}
-                  placeholder={
-                    isKanjiMode
-                      ? t('gameplay.commaSeparated')
-                      : isVocabularyMode
-                        ? t('gameplay.typeTranslation')
-                        : t('gameplay.typeReading')
-                  }
-                  className={`w-full text-2xl text-center py-4 px-6 border-2 ${theme.inputBorder} ${theme.inputBg} ${theme.text} rounded-xl focus:ring-4 focus:ring-blue-200 outline-none transition-all`}
-                  autoComplete="off"
-                  disabled={feedback !== null}
-                />
-              </div>
-            )}
-
-            {!feedback && (
-              <button
-                onClick={handleSubmit}
-                disabled={!userInput.trim()}
-                className="bg-gradient-to-r from-blue-500 to-purple-600 text-white font-semibold py-3 px-8 rounded-xl hover:from-blue-600 hover:to-purple-700 disabled:opacity-50 disabled:cursor-not-allowed transform hover:scale-105 transition-all duration-200 shadow-lg cursor-pointer"
-              >
-                {t('gameplay.validate')}
-              </button>
-            )}
-
-            {!feedback && !userInput.trim() && (
-              <button
-                onClick={() => handleSubmit(true)}
-                className={`ml-2 font-semibold py-3 px-8 rounded-xl ${theme.buttonSkip} ransform hover:scale-105 transition-all duration-200 shadow-lg cursor-pointer`}
-              >
-                {t('gameplay.skip')}
-              </button>
-            )}
-
-            <div className={`mt-4 text-sm ${theme.textMuted}`}>
-              {t('titles.success')}: {progress[currentItem.question]?.successes || 0}/{requiredSuccesses} | {t('titles.errors')}: {progress[currentItem.question]?.failures || 0}
             </div>
-          </div>
-        )}
+          )}
+        </div>
       </div>
 
       <StopGameModal
@@ -570,11 +604,10 @@ const KanjiMeaningsFeedback = ({ readings, userAnswer, theme }) => {
             {group.items.map(({ meaning, found }, mIdx) => (
               <span
                 key={mIdx}
-                className={`px-2 py-1 rounded-lg text-sm ${
-                  found
-                    ? `${theme.emptyBg} ${theme.textMuted}`
-                    : `${theme.statsBg.red} ${theme.statsText.red} border border-current`
-                }`}
+                className={`px-2 py-1 rounded-lg text-sm ${found
+                  ? `${theme.emptyBg} ${theme.textMuted}`
+                  : `${theme.statsBg.red} ${theme.statsText.red} border border-current`
+                  }`}
               >
                 {meaning}
               </span>

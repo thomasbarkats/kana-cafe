@@ -1,5 +1,6 @@
 import { ChevronDown, Check, Lock, Bookmark, Eraser } from 'lucide-react';
 import { useState, useEffect, useRef } from 'react';
+import { MASCOT_TRIGGER } from './MascotTrigger';
 import { useTranslation } from '../../contexts/I18nContext';
 import { usePreferences } from '../../contexts/PreferencesContext';
 import { SkeletonListItem } from './SkeletonLoading';
@@ -140,10 +141,10 @@ export const MultiSelection = ({
 
 
   return (
-    <div className="relative">
+    <div className={`relative ${isOpen ? MASCOT_TRIGGER.ACTIVE : ''}`}>
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className={`relative w-full px-4 py-${py} rounded-xl border-2 ${theme.inputBorder} ${theme.inputBg} ${theme.text} flex items-center justify-between hover:border-blue-400 transition-colors`}
+        className={`relative w-full px-4 py-${py} rounded-xl border-2 ${theme.inputBorder} ${theme.inputBg} ${theme.text} flex items-center justify-between hover:border-blue-400 transition-colors ${MASCOT_TRIGGER.HOVER}`}
       >
         <span className={selectedLabels.length > 0 ? 'pr-10 truncate' : theme.textMuted}>
           {selectedLabels.length === 0

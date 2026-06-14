@@ -1,9 +1,12 @@
 @import "tailwindcss";
 
 @keyframes gentle-bounce {
-  0%, 100% {
+
+  0%,
+  100% {
     transform: translateY(0);
   }
+
   50% {
     transform: translateY(-15%);
   }
@@ -11,4 +14,99 @@
 
 .animate-gentle-bounce {
   animation: gentle-bounce 1s ease-in-out infinite;
+}
+
+/* Mascot slides out from behind the menu card; z-index stays below the card until she has
+   cleared its edge. The 100% transform matches the component's resting inline transform. */
+@keyframes mascot-enter-left {
+  0% {
+    transform: translateX(142px) scale(var(--mascot-scale));
+    z-index: 0;
+  }
+
+  75% {
+    z-index: 0;
+  }
+
+  100% {
+    transform: translateX(0) scale(var(--mascot-scale));
+    z-index: 20;
+  }
+}
+
+@keyframes mascot-enter-right {
+  0% {
+    transform: translateX(-142px) scale(var(--mascot-scale)) scaleX(-1);
+    z-index: 0;
+  }
+
+  75% {
+    z-index: 0;
+  }
+
+  100% {
+    transform: translateX(0) scale(var(--mascot-scale)) scaleX(-1);
+    z-index: 20;
+  }
+}
+
+.animate-mascot-enter-left {
+  animation: mascot-enter-left 0.3s ease;
+}
+
+.animate-mascot-enter-right {
+  animation: mascot-enter-right 0.3s ease;
+}
+
+/* Reverse of the enter; stays hidden under the card (forwards) after a MascotTrigger click */
+@keyframes mascot-exit-left {
+  0% {
+    transform: translateX(0) scale(var(--mascot-scale));
+    z-index: 0;
+  }
+
+  100% {
+    transform: translateX(142px) scale(var(--mascot-scale));
+    z-index: 0;
+  }
+}
+
+@keyframes mascot-exit-right {
+  0% {
+    transform: translateX(0) scale(var(--mascot-scale)) scaleX(-1);
+    z-index: 0;
+  }
+
+  100% {
+    transform: translateX(-142px) scale(var(--mascot-scale)) scaleX(-1);
+    z-index: 0;
+  }
+}
+
+.animate-mascot-exit-left {
+  animation: mascot-exit-left 0.35s ease forwards;
+}
+
+.animate-mascot-exit-right {
+  animation: mascot-exit-right 0.35s ease forwards;
+}
+
+
+/* Head-only recoil on trigger click, before the exit slide takes over */
+@keyframes mascot-recoil {
+  0% {
+    transform: translateX(0);
+  }
+
+  40% {
+    transform: translateX(-9px);
+  }
+
+  100% {
+    transform: translateX(0);
+  }
+}
+
+.animate-mascot-recoil {
+  animation: mascot-recoil 0.3s ease;
 }

@@ -9,12 +9,25 @@ const isSpeechSupported = () => {
   return 'speechSynthesis' in window;
 };
 
+const selectJapaneseVoice = () => {
+  const voices = window.speechSynthesis.getVoices();
+  for (const name of SPEECH_CONFIG.JAPANESE.preferredVoices) {
+    const match = voices.find((voice) => voice.localService && voice.name.includes(name));
+    if (match) return match;
+  }
+  return null;
+};
+
 const createJapaneseUtterance = (text, rate) => {
   const utterance = new SpeechSynthesisUtterance(text);
   utterance.lang = SPEECH_CONFIG.JAPANESE.lang;
   utterance.rate = rate || SPEECH_CONFIG.JAPANESE.rate;
   utterance.pitch = SPEECH_CONFIG.JAPANESE.pitch;
   utterance.volume = SPEECH_CONFIG.JAPANESE.volume;
+
+  const voice = selectJapaneseVoice();
+  if (voice) utterance.voice = voice;
+
   return utterance;
 };
 

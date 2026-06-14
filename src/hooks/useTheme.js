@@ -23,7 +23,7 @@ export const useTheme = () => {
     if (darkMode) {
       return {
         bg: 'bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900',
-        cardBg: 'bg-gray-800/90',
+        cardBg: 'bg-gray-800',
         modalBg: 'bg-gray-800',
         selectorBg: 'bg-gray-800',
         buttonPrimaryBg: 'bg-gray-700',
@@ -73,7 +73,7 @@ export const useTheme = () => {
     } else {
       return {
         bg: 'bg-gradient-to-br from-purple-100 via-blue-50 to-cyan-100',
-        cardBg: 'bg-white/90',
+        cardBg: 'bg-white',
         modalBg: 'bg-white',
         selectorBg: 'bg-white',
         buttonPrimaryBg: 'bg-white',
