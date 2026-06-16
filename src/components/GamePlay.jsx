@@ -252,7 +252,7 @@ export const GamePlay = () => {
     <div className={`min-h-screen ${theme.bg} flex items-center justify-center p-4 -mb-8`}>
       <div className="relative w-full max-w-lg">
         <Mascot
-          scale={1.20}
+          scale={1.25}
           side="right"
           mood={mascotMood}
           reacting={mascotReacting}

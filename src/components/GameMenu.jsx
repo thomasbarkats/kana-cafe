@@ -52,7 +52,7 @@ export const GameMenu = ({
       <MascotProvider value={triggerExit}>
         <div className="relative flex flex-col items-center gap-4 group/menu">
           <Mascot
-            scale={1.20}
+            scale={1.25}
             side={mascotOnRight ? 'right' : 'left'}
             mood={mascot.mood}
             reacting={mascot.reacting}
