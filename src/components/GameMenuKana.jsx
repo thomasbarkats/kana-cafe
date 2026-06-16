@@ -77,7 +77,7 @@ export const GameMenuKana = () => {
 
   const renderModeSection = (mode, icon, labelKey, gradientClass) => {
     if (kanaLoading) {
-      return <SkeletonButton theme={theme} />;
+      return <SkeletonButton gradientClass={gradientClass} />;
     }
 
     const kanaCount = getAllKanaForMode(mode, kanaData, { dakutenMode, combinationsMode })?.length;

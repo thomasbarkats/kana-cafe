@@ -1,10 +1,12 @@
 import { usePreferences } from '../../contexts/PreferencesContext';
 
 
-export const SkeletonButton = () => {
+export const SkeletonButton = ({ gradientClass }) => {
   const { theme } = usePreferences();
   return (
-    <div className={`h-[72px] w-full rounded-xl ${theme.sectionBg} animate-pulse`} />
+    <div className={`relative h-[72px] w-full rounded-xl overflow-hidden opacity-40 ${gradientClass || theme.sectionBg}`}>
+      <div className="skeleton-shimmer" />
+    </div>
   );
 };
 
@@ -20,11 +22,16 @@ export const SkeletonListItem = () => {
   );
 };
 
-export const SkeletonSelector = ({ count = 3 }) => {
+export const SkeletonSelector = ({ py = 3 }) => {
   const { theme } = usePreferences();
   return (
-    <div className={`w-full px-4 py-3 rounded-xl border-2 ${theme.inputBorder} ${theme.inputBg}`}>
-      <div className={`h-5 w-48 rounded ${theme.sectionBg} animate-pulse`} />
+    <div className={`w-full px-4 py-${py} rounded-xl border-2 ${theme.inputBorder} ${theme.inputBg} flex items-center justify-between animate-pulse`}>
+      <div className="h-6 flex items-center flex-1 min-w-0">
+        <div className={`h-4 w-40 max-w-[60%] rounded ${theme.progressBg}`} />
+      </div>
+      <div className="h-6 flex items-center shrink-0">
+        <div className={`w-5 h-5 rounded ${theme.progressBg}`} />
+      </div>
     </div>
   );
 };

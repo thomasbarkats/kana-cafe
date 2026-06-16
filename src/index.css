@@ -1,5 +1,29 @@
 @import "tailwindcss";
 
+@keyframes skeleton-shimmer {
+  0% {
+    transform: translateX(-150%) skewX(-20deg);
+  }
+
+  100% {
+    transform: translateX(350%) skewX(-20deg);
+  }
+}
+
+.skeleton-shimmer {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  width: 50%;
+  background: linear-gradient(90deg,
+      transparent,
+      rgba(255, 255, 255, 0.45),
+      transparent);
+  transform: skewX(-20deg);
+  animation: skeleton-shimmer 1.4s ease-in-out infinite;
+}
+
 @keyframes gentle-bounce {
 
   0%,

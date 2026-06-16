@@ -30,6 +30,7 @@ export const GameMenuVocabulary = () => {
 
   const {
     vocabularyLists,
+    vocabularyListsLoading,
     wordsSelectedLists,
     setWordsSelectedLists,
     vocabularyListsOverrides,
@@ -136,6 +137,7 @@ export const GameMenuVocabulary = () => {
             optionLabel={t('common.list')}
             subItemsLabel={t('common.words')}
             py={3}
+            loading={vocabularyListsLoading}
           />
 
           <LockedContentSection

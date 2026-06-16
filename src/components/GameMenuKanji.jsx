@@ -32,6 +32,7 @@ export const GameMenuKanji = () => {
 
   const {
     kanjiLists,
+    kanjiListsLoading,
     kanjiSelectedLists,
     setKanjiSelectedLists,
     kanjiListsOverrides,
@@ -135,6 +136,7 @@ export const GameMenuKanji = () => {
             optionLabel={t('common.list')}
             subItemsLabel={t('common.kanji')}
             py={3}
+            loading={kanjiListsLoading}
           />
 
           <LockedContentSection

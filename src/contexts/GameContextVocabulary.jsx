@@ -14,7 +14,7 @@ export const VocabularyGameProvider = ({ children }) => {
   const { translationLanguage } = usePreferences();
   const { isAuthenticated } = useAuth();
   const { gameState, setGameMode, setGameState } = useGameContext();
-  const { vocabularyLists } = useDataVocabulary(translationLanguage, isAuthenticated);
+  const { vocabularyLists, loading: vocabularyListsLoading } = useDataVocabulary(translationLanguage, isAuthenticated);
 
   // Vocabulary-specific selections
   const [wordsSelectedLists, setWordsSelectedLists] = useState([]);
@@ -68,6 +68,7 @@ export const VocabularyGameProvider = ({ children }) => {
   const value = {
     // Data
     vocabularyLists,
+    vocabularyListsLoading,
 
     // Vocabulary selections
     wordsSelectedLists,

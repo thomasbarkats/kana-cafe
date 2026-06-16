@@ -25,7 +25,7 @@ export { ReviewKanji } from './ReviewKanji';
 export { UnlockModal } from './UnlockModal';
 export { LoginModal } from './LoginModal';
 export { OAuthButtons } from './OAuthButtons';
-export { SkeletonButton, SkeletonListItem, SkeletonSelector } from './ui/SkeletonLoading';
+export { SkeletonButton } from './ui/SkeletonLoading';
 export { ProfileButton } from './ui/ProfileButton';
 export { LockedContentSection } from './ui/LockedContentSection';
 export { MobileWarning } from './ui/MobileWarning';

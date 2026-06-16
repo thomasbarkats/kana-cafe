@@ -3,7 +3,7 @@ import { useState, useEffect, useRef } from 'react';
 import { MASCOT_TRIGGER } from './MascotTrigger';
 import { useTranslation } from '../../contexts/I18nContext';
 import { usePreferences } from '../../contexts/PreferencesContext';
-import { SkeletonListItem } from './SkeletonLoading';
+import { SkeletonListItem, SkeletonSelector } from './SkeletonLoading';
 
 
 export const MultiSelection = ({
@@ -12,7 +12,8 @@ export const MultiSelection = ({
   onChange,
   py,
   optionLabel,
-  subItemsLabel
+  subItemsLabel,
+  loading = false
 }) => {
   const { theme } = usePreferences();
   const { t } = useTranslation();
@@ -139,6 +140,10 @@ export const MultiSelection = ({
     };
   }, [isOpen]);
 
+
+  if (loading) {
+    return <SkeletonSelector py={py} />;
+  }
 
   return (
     <div className={`relative ${isOpen ? MASCOT_TRIGGER.ACTIVE : ''}`}>
