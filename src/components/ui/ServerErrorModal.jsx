@@ -4,6 +4,7 @@ import { useTranslation } from '../../contexts/I18nContext';
 import { usePreferences } from '../../contexts/PreferencesContext';
 import { hasServerError, clearServerError } from '../../services/apiService';
 import { EscapeKey } from './EscapeKey';
+import { Button } from './Button';
 
 
 export const ServerErrorModal = () => {
