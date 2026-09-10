@@ -10,7 +10,7 @@ import { GameMenu, MascotTrigger, MenuControls, SegmentedControl, SkeletonButton
 import { MASCOT_TRIGGER } from './ui/MascotTrigger';
 
 
-export const GameMenuKana = () => {
+export const GameMenuKana = ({ sideButtons }) => {
   const { t } = useTranslation();
   const { initializeKanaGame } = useGameLogicKana();
 
@@ -109,6 +109,7 @@ export const GameMenuKana = () => {
       nextTooltip={t('menu.switchToKanji')}
       currentMode={appMode}
       onModeChange={updateAppMode}
+      sideButtons={sideButtons}
     >
       <div className="space-y-4">
         <MascotTrigger

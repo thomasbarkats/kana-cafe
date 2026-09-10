@@ -9,7 +9,7 @@ export const FloatingHelpButton = ({ icon: Icon, tooltip, title, children, show,
     <>
       <button
         onClick={onToggle}
-        className={`p-3 rounded-full w-12 h-12 ${theme.buttonPrimaryBg} ${theme.text} shadow-lg hover:shadow-xl transition-all cursor-pointer flex items-center justify-center`}
+        className={`p-3 rounded-2xl w-12 h-12 ${theme.sideButton} ${theme.text} shadow-lg hover:shadow-xl transition-all cursor-pointer flex items-center justify-center focus:outline-none`}
         title={tooltip}
       >
         <Icon className="w-5 h-5" />

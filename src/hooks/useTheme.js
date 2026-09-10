@@ -28,6 +28,7 @@ export const useTheme = () => {
         selectorBg: 'bg-gray-800',
         buttonPrimaryBg: 'bg-gray-700',
         buttonSecondaryBg: 'bg-gray-800',
+        sideButton: 'bg-gray-700/70 border border-white/10 hover:bg-gray-700/85 backdrop-blur-sm',
         selectorHover: 'hover:bg-gray-700',
         inputBg: 'bg-gray-700',
         progressBg: 'bg-gray-600',
@@ -43,7 +44,6 @@ export const useTheme = () => {
         buttonActive: 'text-gray-100 bg-gray-600 hover:text-gray-300',
         buttonSkip: 'text-white bg-gray-500 hover:bg-gray-600',
         bookmarkColor: 'text-yellow-500',
-        buyMeACoffeeBtn: 'bg-[#5c5a4f] text-white',
         statsBg: {
           blue: 'bg-blue-900/50',
           red: 'bg-red-900/50',
@@ -78,6 +78,7 @@ export const useTheme = () => {
         selectorBg: 'bg-white',
         buttonPrimaryBg: 'bg-white',
         buttonSecondaryBg: 'bg-gray-100',
+        sideButton: 'bg-white/70 border border-white/50 hover:bg-white/85 backdrop-blur-sm',
         selectorHover: 'hover:bg-gray-100',
         inputBg: 'bg-white',
         progressBg: 'bg-gray-200',
@@ -93,7 +94,6 @@ export const useTheme = () => {
         buttonActive: 'text-gray-600 bg-gray-200 hover:text-gray-500',
         buttonSkip: 'text-white bg-gray-500 hover:bg-gray-600',
         bookmarkColor: 'text-yellow-600',
-        buyMeACoffeeBtn: 'bg-[#efe492] text-gray-800',
         statsBg: {
           blue: 'bg-blue-100',
           red: 'bg-red-100',

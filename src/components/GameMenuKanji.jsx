@@ -16,7 +16,7 @@ import {
 } from '.';
 
 
-export const GameMenuKanji = () => {
+export const GameMenuKanji = ({ sideButtons }) => {
   const { t } = useTranslation();
   const { initializeKanjiGame } = useGameLogicKanji();
   const { isAuthenticated } = useAuth();
@@ -127,6 +127,7 @@ export const GameMenuKanji = () => {
         nextTooltip={t('menu.switchToVocabulary')}
         currentMode={appMode}
         onModeChange={updateAppMode}
+        sideButtons={sideButtons}
       >
         <div className="space-y-4">
           <MultiSelection

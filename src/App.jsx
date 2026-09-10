@@ -22,7 +22,6 @@ import {
   ProfileButton,
   MobileWarning,
   ServerErrorModal,
-  FloatingButtonsContainer,
   BuyMeACoffeeButton,
   KeyboardKey,
 } from './components';
@@ -117,7 +116,7 @@ function App() {
   const KeyboardButton = (
     <div className="relative group">
       <div className="opacity-0 group-hover:opacity-100 transition-opacity duration-200 absolute top-0 left-0 w-12 h-12 pointer-events-none flex items-center justify-center">
-        <KeyboardKey keyLabel="K" position="left" />
+        <KeyboardKey keyLabel="K" position="right" />
       </div>
       <FloatingHelpButton
         icon={Keyboard}
@@ -154,24 +153,22 @@ function App() {
       case GAME_STATES.MENU:
         switch (appMode) {
           case APP_MODES.KANA:
-            return (<>
-              <GameMenuKana />
-              <FloatingButtonsContainer>
+            return (
+              <GameMenuKana sideButtons={<>
                 <BuyMeACoffeeButton />
                 <div ref={profileButtonRef}>
                   <ProfileButton showLegalButton showLoginModal={showLoginModal} onToggleLoginModal={toggleLoginModal} />
                 </div>
-              </FloatingButtonsContainer>
-            </>);
+              </>} />
+            );
           case APP_MODES.VOCABULARY:
-            return (<>
-              <GameMenuVocabulary />
-              <FloatingButtonsContainer>
+            return (
+              <GameMenuVocabulary sideButtons={<>
                 <BuyMeACoffeeButton />
                 {KeyboardButton}
                 <div className="relative group">
                   <div className="opacity-0 group-hover:opacity-100 transition-opacity duration-200 absolute top-0 left-0 w-12 h-12 pointer-events-none flex items-center justify-center">
-                    <KeyboardKey keyLabel="H" position="left" />
+                    <KeyboardKey keyLabel="H" position="right" />
                   </div>
                   <FloatingHelpButton
                     icon={HelpCircle}
@@ -193,17 +190,16 @@ function App() {
                 <div ref={profileButtonRef}>
                   <ProfileButton showLoginModal={showLoginModal} onToggleLoginModal={toggleLoginModal} />
                 </div>
-              </FloatingButtonsContainer>
-            </>);
+              </>} />
+            );
           case APP_MODES.KANJI:
-            return (<>
-              <GameMenuKanji />
-              <FloatingButtonsContainer>
+            return (
+              <GameMenuKanji sideButtons={<>
                 <BuyMeACoffeeButton />
                 {KeyboardButton}
                 <div className="relative group">
                   <div className="opacity-0 group-hover:opacity-100 transition-opacity duration-200 absolute top-0 left-0 w-12 h-12 pointer-events-none flex items-center justify-center">
-                    <KeyboardKey keyLabel="H" position="left" />
+                    <KeyboardKey keyLabel="H" position="right" />
                   </div>
                   <FloatingHelpButton
                     icon={HelpCircle}
@@ -226,8 +222,8 @@ function App() {
                 <div ref={profileButtonRef}>
                   <ProfileButton showLoginModal={showLoginModal} onToggleLoginModal={toggleLoginModal} />
                 </div>
-              </FloatingButtonsContainer>
-            </>);
+              </>} />
+            );
           default:
             return null;
         }

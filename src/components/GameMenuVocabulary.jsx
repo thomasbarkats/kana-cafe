@@ -16,7 +16,7 @@ import {
 } from '.';
 
 
-export const GameMenuVocabulary = () => {
+export const GameMenuVocabulary = ({ sideButtons }) => {
   const { t } = useTranslation();
   const { initializeVocabularyGame } = useGameLogicVocabulary();
   const { isAuthenticated } = useAuth();
@@ -128,6 +128,7 @@ export const GameMenuVocabulary = () => {
         previousTooltip={t('modes.kanji')}
         currentMode={appMode}
         onModeChange={updateAppMode}
+        sideButtons={sideButtons}
       >
         <div className="space-y-4">
           <MultiSelection

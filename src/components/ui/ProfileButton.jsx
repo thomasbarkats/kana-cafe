@@ -109,12 +109,12 @@ export const ProfileButton = ({ showLegalButton = false, showLoginModal, onToggl
         <div ref={menuRef} className="relative group">
           {!isAuthenticated && (
             <div className="opacity-0 group-hover:opacity-100 transition-opacity duration-200 absolute top-0 left-0 w-12 h-12 pointer-events-none flex items-center justify-center">
-              <KeyboardKey keyLabel="U" position="left" />
+              <KeyboardKey keyLabel="U" position="right" />
             </div>
           )}
           <button
             onClick={() => isAuthenticated ? setShowMenu(!showMenu) : handleLogin()}
-            className={`w-12 h-12 p-3 rounded-full ${theme.buttonSecondaryBg} ${theme.text} shadow-lg hover:shadow-xl transition-all cursor-pointer flex items-center justify-center`}
+            className={`w-12 h-12 p-3 rounded-2xl ${theme.sideButton} ${theme.text} shadow-lg hover:shadow-xl transition-all cursor-pointer flex items-center justify-center focus:outline-none`}
             title={isAuthenticated ? t('profile.title') : t('auth.login')}
           >
             {isAuthenticated ? (
@@ -222,7 +222,7 @@ export const ProfileButton = ({ showLegalButton = false, showLoginModal, onToggl
         {showLegalButton && !isAuthenticated && (
           <button
             onClick={handleLegalInfo}
-            className={`w-12 h-12 p-3 rounded-full ${theme.buttonSecondaryBg} ${theme.text} shadow-lg hover:shadow-xl transition-all cursor-pointer flex items-center justify-center`}
+            className={`w-12 h-12 p-3 rounded-2xl ${theme.sideButton} ${theme.text} shadow-lg hover:shadow-xl transition-all cursor-pointer flex items-center justify-center focus:outline-none`}
             title={t('legal.menuItem')}
           >
             <Info className="w-5 h-5" />

@@ -8,6 +8,7 @@ export const KeyboardKey = ({ keyLabel, position = 'below' }) => {
     below: 'absolute top-full mt-1 left-1/2 -translate-x-1/2',
     above: 'absolute bottom-full mb-1 left-1/2 -translate-x-1/2',
     left: 'absolute left-0 -translate-x-full -ml-2 top-1/2 -translate-y-1/2',
+    right: 'absolute left-full ml-2 top-1/2 -translate-y-1/2',
     inline: '',
   };
 

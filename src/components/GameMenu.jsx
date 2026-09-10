@@ -16,7 +16,8 @@ export const GameMenu = ({
   previousTooltip,
   nextTooltip,
   currentMode,
-  onModeChange
+  onModeChange,
+  sideButtons
 }) => {
   const { t } = useTranslation();
   const [mascot, setMascot] = useState({ mood: MASCOT_MOODS.HAPPY, reacting: false, exiting: false });
@@ -61,7 +62,13 @@ export const GameMenu = ({
           />
 
           {/* Menu card */}
-          <div className={`${theme.cardBg} backdrop-blur-sm rounded-3xl shadow-2xl p-8 w-full z-10`} style={{ width: '28rem' }}>
+          <div className={`relative ${theme.cardBg} backdrop-blur-sm rounded-3xl shadow-2xl p-8 w-full z-10`} style={{ width: '28rem' }}>
+            {sideButtons && (
+              <div className="absolute left-full bottom-0 ml-4 z-20 flex flex-col-reverse gap-2 items-end mb-6">
+                {sideButtons}
+              </div>
+            )}
+
             <div className="text-center mb-8 relative">
               {onPrevious && (
                 <button
