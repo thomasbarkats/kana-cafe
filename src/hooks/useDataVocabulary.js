@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { LANGUAGES } from '../constants';
 import { vocabularyAPI } from '../services/apiService';
 
@@ -8,37 +8,37 @@ export const useDataVocabulary = (language = LANGUAGES.FR, isAuthenticated = fal
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
+  const loadVocabularyLists = useCallback(async () => {
+    try {
+      setLoading(true);
+      setError(null);
+
+      const listsResponse = await vocabularyAPI.getLists(language);
+      const lists = {};
+
+      listsResponse.lists.forEach((listMeta) => {
+        const wordsArray = new Array(listMeta.wordCount || 0).fill(null);
+
+        lists[listMeta.id] = {
+          name: listMeta.name,
+          words: wordsArray,
+          isLocked: listMeta.isLocked,
+          count: listMeta.wordCount || 0
+        };
+      });
+
+      setVocabularyLists(lists);
+    } catch (error) {
+      console.error('Failed to load vocabulary lists:', error);
+      setError(error.message);
+    } finally {
+      setLoading(false);
+    }
+  }, [language]);
+
   useEffect(() => {
-    const loadVocabularyLists = async () => {
-      try {
-        setLoading(true);
-        setError(null);
-
-        const listsResponse = await vocabularyAPI.getLists(language);
-        const lists = {};
-
-        listsResponse.lists.forEach((listMeta) => {
-          const wordsArray = new Array(listMeta.wordCount || 0).fill(null);
-
-          lists[listMeta.id] = {
-            name: listMeta.name,
-            words: wordsArray,
-            isLocked: listMeta.isLocked,
-            count: listMeta.wordCount || 0
-          };
-        });
-
-        setVocabularyLists(lists);
-      } catch (error) {
-        console.error('Failed to load vocabulary lists:', error);
-        setError(error.message);
-      } finally {
-        setLoading(false);
-      }
-    };
-
     loadVocabularyLists();
-  }, [language, isAuthenticated]);
+  }, [loadVocabularyLists, isAuthenticated]);
 
-  return { vocabularyLists, loading, error };
+  return { vocabularyLists, loading, error, refresh: loadVocabularyLists };
 };

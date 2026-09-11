@@ -136,6 +136,13 @@
     "bookmarkKanjiPlaceholder": "Marquez des kanji pendant votre session",
     "signInForFavorites": "Connectez-vous pour enregistrer des favoris",
     "favorites": "Favoris",
+    "random": "Aléatoire",
+    "randomWordsSubtitle": "Tous les mots déjà rencontrés",
+    "randomKanjiSubtitle": "Tous les kanji déjà rencontrés",
+    "randomWordsPlaceholder": "Réussissez des mots pour les retrouver ici",
+    "randomKanjiPlaceholder": "Réussissez des kanji pour les retrouver ici",
+    "randomWordsSignIn": "Tous les mots déjà rencontrés (Connectez-vous)",
+    "randomKanjiSignIn": "Tous les kanji déjà rencontrés (Connectez-vous)",
     "loading": "Chargement des données...",
     "loadingText": "Cela peut prendre 1min - Le serveur a besoin de se réveiller, lui aussi a besoin d'un café !"
   },

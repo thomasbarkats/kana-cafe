@@ -1,4 +1,4 @@
-import { createContext, useContext, useState, useEffect } from 'react';
+import { createContext, useContext, useState, useEffect, useRef } from 'react';
 import { GAME_STATES, GAME_MODES } from '../constants';
 import { useDataVocabulary } from '../hooks';
 import { useFavoritesManagement } from '../hooks/useFavoritesManagement';
@@ -14,7 +14,12 @@ export const VocabularyGameProvider = ({ children }) => {
   const { translationLanguage } = usePreferences();
   const { isAuthenticated } = useAuth();
   const { gameState, setGameMode, setGameState } = useGameContext();
-  const { vocabularyLists, loading: vocabularyListsLoading } = useDataVocabulary(translationLanguage, isAuthenticated);
+  const {
+    vocabularyLists,
+    loading: vocabularyListsLoading,
+    refresh: refreshVocabularyLists,
+  } = useDataVocabulary(translationLanguage, isAuthenticated);
+  const previousGameStateRef = useRef(gameState);
 
   // Vocabulary-specific selections
   const [wordsSelectedLists, setWordsSelectedLists] = useState([]);
@@ -32,15 +37,24 @@ export const VocabularyGameProvider = ({ children }) => {
   // Expected count for review mode skeleton loading
   const [reviewExpectedCount, setReviewExpectedCount] = useState(0);
 
-  // Clean up empty favorites list when returning to menu
   useEffect(() => {
     if (gameState === GAME_STATES.MENU) {
-      const favoritesCount = vocabularyListsOverrides.favorites?.count ?? vocabularyLists.favorites?.count ?? 0;
-      if (favoritesCount === 0 && wordsSelectedLists.includes('favorites')) {
-        setWordsSelectedLists(prev => prev.filter(id => id !== 'favorites'));
+      const emptyPersonalLists = ['favorites', 'random'].filter(id => {
+        const count = vocabularyListsOverrides[id]?.count ?? vocabularyLists[id]?.count ?? 0;
+        return count === 0;
+      });
+      if (emptyPersonalLists.some(id => wordsSelectedLists.includes(id))) {
+        setWordsSelectedLists(prev => prev.filter(id => !emptyPersonalLists.includes(id)));
       }
     }
-  }, [gameState]);
+  }, [gameState, vocabularyLists, vocabularyListsOverrides, wordsSelectedLists]);
+
+  useEffect(() => {
+    if (gameState === GAME_STATES.MENU && previousGameStateRef.current !== GAME_STATES.MENU) {
+      refreshVocabularyLists();
+    }
+    previousGameStateRef.current = gameState;
+  }, [gameState, refreshVocabularyLists]);
 
   // Review mode
   const openReviewVocabulary = (lists, expectedCount = 0) => {

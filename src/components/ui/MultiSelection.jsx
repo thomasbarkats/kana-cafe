@@ -1,4 +1,4 @@
-import { ChevronDown, Check, Lock, Bookmark, Eraser } from 'lucide-react';
+import { ChevronDown, Check, Lock, Bookmark, Dices, Eraser } from 'lucide-react';
 import { useState, useEffect, useRef } from 'react';
 import { MASCOT_TRIGGER } from './MascotTrigger';
 import { useTranslation } from '../../contexts/I18nContext';
@@ -230,11 +230,19 @@ export const MultiSelection = ({
                         {option.icon === 'bookmark' && (
                           <Bookmark className={`w-4 h-4 ${theme.bookmarkColor}`} />
                         )}
+                        {option.icon === 'dice' && (
+                          <Dices className="w-4 h-4 text-blue-500" />
+                        )}
                         {option.label}
                         {option.isLocked && (
                           <Lock className="w-3 h-3 text-amber-500" />
                         )}
                       </div>
+                      {option.subtitle && (
+                        <div className={`text-xs ${theme.textMuted}`}>
+                          {option.subtitle}
+                        </div>
+                      )}
                       {option.placeholder && (
                         <div className={`text-xs ${theme.textMuted}`}>
                           {option.placeholder}

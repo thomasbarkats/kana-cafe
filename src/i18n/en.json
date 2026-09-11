@@ -156,6 +156,13 @@
     "bookmarkKanjiPlaceholder": "Bookmark kanji during your session",
     "signInForFavorites": "Sign in to save favorites",
     "favorites": "Favorites",
+    "random": "Random",
+    "randomWordsSubtitle": "All previously encountered words",
+    "randomKanjiSubtitle": "All previously encountered kanji",
+    "randomWordsPlaceholder": "Answer words correctly to find them here",
+    "randomKanjiPlaceholder": "Answer kanji correctly to find them here",
+    "randomWordsSignIn": "All previously encountered words (Sign in)",
+    "randomKanjiSignIn": "All previously encountered kanji (Sign in)",
     "loading": "Loading data...",
     "loadingText": "This may take 1 minute - The server needs to wake up, it needs a coffee too!"
   },

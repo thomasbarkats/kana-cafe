@@ -60,25 +60,38 @@ export const GameMenuVocabulary = ({ sideButtons }) => {
       const actualCount = overrideCount !== undefined ? overrideCount : (list.count || list.words.length);
       const count = list.isLocked ? null : actualCount;
       const isFavoritesEmpty = key === 'favorites' && count === 0;
+      const hasNoEncounteredWords = key === 'random' && count === 0;
       return {
         value: key,
         label: list.name,
         count,
         isLocked: list.isLocked,
-        disabled: isFavoritesEmpty,
-        icon: key === 'favorites' ? 'bookmark' : null,
-        placeholder: isFavoritesEmpty ? t('common.bookmarkWordsPlaceholder') : null
+        disabled: isFavoritesEmpty || hasNoEncounteredWords,
+        icon: key === 'favorites' ? 'bookmark' : key === 'random' ? 'dice' : null,
+        subtitle: key === 'random' ? t('common.randomWordsSubtitle') : null,
+        placeholder: isFavoritesEmpty
+          ? t('common.bookmarkWordsPlaceholder')
+          : hasNoEncounteredWords ? t('common.randomWordsPlaceholder') : null
       };
     });
 
-  // Add favorites CTA option when not authenticated
   const hasFavoritesOption = listOptions.some(opt => opt.value === 'favorites');
+  const hasRandomOption = listOptions.some(opt => opt.value === 'random');
   if (!isAuthenticated && !hasFavoritesOption) {
     listOptions.unshift({
       value: 'favorites',
       label: t('common.favorites'),
       icon: 'bookmark',
       placeholder: t('common.signInForFavorites'),
+      onClick: () => setShowLoginModal(true)
+    });
+  }
+  if (!isAuthenticated && !hasRandomOption) {
+    listOptions.splice(1, 0, {
+      value: 'random',
+      label: t('common.random'),
+      icon: 'dice',
+      subtitle: t('common.randomWordsSignIn'),
       onClick: () => setShowLoginModal(true)
     });
   }

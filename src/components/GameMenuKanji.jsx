@@ -60,27 +60,40 @@ export const GameMenuKanji = ({ sideButtons }) => {
       const actualCount = overrideCount !== undefined ? overrideCount : (list.count || list.kanji?.length || 0);
       const count = list.isLocked ? null : actualCount;
       const isFavoritesEmpty = key === 'favorites' && count === 0;
+      const hasNoEncounteredKanji = key === 'random' && count === 0;
       return {
         value: key,
         label: list.name,
         count,
         description: list.isLocked ? undefined : list.kanji?.map(k => k.character).join(' '),
         isLocked: list.isLocked,
-        disabled: isFavoritesEmpty,
-        icon: key === 'favorites' ? 'bookmark' : null,
-        placeholder: isFavoritesEmpty ? t('common.bookmarkKanjiPlaceholder') : null
+        disabled: isFavoritesEmpty || hasNoEncounteredKanji,
+        icon: key === 'favorites' ? 'bookmark' : key === 'random' ? 'dice' : null,
+        subtitle: key === 'random' ? t('common.randomKanjiSubtitle') : null,
+        placeholder: isFavoritesEmpty
+          ? t('common.bookmarkKanjiPlaceholder')
+          : hasNoEncounteredKanji ? t('common.randomKanjiPlaceholder') : null
       };
     })
     .sort((a, b) => a.value.localeCompare(b.value, undefined, { numeric: true, sensitivity: 'base' }));
 
-  // Add favorites CTA option when not authenticated
   const hasFavoritesOption = listOptions.some(opt => opt.value === 'favorites');
+  const hasRandomOption = listOptions.some(opt => opt.value === 'random');
   if (!isAuthenticated && !hasFavoritesOption) {
     listOptions.unshift({
       value: 'favorites',
       label: t('common.favorites'),
       icon: 'bookmark',
       placeholder: t('common.signInForFavorites'),
+      onClick: () => setShowLoginModal(true)
+    });
+  }
+  if (!isAuthenticated && !hasRandomOption) {
+    listOptions.splice(1, 0, {
+      value: 'random',
+      label: t('common.random'),
+      icon: 'dice',
+      subtitle: t('common.randomKanjiSignIn'),
       onClick: () => setShowLoginModal(true)
     });
   }

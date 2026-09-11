@@ -1,4 +1,4 @@
-import { createContext, useContext, useState, useEffect } from 'react';
+import { createContext, useContext, useState, useEffect, useRef } from 'react';
 import { KANJI_STEPS, GAME_STATES } from '../constants';
 import { useDataKanji } from '../hooks';
 import { useFavoritesManagement } from '../hooks/useFavoritesManagement';
@@ -19,7 +19,12 @@ export const KanjiGameProvider = ({ children }) => {
   const { kanjiMode, translationLanguage } = usePreferences();
   const { isAuthenticated } = useAuth();
   const { gameState } = useGameContext();
-  const { kanjiLists, loading: kanjiListsLoading } = useDataKanji(translationLanguage, isAuthenticated);
+  const {
+    kanjiLists,
+    loading: kanjiListsLoading,
+    refresh: refreshKanjiLists,
+  } = useDataKanji(translationLanguage, isAuthenticated);
+  const previousGameStateRef = useRef(gameState);
 
   // Step management for multi-step kanji validation
   const [currentStep, setCurrentStep] = useState(KANJI_STEPS.KUN_READINGS);
@@ -42,15 +47,24 @@ export const KanjiGameProvider = ({ children }) => {
   // Cache for loaded kanji by selection (key = sorted listIds + lang)
   const [kanjiCache, setKanjiCache] = useState({});
 
-  // Clean up empty favorites list when returning to menu
   useEffect(() => {
     if (gameState === GAME_STATES.MENU) {
-      const favoritesCount = kanjiListsOverrides.favorites?.count ?? kanjiLists.favorites?.count ?? 0;
-      if (favoritesCount === 0 && kanjiSelectedLists.includes('favorites')) {
-        setKanjiSelectedLists(prev => prev.filter(id => id !== 'favorites'));
+      const emptyPersonalLists = ['favorites', 'random'].filter(id => {
+        const count = kanjiListsOverrides[id]?.count ?? kanjiLists[id]?.count ?? 0;
+        return count === 0;
+      });
+      if (emptyPersonalLists.some(id => kanjiSelectedLists.includes(id))) {
+        setKanjiSelectedLists(prev => prev.filter(id => !emptyPersonalLists.includes(id)));
       }
     }
-  }, [gameState]);
+  }, [gameState, kanjiLists, kanjiListsOverrides, kanjiSelectedLists]);
+
+  useEffect(() => {
+    if (gameState === GAME_STATES.MENU && previousGameStateRef.current !== GAME_STATES.MENU) {
+      refreshKanjiLists();
+    }
+    previousGameStateRef.current = gameState;
+  }, [gameState, refreshKanjiLists]);
 
   // Favorites management using shared hook
   const { addToFavorites, removeFromFavorites, toggleFavorite } = useFavoritesManagement({
