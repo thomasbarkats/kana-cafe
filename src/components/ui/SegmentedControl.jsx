@@ -6,7 +6,7 @@ export const SegmentedControl = ({ value, onChange, options, label, theme }) => 
           <span>{label}</span>
         </div>
       )}
-      <div className={`inline-flex rounded-lg ${theme.darkMode ? 'bg-gray-700' : 'bg-gray-200'} p-1`}>
+      <div className={`inline-flex rounded-lg ${theme.darkMode ? 'bg-night-700' : 'bg-gray-200'} p-1`}>
         {options.map((option) => (
           <button
             key={option.value}
@@ -16,7 +16,7 @@ export const SegmentedControl = ({ value, onChange, options, label, theme }) => 
               relative px-3.5 py-1 rounded-md text-sm font-medium transition-all duration-200
               ${option.disabled ? 'opacity-40 cursor-not-allowed' : 'cursor-pointer'}
               ${value === option.value
-                ? `${theme.darkMode ? 'bg-gray-600 text-white' : 'bg-white text-gray-900'} shadow-sm`
+                ? `${theme.darkMode ? 'bg-night-600 text-white' : 'bg-white text-gray-900'} shadow-sm`
                 : `${theme.darkMode ? 'text-gray-400 hover:text-gray-200' : 'text-gray-600 hover:text-gray-800'}`
               }
             `}

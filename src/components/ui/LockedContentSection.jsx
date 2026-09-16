@@ -45,7 +45,7 @@ export const LockedContentSection = ({
 
         {/* Show OAuth buttons if not authenticated and locked list selected */}
         {hasLockedSelection && !isAuthenticated && (
-          <div className={`p-4 ${darkMode ? 'bg-gray-700/50' : 'bg-gray-50'} rounded-xl`}>
+          <div className={`p-4 ${darkMode ? 'bg-night-700/50' : 'bg-gray-50'} rounded-xl`}>
             <OAuthButtons theme={{ ...theme, darkMode }} />
             <p className={`text-xs text-center mt-3 opacity-70 ${theme.textSecondary}`}>
               {t('common.signInToUnlock')}

@@ -168,7 +168,7 @@ export const GameMenuKanji = ({ sideButtons }) => {
         </div>
 
         {/* Advanced options */}
-        <div className={`mt-8 ${darkMode ? 'bg-gray-700/50' : 'bg-gray-100'} rounded-xl p-1`}>
+        <div className={`mt-8 ${darkMode ? 'bg-night-700/50' : 'bg-gray-100'} rounded-xl p-1`}>
           <div className={`${theme.cardBg} rounded-lg`}>
             <div className={`px-4 divide-y ${theme.divider}`}>
               <SegmentedControl

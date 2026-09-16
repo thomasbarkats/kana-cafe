@@ -1,5 +1,15 @@
 @import "tailwindcss";
 
+/* Dark mode surfaces: blue-tinted greys */
+@theme {
+  --color-night-500: oklch(51% 0.04 256);
+  --color-night-600: oklch(41% 0.045 256);
+  --color-night-700: oklch(34% 0.05 256);
+  --color-night-800: oklch(25% 0.05 256);
+  --color-night-900: oklch(22% 0.05 256);
+  --color-night-950: oklch(19.6% 0.05 256);
+}
+
 @keyframes skeleton-shimmer {
   0% {
     transform: translateX(-150%) skewX(-20deg);
@@ -40,7 +50,7 @@
   animation: gentle-bounce 1s ease-in-out infinite;
 }
 
-/* Mascot slides out from behind the menu card; z-index stays below the card until she has
+/* Mascot slides out from behind the menu card; z-index stays below the card until it has
    cleared its edge. The 100% transform matches the component's resting inline transform. */
 @keyframes mascot-enter-left {
   0% {

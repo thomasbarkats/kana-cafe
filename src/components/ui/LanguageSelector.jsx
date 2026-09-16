@@ -29,7 +29,7 @@ export const LanguageSelector = ({ theme, darkMode }) => {
               language === lang.code
                 ? 'bg-indigo-500 text-white font-medium'
                 : darkMode
-                ? 'bg-gray-700 text-gray-300 hover:bg-gray-600'
+                ? 'bg-night-700 text-gray-300 hover:bg-night-600'
                 : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
             }`}
           >
