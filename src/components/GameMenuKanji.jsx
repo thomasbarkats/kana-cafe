@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { KANJI_MODES } from '../constants';
+import { KANJI_MODES, RANDOM_LIST_SIZE } from '../constants';
 import { useAuth } from '../contexts/AuthContext';
 import { useGameContext } from '../contexts/GameContext';
 import { useGameContextKanji } from '../contexts/GameContextKanji';
@@ -69,7 +69,7 @@ export const GameMenuKanji = ({ sideButtons }) => {
         isLocked: list.isLocked,
         disabled: isFavoritesEmpty || hasNoEncounteredKanji,
         icon: key === 'favorites' ? 'bookmark' : key === 'random' ? 'dice' : null,
-        subtitle: key === 'random' ? t('common.randomKanjiSubtitle') : null,
+        subtitle: key === 'random' && count > 0 ? `${count} ${t('common.randomKanjiSubtitle')}` : null,
         placeholder: isFavoritesEmpty
           ? t('common.bookmarkKanjiPlaceholder')
           : hasNoEncounteredKanji ? t('common.randomKanjiPlaceholder') : null
@@ -93,7 +93,7 @@ export const GameMenuKanji = ({ sideButtons }) => {
       value: 'random',
       label: t('common.random'),
       icon: 'dice',
-      subtitle: t('common.randomKanjiSignIn'),
+      subtitle: `${RANDOM_LIST_SIZE} ${t('common.randomKanjiSignIn')}`,
       onClick: () => setShowLoginModal(true)
     });
   }

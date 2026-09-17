@@ -248,7 +248,7 @@ export const MultiSelection = ({
                           {option.placeholder}
                         </div>
                       )}
-                      {!option.placeholder && option.count !== null && option.count !== undefined && (
+                      {!option.placeholder && !option.subtitle && option.count !== null && option.count !== undefined && (
                         <div className={`text-xs ${theme.textMuted}`}>
                           {`${option.count} ${subItemsLabel}`}
                           {option.description && (

@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { VOCABULARY_MODES, SOUND_MODES } from '../constants';
+import { VOCABULARY_MODES, SOUND_MODES, RANDOM_LIST_SIZE } from '../constants';
 import { useAuth } from '../contexts/AuthContext';
 import { useGameContext } from '../contexts/GameContext';
 import { useGameContextVocabulary } from '../contexts/GameContextVocabulary';
@@ -68,7 +68,7 @@ export const GameMenuVocabulary = ({ sideButtons }) => {
         isLocked: list.isLocked,
         disabled: isFavoritesEmpty || hasNoEncounteredWords,
         icon: key === 'favorites' ? 'bookmark' : key === 'random' ? 'dice' : null,
-        subtitle: key === 'random' ? t('common.randomWordsSubtitle') : null,
+        subtitle: key === 'random' && count > 0 ? `${count} ${t('common.randomWordsSubtitle')}` : null,
         placeholder: isFavoritesEmpty
           ? t('common.bookmarkWordsPlaceholder')
           : hasNoEncounteredWords ? t('common.randomWordsPlaceholder') : null
@@ -91,7 +91,7 @@ export const GameMenuVocabulary = ({ sideButtons }) => {
       value: 'random',
       label: t('common.random'),
       icon: 'dice',
-      subtitle: t('common.randomWordsSignIn'),
+      subtitle: `${RANDOM_LIST_SIZE} ${t('common.randomWordsSignIn')}`,
       onClick: () => setShowLoginModal(true)
     });
   }

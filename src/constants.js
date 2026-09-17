@@ -10,6 +10,8 @@ export const LANGUAGES = {
   JP: 'jp'
 };
 
+export const RANDOM_LIST_SIZE = 20;
+
 export const GAME_STATES = {
   MENU: 'menu',
   PLAYING: 'playing',
