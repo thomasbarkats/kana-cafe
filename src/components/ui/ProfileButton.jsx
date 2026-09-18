@@ -129,7 +129,7 @@ export const ProfileButton = ({ showLegalButton = false, showLoginModal, onToggl
           {/* Dropdown Menu - Only for authenticated users */}
           {isAuthenticated && showMenu && (
             <div
-              className={`absolute bottom-full right-0 mb-2 ${theme.selectorBg} ${theme.text} rounded-lg shadow-xl min-w-[220px] border ${theme.border} overflow-hidden`}
+              className={`absolute top-full mt-2 lg:top-auto lg:bottom-full lg:mt-0 lg:mb-2 right-0 ${theme.selectorBg} ${theme.text} rounded-lg shadow-xl min-w-[220px] border ${theme.border} overflow-hidden`}
             >
               {/* User Info */}
               <div className={`px-4 py-3 border-b ${theme.border}`}>

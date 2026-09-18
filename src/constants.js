@@ -160,3 +160,29 @@ export const KANJI_PROGRESS_TYPES = {
 export const STORAGE_KEYS = {
   PENDING_GOOGLE_LOGIN: 'pendingGoogleLogin',
 };
+
+// The lg: breakpoint, read from the Tailwind theme at runtime so the JS layout forks and the
+// lg: prefix can never drift apart. The fallback only applies before the stylesheet lands.
+export const DESKTOP_BREAKPOINT_VAR = '--breakpoint-lg';
+export const DESKTOP_BREAKPOINT_FALLBACK = '64rem';
+
+// Touch device held sideways. pointer:coarse spares desktops, and the height ceiling spares
+// tablets roomy enough to get the desktop layout anyway.
+export const LANDSCAPE_MEDIA_QUERY = '(orientation: landscape) and (max-height: 600px) and (pointer: coarse)';
+
+export const MOBILE_PLATFORMS = {
+  IOS: 'ios',
+  ANDROID: 'android'
+};
+
+// EDGE: grips a side edge of the card (desktop). TOP: peeks over the top edge (mobile)
+export const MASCOT_VARIANTS = {
+  EDGE: 'edge',
+  TOP: 'top'
+};
+
+// The TOP variant's SVG window, cropping the transparent band above her head
+export const MASCOT_TOP_VIEWBOX = { x: 16, y: 24, width: 150, height: 104 };
+
+// Vertical room the centring layout keeps above the card so the perched mascot stays whole
+export const MASCOT_PERCH_BAND = MASCOT_TOP_VIEWBOX.height + 8;

@@ -208,6 +208,18 @@
     "windowsStep2": "またはタスクバーの言語アイコンをクリック",
     "windowsStep3": "日本語IMEを選択",
     "windowsStep4": "Capslockでひらがな/ローマ字を切替",
+    "iosTitle": "iPhone / iPad：",
+    "iosStep1": "設定 > 一般 > キーボード > キーボード",
+    "iosStep2": "新しいキーボードを追加 > 日本語",
+    "iosStep3": "ローマ字（QWERTY）またはかな（12キー）を選択",
+    "iosStep4": "入力中は 🌐 キーで切り替え",
+    "androidTitle": "Android：",
+    "androidStep1": "設定 > システム > 言語と入力 > 画面キーボード",
+    "androidStep2": "Gboard > 言語 > キーボードを追加 > 日本語",
+    "androidStep3": "QWERTY（ローマ字）または12キー（かな）を選択",
+    "androidStep4": "入力中は 🌐 キーで切り替え",
+    "noKeyboardTitle": "日本語キーボードがない場合",
+    "noKeyboard": "読みはローマ字で入力できます。そのまま正解として判定されるため、設定は不要です。",
     "quickTipsTitle": "クイックヒント：",
     "tip1": "ローマ字で入力するとひらがなに変換",
     "tip2": "Spaceで漢字に変換",
@@ -244,7 +256,8 @@
     "loopMode": "成功するまで繰り返し",
     "toggleFurigana": "ふりがなを切替",
     "addToFavorites": "お気に入りに追加",
-    "removeFromFavorites": "お気に入りから削除"
+    "removeFromFavorites": "お気に入りから削除",
+    "menu": "メニュー"
   },
   "languages": {
     "fr": "Français",
@@ -295,11 +308,6 @@
     "instruction2": "サブスクリプション状況（上記に表示）",
     "instruction3": "問題の詳細な説明",
     "openEmailClient": "メールクライアントを開く"
-  },
-  "mobileWarning": {
-    "title": "デスクトップを推奨",
-    "message": "このアプリはデスクトップまたはタブレットでキーボードを使用する前提で設計されています。モバイルでは正しく動作しない可能性があります。",
-    "dismiss": "続ける"
   },
   "serverError": {
     "title": "サーバーに接続できません",
@@ -394,5 +402,9 @@
       "complaintContent": "CNIL（フランスデータ保護機関）www.cnil.fr、または地域のデータ保護機関に苦情を申し立てることができます。",
       "lastUpdate": "最終更新"
     }
+  },
+  "rotateDevice": {
+    "title": "画面を縦にしてください",
+    "message": "Kana.Cafe は縦画面向けに設計されています。縦向きに戻して続けてください。"
   }
 }

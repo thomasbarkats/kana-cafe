@@ -1,6 +1,6 @@
 export const SegmentedControl = ({ value, onChange, options, label, theme }) => {
   return (
-    <div className="flex items-center justify-between py-3">
+    <div className="flex flex-wrap items-center justify-between gap-2 py-3">
       {label && (
         <div className={`flex items-center gap-2 text-sm font-medium ${theme.text}`}>
           <span>{label}</span>
@@ -13,7 +13,7 @@ export const SegmentedControl = ({ value, onChange, options, label, theme }) => 
             disabled={option.disabled}
             onClick={() => onChange(option.value)}
             className={`
-              relative px-3.5 py-1 rounded-md text-sm font-medium transition-all duration-200
+              relative px-2.5 lg:px-3.5 py-1 rounded-md text-sm font-medium transition-all duration-200
               ${option.disabled ? 'opacity-40 cursor-not-allowed' : 'cursor-pointer'}
               ${value === option.value
                 ? `${theme.darkMode ? 'bg-night-600 text-white' : 'bg-white text-gray-900'} shadow-sm`

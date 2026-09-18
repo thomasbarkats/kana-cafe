@@ -208,6 +208,18 @@
     "windowsStep2": "Or click the language icon in taskbar",
     "windowsStep3": "Select Japanese IME",
     "windowsStep4": "Press Capslock to toggle hiragana/romaji",
+    "iosTitle": "iPhone / iPad:",
+    "iosStep1": "Settings > General > Keyboard > Keyboards",
+    "iosStep2": "Add New Keyboard… > Japanese",
+    "iosStep3": "Pick Romaji (QWERTY) or Kana (12-key)",
+    "iosStep4": "Tap the 🌐 globe key to switch while typing",
+    "androidTitle": "Android:",
+    "androidStep1": "Settings > System > Languages & input > On-screen keyboard",
+    "androidStep2": "Gboard > Languages > Add keyboard > 日本語",
+    "androidStep3": "Pick the QWERTY (romaji) or 12-key (kana) layout",
+    "androidStep4": "Tap the 🌐 globe key to switch while typing",
+    "noKeyboardTitle": "No Japanese keyboard?",
+    "noKeyboard": "You can type readings in romaji — they are accepted as-is, no keyboard setup needed.",
     "quickTipsTitle": "Quick tips:",
     "tip1": "Type in romaji, it converts to hiragana",
     "tip2": "Press Space to convert to kanji",
@@ -244,7 +256,8 @@
     "loopMode": "Loop current step until success",
     "toggleFurigana": "Toggle furigana",
     "addToFavorites": "Add to favorites",
-    "removeFromFavorites": "Remove from favorites"
+    "removeFromFavorites": "Remove from favorites",
+    "menu": "Menu"
   },
   "languages": {
     "fr": "Français",
@@ -295,11 +308,6 @@
     "instruction2": "Your subscription status (shown above)",
     "instruction3": "A detailed description of your issue",
     "openEmailClient": "Open Email Client"
-  },
-  "mobileWarning": {
-    "title": "Desktop Recommended",
-    "message": "This app is designed for desktop or tablet use with a keyboard. The mobile experience is not optimized and may not work properly.",
-    "dismiss": "Continue Anyway"
   },
   "serverError": {
     "title": "Server Unavailable",
@@ -394,5 +402,9 @@
       "complaintContent": "You may lodge a complaint with the CNIL (French Data Protection Authority): www.cnil.fr or with your local data protection authority.",
       "lastUpdate": "Last updated"
     }
+  },
+  "rotateDevice": {
+    "title": "Rotate your device",
+    "message": "Kana.Cafe is laid out for a vertical screen. Turn your device back to portrait to keep going."
   }
 }

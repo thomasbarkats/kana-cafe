@@ -12,3 +12,5 @@ export { useFavoritesManagement } from './useFavoritesManagement';
 export { useDataLoader } from './useDataLoader';
 export { useProgress, invalidateProgressCache } from './useProgress';
 export { useKeyboardShortcuts } from './useKeyboardShortcuts';
+export { useIsMobile } from './useIsMobile';
+export { useMediaQuery } from './useMediaQuery';

@@ -5,7 +5,9 @@ import {
   MASCOT_BLINK_MIN_MS,
   MASCOT_DOUBLE_BLINK_CHANCE,
   MASCOT_DOUBLE_BLINK_GAP_MS,
-  MASCOT_MOODS
+  MASCOT_MOODS,
+  MASCOT_TOP_VIEWBOX,
+  MASCOT_VARIANTS
 } from '../../constants';
 import { usePreferences } from '../../contexts/PreferencesContext';
 import { MASCOT_TRIGGER } from './MascotTrigger';
@@ -116,7 +118,8 @@ let previousSide;
 
 // side: which card edge it grips; 'right' mirrors the whole drawing (scaleX(-1)).
 // alwaysVisible: skips the peek/hover mechanic (gameplay, where it's always out).
-export const Mascot = ({ mood = MASCOT_MOODS.HAPPY, ahoge, scale = 1, side = 'left', reacting = false, exiting = false, alwaysVisible = false, className = '' }) => {
+// variant: TOP perches her upright over the card's top edge instead (mobile).
+export const Mascot = ({ mood = MASCOT_MOODS.HAPPY, ahoge, scale = 1, side = 'left', reacting = false, exiting = false, alwaysVisible = false, variant = MASCOT_VARIANTS.EDGE, className = '' }) => {
   const { darkMode } = usePreferences();
   const colors = darkMode ? PALETTES.dark : PALETTES.light;
   const flipped = side === 'right';
@@ -201,6 +204,45 @@ export const Mascot = ({ mood = MASCOT_MOODS.HAPPY, ahoge, scale = 1, side = 'le
       : introPhase === 'out' ? `translate-x-0 ${BASE_T}`
         : `-translate-x-[3px] ${BASE_T}`;
 
+  const face = (
+    <>
+      <g
+        className={blinking ? 'animate-mascot-blink' : undefined}
+        onAnimationEnd={handleBlinkEnd}
+      >
+        {renderEyes(colors, effectiveMood)}
+      </g>
+      <path d={BEAK_PATH} fill={colors.face} />
+      {renderMouth(colors, effectiveMood)}
+    </>
+  );
+
+  // No edge to grip and no room to slide out from: she simply rises above the card,
+  // clipped by its top edge. Blinks and reacts to a tap, but skips peek and exit.
+  if (variant === MASCOT_VARIANTS.TOP) {
+    return (
+      <div
+        className={['pointer-events-none select-none', className].join(' ')}
+        style={{ width: MASCOT_TOP_VIEWBOX.width }}
+        aria-hidden="true"
+      >
+        <div style={{ transform: `scale(${scale})`, transformOrigin: 'bottom center' }}>
+          <svg
+            width={MASCOT_TOP_VIEWBOX.width}
+            height={MASCOT_TOP_VIEWBOX.height}
+            viewBox={`${MASCOT_TOP_VIEWBOX.x} ${MASCOT_TOP_VIEWBOX.y} ${MASCOT_TOP_VIEWBOX.width} ${MASCOT_TOP_VIEWBOX.height}`}
+            className={interactive ? 'pointer-events-auto cursor-pointer' : undefined}
+            onClick={handleShock}
+          >
+            {renderTuft(colors, ahogeType, false)}
+            <path d={BODY_PATH} fill={colors.body} />
+            {face}
+          </svg>
+        </div>
+      </div>
+    );
+  }
+
   const sideClass = flipped ? 'right-0' : '-left-[124px]';
   const animationClass = exiting
     ? (flipped ? 'animate-mascot-exit-right' : 'animate-mascot-exit-left')
@@ -234,15 +276,7 @@ export const Mascot = ({ mood = MASCOT_MOODS.HAPPY, ahoge, scale = 1, side = 'le
             <g transform="translate(-24 150) rotate(-80)">
               {renderTuft(colors, ahogeType, flipped)}
               <path d={BODY_PATH} fill={colors.body} />
-
-              <g
-                className={blinking ? 'animate-mascot-blink' : undefined}
-                onAnimationEnd={handleBlinkEnd}
-              >
-                {renderEyes(colors, effectiveMood)}
-              </g>
-              <path d={BEAK_PATH} fill={colors.face} />
-              {renderMouth(colors, effectiveMood)}
+              {face}
             </g>
           </svg>
         </div>

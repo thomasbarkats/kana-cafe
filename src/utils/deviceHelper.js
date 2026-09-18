@@ -1,3 +1,5 @@
+import { MOBILE_PLATFORMS } from '../constants';
+
 export const getDeviceInfo = () => {
   return {
     deviceId: getDeviceId(),
@@ -50,4 +52,17 @@ const getBrowserInfo = () => {
   }
 
   return `${browser} on ${os}`;
+};
+
+// Which mobile OS the Japanese keyboard instructions should target, null on desktop
+export const getMobilePlatform = () => {
+  const ua = navigator.userAgent;
+
+  if (/android/i.test(ua)) {
+    return MOBILE_PLATFORMS.ANDROID;
+  }
+  if (/iPad|iPhone|iPod/.test(ua) || (ua.includes('Mac') && navigator.maxTouchPoints > 1)) {
+    return MOBILE_PLATFORMS.IOS;
+  }
+  return null;
 };

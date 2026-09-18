@@ -1,5 +1,11 @@
 @import "tailwindcss";
 
+/* Restated at its default value so it is emitted as a CSS variable: the JS layout forks
+   read it instead of hardcoding the breakpoint the lg: prefix already encodes. */
+@theme {
+  --breakpoint-lg: 64rem;
+}
+
 /* Dark mode surfaces: blue-tinted greys */
 @theme {
   --color-night-500: oklch(51% 0.04 256);

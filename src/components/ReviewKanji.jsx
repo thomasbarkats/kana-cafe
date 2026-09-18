@@ -209,7 +209,7 @@ export const ReviewKanji = () => {
       )}
 
       <div className="overflow-x-auto">
-        <table className="w-full">
+        <table className="w-full min-w-[44rem] lg:min-w-0">
           <thead>
             <tr className={`${theme.border} border-b-2`}>
               <th className={`px-4 py-3 text-left ${theme.text} font-semibold`}>{t('titles.kanji')}</th>

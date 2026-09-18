@@ -96,7 +96,7 @@ export const ReviewKana = () => {
                 <div
                   key={cellIdx}
                   className={`
-                    group rounded-lg p-4 flex flex-col items-center justify-center min-h-[100px]
+                    group rounded-lg p-1 lg:p-4 flex flex-col items-center justify-center min-h-[72px] lg:min-h-[100px]
                     ${kana ? 'cursor-pointer hover:scale-105 transition-transform' : 'invisible'}
                   `}
                   style={{ backgroundColor: bgColor }}
@@ -105,9 +105,9 @@ export const ReviewKana = () => {
                 >
                   {kana && (
                     <>
-                      <span className={`text-4xl ${theme.text} mb-2`}>{kana.char}</span>
-                      <span className={`text-sm ${theme.textMuted}`}>{kana.reading}</span>
-                      <Volume2 className={`w-4 h-4 ${theme.textMuted} mt-2 opacity-50`} />
+                      <span className={`text-3xl lg:text-4xl ${theme.text} mb-1 lg:mb-2`}>{kana.char}</span>
+                      <span className={`text-xs lg:text-sm ${theme.textMuted}`}>{kana.reading}</span>
+                      <Volume2 className={`w-4 h-4 ${theme.textMuted} mt-1 lg:mt-2 opacity-50`} />
                     </>
                   )}
                 </div>
@@ -158,9 +158,9 @@ export const ReviewKana = () => {
   return (
     <div className={`min-h-screen ${theme.bg} p-4 flex items-center`}>
       <div className="w-full max-w-4xl mx-auto">
-        <div className={`${theme.cardBg} backdrop-blur-sm rounded-3xl shadow-2xl p-8`}>
+        <div className={`${theme.cardBg} backdrop-blur-sm rounded-3xl shadow-2xl p-4 lg:p-8`}>
 
-          <div className="flex justify-between items-center mb-6">
+          <div className="flex flex-wrap gap-3 justify-between items-center mb-6">
             <div className="flex items-start gap-2">
               <Button onClick={() => setGameState(GAME_STATES.MENU)} variant="primary">
                 {t('common.backToMenu')}
@@ -168,7 +168,7 @@ export const ReviewKana = () => {
               <EscapeKey />
             </div>
 
-            <div className="w-80">
+            <div className="w-full lg:w-80">
               <MultiSelection
                 options={filterOptions}
                 selectedValues={selectedOptions}

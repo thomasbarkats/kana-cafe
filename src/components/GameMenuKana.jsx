@@ -85,7 +85,7 @@ export const GameMenuKana = ({ sideButtons }) => {
     return (
       <MascotTrigger
         onActivate={() => initializeKanaGame(mode)}
-        className={`w-full ${gradientClass} text-white font-semibold py-3 px-6 rounded-xl transform hover:scale-105 transition-all duration-200 shadow-lg cursor-pointer ${MASCOT_TRIGGER.HOVER}`}
+        className={`w-full ${gradientClass} text-white font-semibold py-3 px-4 lg:px-6 rounded-xl transform hover:scale-105 transition-all duration-200 shadow-lg cursor-pointer ${MASCOT_TRIGGER.HOVER}`}
       >
         <div className="flex items-center justify-center">
           <span className="text-3xl mr-4 font-normal">{icon}</span>
@@ -127,7 +127,7 @@ export const GameMenuKana = ({ sideButtons }) => {
           </div>
         </MascotTrigger>
 
-        <div className="flex gap-3">
+        <div className="flex flex-col lg:flex-row gap-3">
           {renderModeSection(GAME_MODES.HIRAGANA, 'ひ', 'modes.hiragana', 'bg-gradient-to-r from-pink-500 to-purple-600 hover:from-pink-600 hover:to-purple-700')}
           {renderModeSection(GAME_MODES.KATAKANA, 'カ', 'modes.katakana', 'bg-gradient-to-r from-blue-500 to-cyan-600 hover:from-blue-600 hover:to-cyan-700')}
         </div>

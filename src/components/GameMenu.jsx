@@ -1,7 +1,10 @@
 import { useCallback, useState } from 'react';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
-import { APP_MODES, MASCOT_GRIN_LEAD_MS, MASCOT_MOODS, MASCOT_NAV_DELAY_MS } from '../constants';
+import { APP_MODES, MASCOT_GRIN_LEAD_MS, MASCOT_MOODS, MASCOT_NAV_DELAY_MS, MASCOT_VARIANTS } from '../constants';
 import { useTranslation } from '../contexts/I18nContext';
+import { useIsMobile } from '../hooks/useIsMobile';
+import { BurgerMenu } from './ui/BurgerMenu';
+import { CenteredLayout } from './ui/CenteredLayout';
 import { Mascot } from './ui/Mascot';
 import { MASCOT_TRIGGER, MascotProvider } from './ui/MascotTrigger';
 
@@ -20,19 +23,20 @@ export const GameMenu = ({
   sideButtons
 }) => {
   const { t } = useTranslation();
+  const isMobile = useIsMobile();
   const [mascot, setMascot] = useState({ mood: MASCOT_MOODS.HAPPY, reacting: false, exiting: false });
 
   // Expression change + recoil, then slide under the card, then navigate mid-slide.
-  // Skipped below lg where the mascot is hidden.
+  // Skipped below lg where the mascot perches on top instead of gripping a side edge.
   const triggerExit = useCallback((action, mood = MASCOT_MOODS.GRIN) => {
-    if (!window.matchMedia('(min-width: 1024px)').matches) {
+    if (isMobile) {
       action?.();
       return;
     }
     setMascot({ mood, reacting: true, exiting: false });
     setTimeout(() => setMascot({ mood, reacting: true, exiting: true }), MASCOT_GRIN_LEAD_MS);
     setTimeout(() => action?.(), MASCOT_GRIN_LEAD_MS + MASCOT_NAV_DELAY_MS);
-  }, []);
+  }, [isMobile]);
 
   const modes = [
     { key: APP_MODES.KANA, labelJa: 'かな', labelEn: t('modes.kana') },
@@ -49,31 +53,43 @@ export const GameMenu = ({
   const mascotOnRight = currentMode === APP_MODES.VOCABULARY;
 
   return (
-    <div className={`min-h-screen ${theme.bg} flex items-center justify-center p-4 -mb-8`}>
+    <CenteredLayout className={`${theme.bg} -mb-8`}>
       <MascotProvider value={triggerExit}>
-        <div className="relative flex flex-col items-center gap-4 group/menu">
-          <Mascot
-            scale={1.25}
-            side={mascotOnRight ? 'right' : 'left'}
-            mood={mascot.mood}
-            reacting={mascot.reacting}
-            exiting={mascot.exiting}
-            className="absolute top-24 hidden lg:block"
-          />
+        {sideButtons && isMobile && <BurgerMenu>{sideButtons}</BurgerMenu>}
+
+        <div className="relative flex flex-col items-center gap-4 group/menu w-full max-w-md lg:w-auto lg:max-w-none">
+          {!isMobile && (
+            <Mascot
+              scale={1.25}
+              side={mascotOnRight ? 'right' : 'left'}
+              mood={mascot.mood}
+              reacting={mascot.reacting}
+              exiting={mascot.exiting}
+              className="absolute top-24"
+            />
+          )}
 
           {/* Menu card */}
-          <div className={`relative ${theme.cardBg} backdrop-blur-sm rounded-3xl shadow-2xl p-8 w-full z-10`} style={{ width: '28rem' }}>
-            {sideButtons && (
+          <div className={`relative ${theme.cardBg} backdrop-blur-sm rounded-3xl shadow-2xl p-5 lg:p-8 w-full lg:w-[28rem] z-10`}>
+            {isMobile && (
+              <Mascot
+                variant={MASCOT_VARIANTS.TOP}
+                mood={mascot.mood}
+                className="absolute bottom-full left-1/2 -translate-x-1/2"
+              />
+            )}
+
+            {sideButtons && !isMobile && (
               <div className="absolute left-full bottom-0 ml-4 z-20 flex flex-col-reverse gap-2 items-end mb-6">
                 {sideButtons}
               </div>
             )}
 
-            <div className="text-center mb-8 relative">
+            <div className="text-center mb-6 lg:mb-8 relative">
               {onPrevious && (
                 <button
                   onClick={onPrevious}
-                  className={`absolute top-4 left-6 p-3 ${theme.buttonSecondary} rounded-full transition-colors cursor-pointer ${MASCOT_TRIGGER.HOVER}`}
+                  className={`absolute top-2 left-0 lg:top-4 lg:left-6 p-2 lg:p-3 ${theme.buttonSecondary} rounded-full transition-colors cursor-pointer ${MASCOT_TRIGGER.HOVER}`}
                   title={previousTooltip}
                 >
                   <ChevronLeft className="w-5 h-5" />
@@ -82,20 +98,20 @@ export const GameMenu = ({
               {onNext && (
                 <button
                   onClick={onNext}
-                  className={`absolute top-4 right-6 p-3 ${theme.buttonSecondary} rounded-full transition-colors cursor-pointer ${MASCOT_TRIGGER.HOVER}`}
+                  className={`absolute top-2 right-0 lg:top-4 lg:right-6 p-2 lg:p-3 ${theme.buttonSecondary} rounded-full transition-colors cursor-pointer ${MASCOT_TRIGGER.HOVER}`}
                   title={nextTooltip}
                 >
                   <ChevronRight className="w-5 h-5" />
                 </button>
               )}
-              <h1 className={`text-4xl font-bold ${theme.text} mb-2`}>{title}</h1>
+              <h1 className={`text-3xl lg:text-4xl font-bold ${theme.text} mb-2 px-10 lg:px-0`}>{title}</h1>
               <p className={theme.textSecondary}>{subtitle}</p>
             </div>
             {children}
           </div>
 
           {/* Other mode tabs below */}
-          <div className="flex gap-3 z-0" style={{ width: '28rem' }}>
+          <div className="flex gap-3 z-0 w-full lg:w-[28rem]">
             {otherModes.map((mode) => (
               <button
                 key={mode.key}
@@ -115,6 +131,6 @@ export const GameMenu = ({
           </div>
         </div>
       </MascotProvider>
-    </div>
+    </CenteredLayout>
   );
 };

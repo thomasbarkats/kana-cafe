@@ -1,8 +1,13 @@
 import { usePreferences } from '../../contexts/PreferencesContext';
+import { useIsMobile } from '../../hooks/useIsMobile';
 
 
 export const KeyboardKey = ({ keyLabel, position = 'below' }) => {
   const { theme } = usePreferences();
+  const isMobile = useIsMobile();
+
+  // Every hint here is either revealed on hover or names a physical key: both are moot on touch
+  if (isMobile) return null;
 
   const positionClasses = {
     below: 'absolute top-full mt-1 left-1/2 -translate-x-1/2',

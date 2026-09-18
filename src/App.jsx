@@ -20,10 +20,11 @@ import {
   ReviewKana,
   ReviewKanji,
   ProfileButton,
-  MobileWarning,
+  RotateDeviceOverlay,
   ServerErrorModal,
   BuyMeACoffeeButton,
   KeyboardKey,
+  KeyboardHelpContent,
 } from './components';
 import {
   useGameActions,
@@ -125,25 +126,7 @@ function App() {
         show={showKeyboardModal}
         onToggle={toggleKeyboardModal}
       >
-        <div>
-          <h4 className="font-medium mb-1">{t('keyboardHelp.windowsTitle')}</h4>
-          <ol className="text-sm list-decimal list-inside space-y-0.5">
-            <li>{t('keyboardHelp.windowsStep1')}</li>
-            <li>{t('keyboardHelp.windowsStep2')}</li>
-            <li>{t('keyboardHelp.windowsStep3')}</li>
-            <li>{t('keyboardHelp.windowsStep4')}</li>
-          </ol>
-        </div>
-
-        <div>
-          <h4 className="font-medium mb-1">{t('keyboardHelp.quickTipsTitle')}</h4>
-          <ul className="text-sm space-y-1">
-            <li>• {t('keyboardHelp.tip1')}</li>
-            <li>• {t('keyboardHelp.tip2')}</li>
-            <li>• {t('keyboardHelp.tip3')}</li>
-            <li>• {t('keyboardHelp.tip4')}</li>
-          </ul>
-        </div>
+        <KeyboardHelpContent />
       </FloatingHelpButton>
     </div>
   );
@@ -270,7 +253,7 @@ function App() {
 
   return (
     <>
-      <MobileWarning />
+      <RotateDeviceOverlay />
       <ServerErrorModal />
       {renderContent()}
     </>

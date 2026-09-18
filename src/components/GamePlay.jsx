@@ -7,9 +7,10 @@ import { useGameContextKanji } from '../contexts/GameContextKanji';
 import { useGameContextVocabulary } from '../contexts/GameContextVocabulary';
 import { useTranslation } from '../contexts/I18nContext';
 import { usePreferences } from '../contexts/PreferencesContext';
-import { useGameActions, useKeyboardShortcuts } from '../hooks';
+import { useGameActions, useIsMobile, useKeyboardShortcuts } from '../hooks';
 import { formatTime, cleanJapaneseText, speakReading, containsKana, getMeaningsFeedbackGroups } from '../utils';
 import { ProgressBar, KeyboardKey, FeedbackProgressBar } from '.';
+import { CenteredLayout } from './ui/CenteredLayout';
 import { StopGameModal } from './ui/StopGameModal';
 import { Mascot } from './ui/Mascot';
 import {
@@ -17,6 +18,8 @@ import {
   GAME_MODES,
   MASCOT_COMEBACK_FAILURES,
   MASCOT_MOODS,
+  MASCOT_VARIANTS,
+  TIMING,
   VOCABULARY_MODES,
   KANJI_STEPS,
 } from '../constants';
@@ -67,6 +70,7 @@ export const GamePlay = () => {
   } = useGameContextVocabulary();
 
   const { isAuthenticated } = useAuth();
+  const isMobile = useIsMobile();
 
   const inputRef = useRef(null);
   const skipListenerCleanupRef = useRef(null);
@@ -99,9 +103,14 @@ export const GamePlay = () => {
 
   useEffect(() => {
     if (!feedback && inputRef.current) {
-      setTimeout(() => inputRef.current?.focus(), 100);
+      setTimeout(() => {
+        inputRef.current?.focus();
+        if (isMobile) {
+          inputRef.current?.scrollIntoView({ block: 'center', behavior: 'smooth' });
+        }
+      }, TIMING.INPUT_FOCUS_DELAY);
     }
-  }, [feedback, currentItem]);
+  }, [feedback, currentItem, isMobile]);
 
   useEffect(() => {
     if (!startTime) return;
@@ -249,18 +258,28 @@ export const GamePlay = () => {
   };
 
   return (
-    <div className={`min-h-screen ${theme.bg} flex items-center justify-center p-4 -mb-8`}>
+    <CenteredLayout className={`${theme.bg} -mb-8`}>
       <div className="relative w-full max-w-lg">
-        <Mascot
-          scale={1.25}
-          side="right"
-          mood={mascotMood}
-          reacting={mascotReacting}
-          alwaysVisible
-          className="absolute top-24 hidden lg:block"
-        />
-        <div className={`${theme.cardBg} backdrop-blur-sm rounded-3xl shadow-2xl p-8`}>
-          <div className="mb-8">
+        {isMobile && (
+          <Mascot
+            variant={MASCOT_VARIANTS.TOP}
+            mood={mascotMood}
+            alwaysVisible
+            className="absolute bottom-full left-1/2 -translate-x-1/2"
+          />
+        )}
+        {!isMobile && (
+          <Mascot
+            scale={1.25}
+            side="right"
+            mood={mascotMood}
+            reacting={mascotReacting}
+            alwaysVisible
+            className="absolute top-24"
+          />
+        )}
+        <div className={`${theme.cardBg} backdrop-blur-sm rounded-3xl shadow-2xl p-5 lg:p-8`}>
+          <div className="mb-6 lg:mb-8">
             <div className="flex justify-between items-center mb-4">
               <div className={`flex items-center space-x-2 ${theme.textSecondary}`}>
                 {(isVocabularyMode || isKanjiMode) && isAuthenticated && currentItem?.id && (
@@ -364,15 +383,17 @@ export const GamePlay = () => {
           {currentItem && (
             <div className="text-center mb-6">
               <div className={`
-              ${isVocabularyMode ? (vocabularyMode === VOCABULARY_MODES.FROM_JAPANESE ? 'text-[2.5rem]' : 'text-[2rem]') : 'text-8xl'}
+              ${isVocabularyMode
+                ? (vocabularyMode === VOCABULARY_MODES.FROM_JAPANESE ? 'text-[2rem] lg:text-[2.5rem]' : 'text-[1.6rem] lg:text-[2rem]')
+                : 'text-7xl lg:text-8xl'}
               font-light ${theme.text} select-none mb-2`}>
                 {isSoundOnlyMode ? (
                   <button
                     onClick={handleReplayAudio}
-                    className={`p-6 ${theme.buttonSecondary} rounded-full transition-all hover:scale-110 cursor-pointer`}
+                    className={`p-4 lg:p-6 ${theme.buttonSecondary} rounded-full transition-all hover:scale-110 cursor-pointer`}
                     title={t('tooltips.replayAudio')}
                   >
-                    <Volume2 className="w-16 h-16" />
+                    <Volume2 className="w-12 h-12 lg:w-16 lg:h-16" />
                   </button>
                 ) : isVocabularyMode && vocabularyMode === VOCABULARY_MODES.FROM_JAPANESE ? (
                   <JapaneseTextDisplay parts={currentItem.parts} theme={theme} showFurigana={showFurigana} />
@@ -408,7 +429,7 @@ export const GamePlay = () => {
                 <div className="pt-2 mb-6">
                   <div>
                     {feedback.type === FEEDBACK_TYPES.SUCCESS ? (
-                      <div className={`${theme.feedbackSuccess.bg} border-2 rounded-xl p-6 animate-pulse`}>
+                      <div className={`${theme.feedbackSuccess.bg} border-2 rounded-xl p-4 lg:p-6 animate-pulse`}>
                         <div className={`text-2xl font-bold ${theme.feedbackSuccess.title} mb-2`}>{t('gameplay.correct')}</div>
                         {isKanjiMode && currentStep === KANJI_STEPS.MEANINGS ? (
                           <KanjiMeaningsSuccess readings={currentItem.readings} theme={theme} />
@@ -436,7 +457,7 @@ export const GamePlay = () => {
                         />
                       </div>
                     ) : (
-                      <div className={`${theme.feedbackError.bg} border-2 rounded-xl p-6 animate-pulse`}>
+                      <div className={`${theme.feedbackError.bg} border-2 rounded-xl p-4 lg:p-6 animate-pulse`}>
                         <div className={`text-lg ${theme.feedbackError.text} mb-1`}>{t('gameplay.youWrote')} "{feedback.userAnswer}"</div>
                         {isKanjiMode && currentStep === KANJI_STEPS.MEANINGS ? (
                           <div className="mt-1">
@@ -493,7 +514,7 @@ export const GamePlay = () => {
                           ? t('gameplay.typeTranslation')
                           : t('gameplay.typeReading')
                     }
-                    className={`w-full text-2xl text-center py-4 px-6 border-2 ${theme.inputBorder} ${theme.inputBg} ${theme.text} rounded-xl focus:ring-4 focus:ring-blue-200 outline-none transition-all`}
+                    className={`w-full text-xl lg:text-2xl text-center py-3 lg:py-4 px-4 lg:px-6 border-2 ${theme.inputBorder} ${theme.inputBg} ${theme.text} rounded-xl focus:ring-4 focus:ring-blue-200 outline-none transition-all`}
                     autoComplete="off"
                     disabled={feedback !== null}
                   />
@@ -504,7 +525,7 @@ export const GamePlay = () => {
                 <button
                   onClick={handleSubmit}
                   disabled={!userInput.trim()}
-                  className="bg-gradient-to-r from-blue-500 to-purple-600 text-white font-semibold py-3 px-8 rounded-xl hover:from-blue-600 hover:to-purple-700 disabled:opacity-50 disabled:cursor-not-allowed transform hover:scale-105 transition-all duration-200 shadow-lg cursor-pointer"
+                  className="bg-gradient-to-r from-blue-500 to-purple-600 text-white font-semibold py-3 px-6 lg:px-8 rounded-xl hover:from-blue-600 hover:to-purple-700 disabled:opacity-50 disabled:cursor-not-allowed transform hover:scale-105 transition-all duration-200 shadow-lg cursor-pointer"
                 >
                   {t('gameplay.validate')}
                 </button>
@@ -513,7 +534,7 @@ export const GamePlay = () => {
               {!feedback && !userInput.trim() && (
                 <button
                   onClick={() => handleSubmit(true)}
-                  className={`ml-2 font-semibold py-3 px-8 rounded-xl ${theme.buttonSkip} ransform hover:scale-105 transition-all duration-200 shadow-lg cursor-pointer`}
+                  className={`ml-2 font-semibold py-3 px-6 lg:px-8 rounded-xl ${theme.buttonSkip} ransform hover:scale-105 transition-all duration-200 shadow-lg cursor-pointer`}
                 >
                   {t('gameplay.skip')}
                 </button>
@@ -532,7 +553,7 @@ export const GamePlay = () => {
         onConfirm={handleStopGame}
         onCancel={handleCancelStop}
       />
-    </div>
+    </CenteredLayout>
   );
 };
 

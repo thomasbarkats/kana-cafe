@@ -40,7 +40,7 @@ export const MenuControls = ({
 
 
   return (
-    <div className="mt-8 flex justify-between items-center">
+    <div className="mt-6 lg:mt-8 flex flex-wrap gap-y-3 justify-between items-center">
       <div className="flex items-center space-x-2">
 
         <div className="relative group">
@@ -140,7 +140,7 @@ export const MenuControls = ({
       </div>
 
       <div className="flex items-center space-x-2">
-        <label className={`text-sm font-medium ${theme.textSecondary}`}>
+        <label className={`text-xs lg:text-sm font-medium ${theme.textSecondary}`}>
           {t('menu.repetitions')}
         </label>
         <div className="flex items-center space-x-1">

@@ -188,6 +188,18 @@
     "windowsStep2": "Ou cliquez sur l'icône de langue dans la barre des tâches",
     "windowsStep3": "Sélectionnez l'IME japonais",
     "windowsStep4": "Appuyez sur Verr. Maj. pour basculer hiragana/romaji",
+    "iosTitle": "iPhone / iPad :",
+    "iosStep1": "Réglages > Général > Clavier > Claviers",
+    "iosStep2": "Ajouter un clavier… > Japonais",
+    "iosStep3": "Choisir Romaji (AZERTY/QWERTY) ou Kana (12 touches)",
+    "iosStep4": "Appuyer sur la touche 🌐 pour changer pendant la saisie",
+    "androidTitle": "Android :",
+    "androidStep1": "Paramètres > Système > Langues et saisie > Clavier virtuel",
+    "androidStep2": "Gboard > Langues > Ajouter un clavier > 日本語",
+    "androidStep3": "Choisir la disposition QWERTY (romaji) ou 12 touches (kana)",
+    "androidStep4": "Appuyer sur la touche 🌐 pour changer pendant la saisie",
+    "noKeyboardTitle": "Pas de clavier japonais ?",
+    "noKeyboard": "Vous pouvez saisir les lectures en romaji : elles sont acceptées telles quelles, sans rien installer.",
     "quickTipsTitle": "Astuces rapides :",
     "tip1": "Tapez en romaji, c'est converti en hiragana",
     "tip2": "Appuyez sur Espace pour convertir en kanji",
@@ -224,7 +236,8 @@
     "loopMode": "Boucler l'étape courante jusqu'à succès",
     "toggleFurigana": "Afficher/masquer les furigana",
     "addToFavorites": "Ajouter aux favoris",
-    "removeFromFavorites": "Retirer des favoris"
+    "removeFromFavorites": "Retirer des favoris",
+    "menu": "Menu"
   },
   "languages": {
     "fr": "Français",
@@ -275,11 +288,6 @@
     "instruction2": "Votre statut d'abonnement (affiché ci-dessus)",
     "instruction3": "Une description détaillée de votre problème",
     "openEmailClient": "Ouvrir le client email"
-  },
-  "mobileWarning": {
-    "title": "Bureau recommandé",
-    "message": "Cette application est conçue pour un usage sur ordinateur ou tablette avec un clavier. L'expérience mobile n'est pas optimisée et peut ne pas fonctionner correctement.",
-    "dismiss": "Continuer quand même"
   },
   "serverError": {
     "title": "Serveur indisponible",
@@ -374,5 +382,9 @@
       "complaintContent": "Vous pouvez introduire une réclamation auprès de la CNIL (Commission Nationale de l'Informatique et des Libertés) : www.cnil.fr",
       "lastUpdate": "Dernière mise à jour"
     }
+  },
+  "rotateDevice": {
+    "title": "Tournez votre appareil",
+    "message": "Kana.Cafe est pensé pour un écran vertical. Repassez en mode portrait pour continuer."
   }
 }

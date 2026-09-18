@@ -42,9 +42,9 @@ export const ReviewLayout = ({
   return (
     <div className={`min-h-screen ${theme.bg} p-4 flex items-center`}>
       <div className="w-full max-w-5xl mx-auto">
-        <div className={`${theme.cardBg} backdrop-blur-sm rounded-3xl shadow-2xl p-8`}>
+        <div className={`${theme.cardBg} backdrop-blur-sm rounded-3xl shadow-2xl p-4 lg:p-8`}>
 
-          <div className="flex justify-between items-center mb-6">
+          <div className="flex flex-wrap gap-3 justify-between items-center mb-6">
             <div className="flex items-start gap-2">
               <Button onClick={() => setGameState(GAME_STATES.MENU)} variant="primary">
                 {t('common.backToMenu')}
@@ -64,7 +64,7 @@ export const ReviewLayout = ({
 
           {renderGlobalProgress && renderGlobalProgress()}
 
-          <div className="space-y-8">
+          <div className="space-y-8 overflow-x-auto">
             {loading ? (
               <SkeletonTable theme={theme} rows={Math.min(expectedCount || 20, 20)} columns={3} showHeader={true} />
             ) : shouldMerge ? (

@@ -260,7 +260,7 @@ export const ReviewVocabulary = () => {
         </h3>
       )}
 
-      <table className="w-full">
+      <table className="w-full min-w-[40rem] lg:min-w-0">
         <thead>
           <tr className={`${theme.border} border-b-2`}>
             <th className={`text-left p-4 ${theme.text} font-semibold`}>{t('titles.japanese')}</th>
