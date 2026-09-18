@@ -1,5 +1,12 @@
 import { useEffect, useRef, useState } from 'react';
-import { MASCOT_AHOGE, MASCOT_MOODS } from '../../constants';
+import {
+  MASCOT_AHOGE,
+  MASCOT_BLINK_MAX_MS,
+  MASCOT_BLINK_MIN_MS,
+  MASCOT_DOUBLE_BLINK_CHANCE,
+  MASCOT_DOUBLE_BLINK_GAP_MS,
+  MASCOT_MOODS
+} from '../../constants';
 import { usePreferences } from '../../contexts/PreferencesContext';
 import { MASCOT_TRIGGER } from './MascotTrigger';
 
@@ -127,6 +134,31 @@ export const Mascot = ({ mood = MASCOT_MOODS.HAPPY, ahoge, scale = 1, side = 'le
     if (exiting) { setHovering(false); setShocked(false); clearTimeout(shockTimer.current); }
   }, [exiting]);
 
+  // Idle blink after a random delay each time, sometimes doubled
+  const [blinking, setBlinking] = useState(false);
+  const blinksLeft = useRef(0);
+  const doubleBlinkTimer = useRef(null);
+  useEffect(() => {
+    let timer;
+    const scheduleBlink = () => {
+      timer = setTimeout(() => {
+        blinksLeft.current = Math.random() < MASCOT_DOUBLE_BLINK_CHANCE ? 2 : 1;
+        setBlinking(true);
+        scheduleBlink();
+      }, MASCOT_BLINK_MIN_MS + Math.random() * (MASCOT_BLINK_MAX_MS - MASCOT_BLINK_MIN_MS));
+    };
+    scheduleBlink();
+    return () => { clearTimeout(timer); clearTimeout(doubleBlinkTimer.current); };
+  }, []);
+
+  const handleBlinkEnd = () => {
+    setBlinking(false);
+    blinksLeft.current -= 1;
+    if (blinksLeft.current > 0) {
+      doubleBlinkTimer.current = setTimeout(() => setBlinking(true), MASCOT_DOUBLE_BLINK_GAP_MS);
+    }
+  };
+
   const handleShock = () => {
     if (!interactive) return;
     clearTimeout(shockTimer.current);
@@ -136,6 +168,15 @@ export const Mascot = ({ mood = MASCOT_MOODS.HAPPY, ahoge, scale = 1, side = 'le
 
   const effectiveMood = shocked ? MASCOT_MOODS.SHOCKED : hovering ? MASCOT_MOODS.GRIN : mood;
   const ahogeType = ahoge ?? AHOGE_BY_MOOD[effectiveMood];
+
+  // Grin eyes are already closed: skip that blink rather than replaying it once the grin ends
+  const blinkSkipped = effectiveMood === MASCOT_MOODS.GRIN;
+  useEffect(() => {
+    if (blinking && blinkSkipped) {
+      blinksLeft.current = 0;
+      setBlinking(false);
+    }
+  }, [blinking, blinkSkipped]);
 
   // Intro: retracted → out (transition) → done (normal hover behavior).
   // Using transitions (not keyframes) so if a trigger is already hovered when 'done' fires,
@@ -194,7 +235,12 @@ export const Mascot = ({ mood = MASCOT_MOODS.HAPPY, ahoge, scale = 1, side = 'le
               {renderTuft(colors, ahogeType, flipped)}
               <path d={BODY_PATH} fill={colors.body} />
 
-              {renderEyes(colors, effectiveMood)}
+              <g
+                className={blinking ? 'animate-mascot-blink' : undefined}
+                onAnimationEnd={handleBlinkEnd}
+              >
+                {renderEyes(colors, effectiveMood)}
+              </g>
               <path d={BEAK_PATH} fill={colors.face} />
               {renderMouth(colors, effectiveMood)}
             </g>

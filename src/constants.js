@@ -87,6 +87,12 @@ export const MASCOT_AHOGE = {
 export const MASCOT_GRIN_LEAD_MS = 80;   // expression change before the slide starts
 export const MASCOT_NAV_DELAY_MS = 200;  // into the slide before navigating
 
+// Idle blink on menus (blink duration lives in index.css)
+export const MASCOT_BLINK_MIN_MS = 4000;       // random delay between two blinks
+export const MASCOT_BLINK_MAX_MS = 9000;
+export const MASCOT_DOUBLE_BLINK_CHANCE = 0.2;
+export const MASCOT_DOUBLE_BLINK_GAP_MS = 80;  // pause between the two blinks of a double
+
 // Session failures on an item past which getting it right is a "comeback" (SHOCKED, not GRIN)
 export const MASCOT_COMEBACK_FAILURES = 2;
 

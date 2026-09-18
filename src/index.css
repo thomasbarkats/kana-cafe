@@ -144,3 +144,21 @@
 .animate-mascot-recoil {
   animation: mascot-recoil 0.3s ease;
 }
+
+/* Idle blink on menus: eyes squash vertically around their own centre */
+@keyframes mascot-blink {
+  0%,
+  100% {
+    transform: scaleY(1);
+  }
+
+  50% {
+    transform: scaleY(0.1);
+  }
+}
+
+.animate-mascot-blink {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: mascot-blink 0.18s ease-in-out;
+}
