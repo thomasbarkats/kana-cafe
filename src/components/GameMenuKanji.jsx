@@ -88,13 +88,20 @@ export const GameMenuKanji = ({ sideButtons }) => {
       onClick: () => setShowLoginModal(true)
     });
   }
-  if (!isAuthenticated && !hasRandomOption) {
+  if (!hasRandomOption) {
     listOptions.splice(1, 0, {
       value: 'random',
       label: t('common.random'),
       icon: 'dice',
-      subtitle: `${RANDOM_LIST_SIZE} ${t('common.randomKanjiSignIn')}`,
-      onClick: () => setShowLoginModal(true)
+      ...(isAuthenticated
+        ? {
+          disabled: true,
+          placeholder: t('common.randomKanjiPlaceholder')
+        }
+        : {
+          subtitle: `${RANDOM_LIST_SIZE} ${t('common.randomKanjiSignIn')}`,
+          onClick: () => setShowLoginModal(true)
+        })
     });
   }
 

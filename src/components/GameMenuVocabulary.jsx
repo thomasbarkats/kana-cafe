@@ -86,13 +86,20 @@ export const GameMenuVocabulary = ({ sideButtons }) => {
       onClick: () => setShowLoginModal(true)
     });
   }
-  if (!isAuthenticated && !hasRandomOption) {
+  if (!hasRandomOption) {
     listOptions.splice(1, 0, {
       value: 'random',
       label: t('common.random'),
       icon: 'dice',
-      subtitle: `${RANDOM_LIST_SIZE} ${t('common.randomWordsSignIn')}`,
-      onClick: () => setShowLoginModal(true)
+      ...(isAuthenticated
+        ? {
+          disabled: true,
+          placeholder: t('common.randomWordsPlaceholder')
+        }
+        : {
+          subtitle: `${RANDOM_LIST_SIZE} ${t('common.randomWordsSignIn')}`,
+          onClick: () => setShowLoginModal(true)
+        })
     });
   }
 
