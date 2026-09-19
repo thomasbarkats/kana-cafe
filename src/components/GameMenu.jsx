@@ -69,45 +69,48 @@ export const GameMenu = ({
             />
           )}
 
-          {/* Menu card */}
-          <div className={`relative ${theme.cardBg} backdrop-blur-sm rounded-3xl shadow-2xl p-5 lg:p-8 w-full lg:w-[28rem] z-10`}>
-            {isMobile && (
-              <Mascot
-                variant={MASCOT_VARIANTS.TOP}
-                mood={mascot.mood}
-                className="absolute bottom-full left-1/2 -translate-x-1/2"
-              />
-            )}
-
+          {/* No z-index here: the side buttons must stack above the mascot, outside the card's stacking context */}
+          <div className="relative w-full lg:w-[28rem]">
             {sideButtons && !isMobile && (
-              <div className="absolute left-full bottom-0 ml-4 z-20 flex flex-col-reverse gap-2 items-end mb-6">
+              <div className="absolute left-full bottom-0 ml-4 z-30 flex flex-col-reverse gap-2 items-end mb-6">
                 {sideButtons}
               </div>
             )}
 
-            <div className="text-center mb-6 lg:mb-8 relative">
-              {onPrevious && (
-                <button
-                  onClick={onPrevious}
-                  className={`absolute top-2 left-0 lg:top-4 lg:left-6 p-2 lg:p-3 ${theme.buttonSecondary} rounded-full transition-colors cursor-pointer ${MASCOT_TRIGGER.HOVER}`}
-                  title={previousTooltip}
-                >
-                  <ChevronLeft className="w-5 h-5" />
-                </button>
+            {/* Menu card */}
+            <div className={`relative ${theme.cardBg} backdrop-blur-sm rounded-3xl shadow-2xl p-5 lg:p-8 w-full z-10`}>
+              {isMobile && (
+                <Mascot
+                  variant={MASCOT_VARIANTS.TOP}
+                  mood={mascot.mood}
+                  className="absolute bottom-full left-1/2 -translate-x-1/2"
+                />
               )}
-              {onNext && (
-                <button
-                  onClick={onNext}
-                  className={`absolute top-2 right-0 lg:top-4 lg:right-6 p-2 lg:p-3 ${theme.buttonSecondary} rounded-full transition-colors cursor-pointer ${MASCOT_TRIGGER.HOVER}`}
-                  title={nextTooltip}
-                >
-                  <ChevronRight className="w-5 h-5" />
-                </button>
-              )}
-              <h1 className={`text-3xl lg:text-4xl font-bold ${theme.text} mb-2 px-10 lg:px-0`}>{title}</h1>
-              <p className={theme.textSecondary}>{subtitle}</p>
+
+              <div className="text-center mb-6 lg:mb-8 relative">
+                {onPrevious && (
+                  <button
+                    onClick={onPrevious}
+                    className={`absolute top-2 left-0 lg:top-4 lg:left-6 p-2 lg:p-3 ${theme.buttonSecondary} rounded-full transition-colors cursor-pointer ${MASCOT_TRIGGER.HOVER}`}
+                    title={previousTooltip}
+                  >
+                    <ChevronLeft className="w-5 h-5" />
+                  </button>
+                )}
+                {onNext && (
+                  <button
+                    onClick={onNext}
+                    className={`absolute top-2 right-0 lg:top-4 lg:right-6 p-2 lg:p-3 ${theme.buttonSecondary} rounded-full transition-colors cursor-pointer ${MASCOT_TRIGGER.HOVER}`}
+                    title={nextTooltip}
+                  >
+                    <ChevronRight className="w-5 h-5" />
+                  </button>
+                )}
+                <h1 className={`text-3xl lg:text-4xl font-bold ${theme.text} mb-2 px-10 lg:px-0`}>{title}</h1>
+                <p className={theme.textSecondary}>{subtitle}</p>
+              </div>
+              {children}
             </div>
-            {children}
           </div>
 
           {/* Other mode tabs below */}
