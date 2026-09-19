@@ -1,10 +1,11 @@
 import { Sun, Moon, Globe, Repeat2 } from 'lucide-react';
 import { useState, useRef, useEffect } from 'react';
-import { LANGUAGES, REQUIRED_SUCCESSES_LIMITS } from '../../constants';
+import { REQUIRED_SUCCESSES_LIMITS } from '../../constants';
 import { useTranslation } from '../../contexts/I18nContext';
 import { usePreferences } from '../../contexts/PreferencesContext';
-import { Select } from './Select';
+import { useIsMobile } from '../../hooks/useIsMobile';
 import { KeyboardKey } from './KeyboardKey';
+import { LanguageSettingsContent } from './LanguageSettingsContent';
 
 
 export const MenuControls = ({
@@ -19,8 +20,9 @@ export const MenuControls = ({
   loopMode = false,
   onLoopModeChange = null
 }) => {
-  const { translationLanguage, uiLanguage, effectiveUiLanguage, handleTranslationLanguageChange, handleUiLanguageChange } = usePreferences();
+  const { effectiveUiLanguage } = usePreferences();
   const { t } = useTranslation();
+  const isMobile = useIsMobile();
   const [showLanguageMenu, setShowLanguageMenu] = useState(false);
   const menuRef = useRef(null);
 
@@ -37,6 +39,7 @@ export const MenuControls = ({
       return () => document.removeEventListener('mousedown', handleClickOutside);
     }
   }, [showLanguageMenu]);
+
 
 
   return (
@@ -60,83 +63,38 @@ export const MenuControls = ({
           <button
             onClick={toggleDarkMode}
             className={`p-2 ${theme.buttonSecondary} rounded-full transition-colors cursor-pointer`}
-            title={darkMode ? 'Switch to light mode' : 'Switch to dark mode'}
+            title={darkMode ? t('gameplay.switchToLightMode') : t('gameplay.switchToDarkMode')}
           >
-            {darkMode ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
+            {darkMode ? <Moon className="w-5 h-5" /> : <Sun className="w-5 h-5" />}
           </button>
           <div className="opacity-0 group-hover:opacity-100 transition-opacity duration-200 absolute inset-0 pointer-events-none flex items-center justify-center">
             <KeyboardKey keyLabel="L" position="below" />
           </div>
         </div>
 
-        <div className="relative" ref={menuRef}>
-          <button
-            onClick={() => setShowLanguageMenu(!showLanguageMenu)}
-            className={`p-2 ${theme.buttonSecondary} rounded-full transition-colors cursor-pointer`}
-            title={t('settings.languageSettings')}
-          >
-            <div className="flex items-center gap-1">
-              <Globe className="w-5 h-5" />
-              <span className="text-xs font-medium">{effectiveUiLanguage.toUpperCase()}</span>
-            </div>
-          </button>
+        {/* On the mobile layout the language settings live in the burger */}
+        {!isMobile && (
+          <div className="relative" ref={menuRef}>
+            <button
+              onClick={() => setShowLanguageMenu(!showLanguageMenu)}
+              className={`p-2 ${theme.buttonSecondary} rounded-full transition-colors cursor-pointer`}
+              title={t('settings.languageSettings')}
+            >
+              <div className="flex items-center gap-1">
+                <Globe className="w-5 h-5" />
+                <span className="text-xs font-medium">{effectiveUiLanguage.toUpperCase()}</span>
+              </div>
+            </button>
 
-          {showLanguageMenu && (
-            <div className={`absolute bottom-full mb-2 right-0 ${theme.selectorBg} ${theme.text} rounded-lg shadow-xl w-[240px] border ${theme.border} overflow-hidden`}>
-              <div className="px-4 py-3 space-y-4">
-                {/* Translation Language */}
-                <div>
-                  <div className={`text-xs font-medium ${theme.textSecondary} mb-2`}>
-                    {t('settings.translationLanguage')}
-                  </div>
-                  <Select
-                    value={translationLanguage}
-                    onChange={handleTranslationLanguageChange}
-                    options={[
-                      { value: LANGUAGES.FR, label: 'Français' },
-                      { value: LANGUAGES.EN, label: 'English' }
-                    ]}
-                    translateLabels={false}
-                    className="w-full"
-                  />
-                </div>
-
-                {/* UI Language */}
-                <div>
-                  <div className={`text-xs font-medium ${theme.textSecondary} mb-2`}>
-                    {t('settings.uiLanguage')}
-                  </div>
-                  <div className="space-y-2">
-                    <button
-                      onClick={() => handleUiLanguageChange('auto')}
-                      className={`
-                        w-full px-4 py-2.5 rounded-lg text-sm font-medium transition-all border-2
-                        ${uiLanguage === 'auto'
-                          ? `${theme.inputBg} ${theme.text} shadow-sm ${theme.inputBorder}`
-                          : `${theme.sectionBg} ${theme.textSecondary} ${theme.selectorHover} border-transparent`
-                        }
-                      `}
-                    >
-                      {translationLanguage === LANGUAGES.FR ? 'Auto. (Traductions)' : 'Auto. (Translations)'}
-                    </button>
-                    <button
-                      onClick={() => handleUiLanguageChange(LANGUAGES.JP)}
-                      className={`
-                        w-full px-4 py-2.5 rounded-lg text-sm font-medium transition-all border-2
-                        ${uiLanguage === LANGUAGES.JP
-                          ? `${theme.inputBg} ${theme.text} shadow-sm ${theme.inputBorder}`
-                          : `${theme.sectionBg} ${theme.textSecondary} ${theme.selectorHover} border-transparent`
-                        }
-                      `}
-                    >
-                      {t('languages.jp')}
-                    </button>
-                  </div>
+            {showLanguageMenu && (
+              <div className={`absolute bottom-full mb-2 right-0 ${theme.selectorBg} ${theme.text} rounded-lg shadow-xl w-[240px] border ${theme.border} overflow-hidden`}>
+                <div className="px-4 py-3 space-y-4">
+                  <LanguageSettingsContent />
                 </div>
               </div>
-            </div>
-          )}
-        </div>
+            )}
+          </div>
+        )}
       </div>
 
       <div className="flex items-center space-x-2">
@@ -155,7 +113,7 @@ export const MenuControls = ({
           {showLoopMode && (
             <div className="relative group">
               <button
-                onClick={() => onLoopModeChange && onLoopModeChange(!loopMode)}
+                onClick={() => onLoopModeChange?.(!loopMode)}
                 className={`p-2 rounded-full transition-colors cursor-pointer ${loopMode ? theme.buttonActive : theme.buttonSecondary}`}
                 title={t('tooltips.loopMode')}
               >

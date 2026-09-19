@@ -1,5 +1,5 @@
-import { Download, HelpCircle, Keyboard } from 'lucide-react';
-import { useEffect, useRef, useState } from 'react';
+import { Download, Info, Keyboard, SpellCheck } from 'lucide-react';
+import { useEffect, useState } from 'react';
 import { GAME_STATES, APP_MODES, GAME_MODES, STORAGE_KEYS } from './constants';
 import { useGameContext } from './contexts/GameContext';
 import { useGameContextKanji } from './contexts/GameContextKanji';
@@ -7,7 +7,7 @@ import { useGameContextVocabulary } from './contexts/GameContextVocabulary';
 import { useTranslation } from './contexts/I18nContext';
 import { usePreferences } from './contexts/PreferencesContext';
 import { useAuth } from './contexts/AuthContext';
-import { useInstallApp, useKeyboardNavigation, useKeyboardShortcuts } from './hooks';
+import { useInstallApp, useIsMobile, useKeyboardNavigation, useKeyboardShortcuts } from './hooks';
 import { getSortedStats } from './services/statsService';
 import {
   GameMenuKana,
@@ -15,16 +15,19 @@ import {
   Summary,
   GameMenuVocabulary,
   GameMenuKanji,
-  FloatingHelpButton,
   ReviewVocabulary,
   ReviewKana,
   ReviewKanji,
   ProfileButton,
   RotateDeviceOverlay,
   ServerErrorModal,
-  KeyboardKey,
   KeyboardHelpContent,
   InstallAppContent,
+  LanguageMenu,
+  HelpMenu,
+  HelpModal,
+  LegalModal,
+  SideButton,
 } from './components';
 import {
   useGameActions,
@@ -46,6 +49,7 @@ function App() {
     sortBy,
   } = useGameContext();
   const {
+    theme,
     kanaLoopMode,
     vocabularyLoopMode,
     kanjiLoopMode,
@@ -54,11 +58,11 @@ function App() {
     handleKanjiLoopModeChange
   } = usePreferences();
   const { isAuthenticated } = useAuth();
-  const profileButtonRef = useRef(null);
   const [showKeyboardModal, setShowKeyboardModal] = useState(false);
   const [showHelpModal, setShowHelpModal] = useState(false);
   const [showLoginModal, setShowLoginModal] = useState(false);
   const [showInstallModal, setShowInstallModal] = useState(false);
+  const [showLegalModal, setShowLegalModal] = useState(false);
   const { canInstall, hasNativePrompt, promptInstall } = useInstallApp();
 
   useKeyboardNavigation();
@@ -125,21 +129,68 @@ function App() {
   const { clearGameData } = useGameActions();
 
 
-  const KeyboardButton = (
-    <div className="relative group">
-      <div className="opacity-0 group-hover:opacity-100 transition-opacity duration-200 absolute top-0 left-0 w-12 h-12 pointer-events-none flex items-center justify-center">
-        <KeyboardKey keyLabel="K" position="right" />
-      </div>
-      <FloatingHelpButton
-        icon={Keyboard}
-        tooltip={t('tooltips.jpKeyboardHelp')}
-        title={t('keyboardHelp.title')}
-        show={showKeyboardModal}
-        onToggle={toggleKeyboardModal}
-      >
+  const isKanjiMode = appMode === APP_MODES.KANJI;
+  const isMobile = useIsMobile();
+
+  const helpMenu = (
+    <HelpMenu items={[
+      { icon: Keyboard, label: t('helpMenu.keyboard'), keyLabel: 'K', onClick: toggleKeyboardModal },
+      { icon: SpellCheck, label: t('helpMenu.inputRules'), keyLabel: 'H', onClick: toggleHelpModal },
+    ]} />
+  );
+
+  const installButton = canInstall && (
+    <SideButton icon={Download} tooltip={t('tooltips.installApp')} onClick={toggleInstallModal} />
+  );
+
+  const accountButton = (
+    <ProfileButton showLoginModal={showLoginModal} onToggleLoginModal={toggleLoginModal} />
+  );
+
+  // Rendered apart from the side buttons: those unmount when the mobile burger closes,
+  // which a tap inside an open modal would otherwise trigger.
+  const menuModals = (
+    <>
+      <HelpModal show={showKeyboardModal} onClose={toggleKeyboardModal} title={t('keyboardHelp.title')}>
         <KeyboardHelpContent />
-      </FloatingHelpButton>
-    </div>
+      </HelpModal>
+
+      <HelpModal
+        show={showHelpModal}
+        onClose={toggleHelpModal}
+        title={t(isKanjiMode ? 'inputRulesHelp.kanjiTitle' : 'inputRulesHelp.vocabularyTitle')}
+      >
+        {isKanjiMode ? (
+          <>
+            <div>
+              <h4 className="font-medium mb-2">{t('inputRulesHelp.kanjiReadingsTitle')}</h4>
+              <p className="text-sm">{t('inputRulesHelp.kanjiReadingsDesc')}</p>
+            </div>
+            <div>
+              <h4 className="font-medium mb-2">{t('inputRulesHelp.kanjiMeaningsTitle')}</h4>
+              <p className="text-sm">{t('inputRulesHelp.kanjiMeaningsDesc')}</p>
+            </div>
+          </>
+        ) : (
+          <>
+            <div>
+              <h4 className="font-medium mb-2">{t('inputRulesHelp.vocabularyJapaneseTitle')}</h4>
+              <p className="text-sm">{t('inputRulesHelp.vocabularyJapaneseDesc')}</p>
+            </div>
+            <div>
+              <h4 className="font-medium mb-2">{t('inputRulesHelp.vocabularyTranslationsTitle')}</h4>
+              <p className="text-sm">{t('inputRulesHelp.vocabularyTranslationsDesc')}</p>
+            </div>
+          </>
+        )}
+      </HelpModal>
+
+      <HelpModal show={showInstallModal} onClose={toggleInstallModal} title={t('installApp.title')}>
+        <InstallAppContent />
+      </HelpModal>
+
+      <LegalModal show={showLegalModal} onClose={() => setShowLegalModal(false)} theme={theme} />
+    </>
   );
 
   const renderContent = () => {
@@ -148,82 +199,28 @@ function App() {
         switch (appMode) {
           case APP_MODES.KANA:
             return (
-              <GameMenuKana sideButtons={<>
-                <div ref={profileButtonRef}>
-                  <ProfileButton showLegalButton showLoginModal={showLoginModal} onToggleLoginModal={toggleLoginModal} />
-                </div>
-                {canInstall && (
-                  <FloatingHelpButton
-                    icon={Download}
-                    tooltip={t('tooltips.installApp')}
-                    title={t('installApp.title')}
-                    show={showInstallModal}
-                    onToggle={toggleInstallModal}
-                  >
-                    <InstallAppContent />
-                  </FloatingHelpButton>
+              <GameMenuKana accountButton={accountButton} sideButtons={<>
+                {installButton}
+                {isMobile && <LanguageMenu />}
+                {!isAuthenticated && (
+                  <SideButton icon={Info} tooltip={t('legal.menuItem')} onClick={() => setShowLegalModal(true)} />
                 )}
               </>} />
             );
           case APP_MODES.VOCABULARY:
             return (
-              <GameMenuVocabulary sideButtons={<>
-                {KeyboardButton}
-                <div className="relative group">
-                  <div className="opacity-0 group-hover:opacity-100 transition-opacity duration-200 absolute top-0 left-0 w-12 h-12 pointer-events-none flex items-center justify-center">
-                    <KeyboardKey keyLabel="H" position="right" />
-                  </div>
-                  <FloatingHelpButton
-                    icon={HelpCircle}
-                    tooltip={t('tooltips.inputRulesHelp')}
-                    title={t('inputRulesHelp.vocabularyTitle')}
-                    show={showHelpModal}
-                    onToggle={toggleHelpModal}
-                  >
-                    <div>
-                      <h4 className="font-medium mb-2">{t('inputRulesHelp.vocabularyJapaneseTitle')}</h4>
-                      <p className="text-sm">{t('inputRulesHelp.vocabularyJapaneseDesc')}</p>
-                    </div>
-                    <div>
-                      <h4 className="font-medium mb-2">{t('inputRulesHelp.vocabularyTranslationsTitle')}</h4>
-                      <p className="text-sm">{t('inputRulesHelp.vocabularyTranslationsDesc')}</p>
-                    </div>
-                  </FloatingHelpButton>
-                </div>
-                <div ref={profileButtonRef}>
-                  <ProfileButton showLoginModal={showLoginModal} onToggleLoginModal={toggleLoginModal} />
-                </div>
+              <GameMenuVocabulary accountButton={accountButton} sideButtons={<>
+                {installButton}
+                {isMobile && <LanguageMenu />}
+                {helpMenu}
               </>} />
             );
           case APP_MODES.KANJI:
             return (
-              <GameMenuKanji sideButtons={<>
-                {KeyboardButton}
-                <div className="relative group">
-                  <div className="opacity-0 group-hover:opacity-100 transition-opacity duration-200 absolute top-0 left-0 w-12 h-12 pointer-events-none flex items-center justify-center">
-                    <KeyboardKey keyLabel="H" position="right" />
-                  </div>
-                  <FloatingHelpButton
-                    icon={HelpCircle}
-                    tooltip={t('tooltips.inputRulesHelp')}
-                    title={t('inputRulesHelp.kanjiTitle')}
-                    show={showHelpModal}
-                    onToggle={toggleHelpModal}
-                  >
-                    <div>
-                      <h4 className="font-medium mb-2">{t('inputRulesHelp.kanjiReadingsTitle')}</h4>
-                      <p className="text-sm">{t('inputRulesHelp.kanjiReadingsDesc')}</p>
-                    </div>
-
-                    <div>
-                      <h4 className="font-medium mb-2">{t('inputRulesHelp.kanjiMeaningsTitle')}</h4>
-                      <p className="text-sm">{t('inputRulesHelp.kanjiMeaningsDesc')}</p>
-                    </div>
-                  </FloatingHelpButton>
-                </div>
-                <div ref={profileButtonRef}>
-                  <ProfileButton showLoginModal={showLoginModal} onToggleLoginModal={toggleLoginModal} />
-                </div>
+              <GameMenuKanji accountButton={accountButton} sideButtons={<>
+                {installButton}
+                {isMobile && <LanguageMenu />}
+                {helpMenu}
               </>} />
             );
           default:
@@ -275,6 +272,7 @@ function App() {
       <RotateDeviceOverlay />
       <ServerErrorModal />
       {renderContent()}
+      {gameState === GAME_STATES.MENU && menuModals}
     </>
   );
 }

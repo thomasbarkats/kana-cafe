@@ -59,13 +59,13 @@ export const LegalModal = ({ show, onClose, theme }) => {
   const SectionHeader = ({ id, title }) => (
     <button
       onClick={() => toggleSection(id)}
-      className={`w-full flex items-center justify-between p-4 ${theme.selectorBg} ${theme.text} rounded-lg cursor-pointer hover:opacity-80 transition-opacity`}
+      className={`w-full flex items-center justify-between gap-3 p-4 ${theme.selectorBg} ${theme.text} text-left rounded-lg cursor-pointer hover:opacity-80 transition-opacity`}
     >
       <span className="font-semibold">{title}</span>
       {expandedSection === id ? (
-        <ChevronUp className="w-5 h-5" />
+        <ChevronUp className="w-5 h-5 shrink-0" />
       ) : (
-        <ChevronDown className="w-5 h-5" />
+        <ChevronDown className="w-5 h-5 shrink-0" />
       )}
     </button>
   );

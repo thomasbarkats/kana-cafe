@@ -336,8 +336,8 @@ export const GamePlay = () => {
                     title={darkMode ? t('gameplay.switchToLightMode') : t('gameplay.switchToDarkMode')}
                   >
                     {darkMode
-                      ? <Sun className="w-5 h-5" />
-                      : <Moon className="w-5 h-5" />
+                      ? <Moon className="w-5 h-5" />
+                      : <Sun className="w-5 h-5" />
                     }
                   </button>
                   <div className="opacity-0 group-hover:opacity-100 transition-opacity duration-200 absolute inset-0 pointer-events-none flex items-center justify-center">

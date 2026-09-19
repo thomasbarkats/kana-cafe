@@ -206,6 +206,11 @@
     "tip3": "Appuyez sur F7 pour le katakana",
     "tip4": "Appuyez sur Entrée pour confirmer"
   },
+  "helpMenu": {
+    "title": "Aide",
+    "keyboard": "Clavier japonais",
+    "inputRules": "Règles de saisie"
+  },
   "inputRulesHelp": {
     "kanjiTitle": "Règles de saisie - Kanji",
     "kanjiReadingsTitle": "Lectures (kun/on) :",

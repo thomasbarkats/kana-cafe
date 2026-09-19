@@ -20,7 +20,8 @@ export const GameMenu = ({
   nextTooltip,
   currentMode,
   onModeChange,
-  sideButtons
+  sideButtons,
+  accountButton
 }) => {
   const { t } = useTranslation();
   const isMobile = useIsMobile();
@@ -55,7 +56,7 @@ export const GameMenu = ({
   return (
     <CenteredLayout className={`${theme.bg} -mb-8`}>
       <MascotProvider value={triggerExit}>
-        {sideButtons && isMobile && <BurgerMenu>{sideButtons}</BurgerMenu>}
+        {sideButtons && isMobile && <BurgerMenu leading={accountButton}>{sideButtons}</BurgerMenu>}
 
         <div className="relative flex flex-col items-center gap-4 group/menu w-full max-w-md lg:w-auto lg:max-w-none">
           {!isMobile && (
@@ -74,6 +75,7 @@ export const GameMenu = ({
             {sideButtons && !isMobile && (
               <div className="absolute left-full bottom-0 ml-4 z-30 flex flex-col-reverse gap-2 items-end mb-6">
                 {sideButtons}
+                {accountButton}
               </div>
             )}
 

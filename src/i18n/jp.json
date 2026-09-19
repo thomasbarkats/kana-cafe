@@ -226,6 +226,11 @@
     "tip3": "F7でカタカナ",
     "tip4": "Enterで確定"
   },
+  "helpMenu": {
+    "title": "ヘルプ",
+    "keyboard": "日本語キーボード",
+    "inputRules": "入力ルール"
+  },
   "inputRulesHelp": {
     "kanjiTitle": "漢字入力ルール",
     "kanjiReadingsTitle": "読み方（訓・音）：",
