@@ -1,8 +1,11 @@
+import { HAPTIC_PATTERNS } from '../../constants';
 import { usePreferences } from '../../contexts/PreferencesContext';
+import { useHaptics } from '../../hooks/useHaptics';
 
 
 export const Button = ({ onClick, disabled, children, variant = 'primary', className = '' }) => {
   const { theme } = usePreferences();
+  const haptic = useHaptics();
 
   const baseClasses = "font-semibold h-11 px-6 rounded-xl transform hover:scale-105 transition-all duration-200 shadow-lg cursor-pointer";
 
@@ -16,7 +19,10 @@ export const Button = ({ onClick, disabled, children, variant = 'primary', class
 
   return (
     <button
-      onClick={onClick}
+      onClick={(event) => {
+        haptic(HAPTIC_PATTERNS.IMPACT);
+        onClick?.(event);
+      }}
       disabled={disabled}
       className={`${baseClasses} ${variantClasses[variant]} ${disabled ? 'opacity-50 cursor-not-allowed' : ''} ${className}`}
     >

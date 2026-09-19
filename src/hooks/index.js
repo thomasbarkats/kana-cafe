@@ -15,3 +15,4 @@ export { useKeyboardShortcuts } from './useKeyboardShortcuts';
 export { useIsMobile } from './useIsMobile';
 export { useMediaQuery } from './useMediaQuery';
 export { useInstallApp } from './useInstallApp';
+export { useHaptics } from './useHaptics';

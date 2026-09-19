@@ -226,6 +226,11 @@
     "tip3": "Press F7 for katakana",
     "tip4": "Press Enter to confirm"
   },
+  "helpMenu": {
+    "title": "Help",
+    "keyboard": "Japanese keyboard",
+    "inputRules": "Input rules"
+  },
   "inputRulesHelp": {
     "kanjiTitle": "Kanji Input Rules",
     "kanjiReadingsTitle": "Readings (kun/on):",
@@ -270,7 +275,9 @@
     "addToFavorites": "Add to favorites",
     "removeFromFavorites": "Remove from favorites",
     "menu": "Menu",
-    "installApp": "Install the app"
+    "installApp": "Install the app",
+    "hapticsOn": "Turn vibrations on",
+    "hapticsOff": "Turn vibrations off"
   },
   "languages": {
     "fr": "Français",

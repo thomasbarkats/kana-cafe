@@ -10,7 +10,7 @@ import { GameMenu, MascotTrigger, MenuControls, SegmentedControl, SkeletonButton
 import { MASCOT_TRIGGER } from './ui/MascotTrigger';
 
 
-export const GameMenuKana = ({ sideButtons }) => {
+export const GameMenuKana = ({ sideButtons, accountButton }) => {
   const { t } = useTranslation();
   const { initializeKanaGame } = useGameLogicKana();
 
@@ -110,6 +110,7 @@ export const GameMenuKana = ({ sideButtons }) => {
       currentMode={appMode}
       onModeChange={updateAppMode}
       sideButtons={sideButtons}
+      accountButton={accountButton}
     >
       <div className="space-y-4">
         <MascotTrigger

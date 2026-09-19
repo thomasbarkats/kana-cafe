@@ -22,6 +22,7 @@ import {
   getAllKanaForMode,
   speakReading,
   playFeedbackSound,
+  triggerHaptic,
   triggerConfetti,
   checkVocabularyAnswer,
   validateKanjiAnswer,
@@ -80,6 +81,7 @@ export const useGameActions = () => {
     vocabularyMode,
     vocabularyLoopMode,
     soundMode,
+    hapticsEnabled,
     kanjiLoopMode,
     kanjiMode,
   } = usePreferences();
@@ -209,6 +211,7 @@ export const useGameActions = () => {
     const feedbackType = isCorrect ? FEEDBACK_TYPES.SUCCESS : FEEDBACK_TYPES.ERROR;
 
     playFeedbackSound(feedbackType, soundMode);
+    triggerHaptic(feedbackType, hapticsEnabled);
 
     feedbackPausedRef.current = false;
     setFeedbackPaused(false);
@@ -332,6 +335,7 @@ export const useGameActions = () => {
     const feedbackType = isCorrect ? FEEDBACK_TYPES.SUCCESS : FEEDBACK_TYPES.ERROR;
 
     playFeedbackSound(feedbackType, soundMode);
+    triggerHaptic(feedbackType, hapticsEnabled);
 
     feedbackPausedRef.current = false;
     setFeedbackPaused(false);

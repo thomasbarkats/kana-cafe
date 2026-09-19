@@ -4,3 +4,4 @@ export * from './gameHelpers';
 export * from './kanaHelpers';
 export * from './kanjiHelpers';
 export * from './vocabularyHelpers';
+export * from './hapticsHelper';

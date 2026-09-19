@@ -1,4 +1,10 @@
+import { HAPTIC_PATTERNS } from '../../constants';
+import { useHaptics } from '../../hooks/useHaptics';
+
+
 export const SegmentedControl = ({ value, onChange, options, label, theme }) => {
+  const haptic = useHaptics();
+
   return (
     <div className="flex flex-wrap items-center justify-between gap-2 py-3">
       {label && (
@@ -11,7 +17,10 @@ export const SegmentedControl = ({ value, onChange, options, label, theme }) => 
           <button
             key={option.value}
             disabled={option.disabled}
-            onClick={() => onChange(option.value)}
+            onClick={() => {
+              if (option.value !== value) haptic(HAPTIC_PATTERNS.SELECTION);
+              onChange(option.value);
+            }}
             className={`
               relative px-2.5 lg:px-3.5 py-1 rounded-md text-sm font-medium transition-all duration-200
               ${option.disabled ? 'opacity-40 cursor-not-allowed' : 'cursor-pointer'}

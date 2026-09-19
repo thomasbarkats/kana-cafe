@@ -33,6 +33,7 @@ const DEFAULT_PREFERENCES = {
   showFurigana: true,
   translationLanguage: getBrowserLanguage(),
   uiLanguage: 'auto',
+  hapticsEnabled: true,
 };
 
 export const PreferencesProvider = ({ children }) => {
@@ -111,6 +112,10 @@ export const PreferencesProvider = ({ children }) => {
     updatePreferences({ uiLanguage: value });
   };
 
+  const toggleHaptics = () => {
+    updatePreferences({ hapticsEnabled: !preferences.hapticsEnabled });
+  };
+
   // Compute effective UI language (resolve 'auto' to actual translation language)
   const effectiveUiLanguage = preferences.uiLanguage === LANGUAGES.JP
     ? LANGUAGES.JP
@@ -135,6 +140,7 @@ export const PreferencesProvider = ({ children }) => {
     showFurigana: preferences.showFurigana,
     translationLanguage: preferences.translationLanguage,
     uiLanguage: preferences.uiLanguage,
+    hapticsEnabled: preferences.hapticsEnabled,
     effectiveUiLanguage, // Computed: resolves 'auto' to actual language
 
     // Handlers
@@ -151,6 +157,7 @@ export const PreferencesProvider = ({ children }) => {
     handleTranslationLanguageChange,
     handleUiLanguageChange,
     toggleDarkMode,
+    toggleHaptics,
     cycleSoundMode,
     setSoundModeValue,
     getSoundModeIcon,

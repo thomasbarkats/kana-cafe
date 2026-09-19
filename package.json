@@ -10,7 +10,8 @@
     "lucide-react": "^1.17.0",
     "react": "^19.2.7",
     "react-dom": "^19.2.7",
-    "wanakana": "^5.3.1"
+    "wanakana": "^5.3.1",
+    "web-haptics": "^0.0.6"
   },
   "devDependencies": {
     "@tailwindcss/vite": "^4.3.0",

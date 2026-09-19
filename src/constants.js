@@ -68,6 +68,14 @@ export const FEEDBACK_TYPES = {
   ERROR: 'error'
 };
 
+// Preset names of web-haptics; FEEDBACK_TYPES values double as SUCCESS / ERROR presets
+export const HAPTIC_PATTERNS = {
+  SUCCESS: 'success',
+  ERROR: 'error',
+  IMPACT: 'medium',
+  SELECTION: 'selection'
+};
+
 export const MASCOT_MOODS = {
   HAPPY: 'happy',
   SAD: 'sad',

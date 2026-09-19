@@ -12,7 +12,7 @@ import { LegalModal } from './LegalModal';
 import { KeyboardKey } from './KeyboardKey';
 
 
-export const ProfileButton = ({ showLegalButton = false, showLoginModal, onToggleLoginModal }) => {
+export const ProfileButton = ({ showLoginModal, onToggleLoginModal }) => {
   const { user, isAuthenticated, hasActiveSubscription, hasLifetimeAccess, logout } = useAuth();
   const { theme, darkMode } = usePreferences();
   const { t } = useTranslation();
@@ -217,17 +217,6 @@ export const ProfileButton = ({ showLegalButton = false, showLoginModal, onToggl
             </div>
           )}
         </div>
-
-        {/* Legal Info Button */}
-        {showLegalButton && !isAuthenticated && (
-          <button
-            onClick={handleLegalInfo}
-            className={`w-12 h-12 p-3 rounded-2xl ${theme.sideButton} ${theme.text} shadow-lg hover:shadow-xl transition-all cursor-pointer flex items-center justify-center focus:outline-none`}
-            title={t('legal.menuItem')}
-          >
-            <Info className="w-5 h-5" />
-          </button>
-        )}
       </div>
 
       {/* Modals */}

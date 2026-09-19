@@ -1,7 +1,8 @@
 import { useCallback, useState } from 'react';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
-import { APP_MODES, MASCOT_GRIN_LEAD_MS, MASCOT_MOODS, MASCOT_NAV_DELAY_MS, MASCOT_VARIANTS } from '../constants';
+import { APP_MODES, HAPTIC_PATTERNS, MASCOT_GRIN_LEAD_MS, MASCOT_MOODS, MASCOT_NAV_DELAY_MS, MASCOT_VARIANTS } from '../constants';
 import { useTranslation } from '../contexts/I18nContext';
+import { useHaptics } from '../hooks/useHaptics';
 import { useIsMobile } from '../hooks/useIsMobile';
 import { BurgerMenu } from './ui/BurgerMenu';
 import { CenteredLayout } from './ui/CenteredLayout';
@@ -20,10 +21,12 @@ export const GameMenu = ({
   nextTooltip,
   currentMode,
   onModeChange,
-  sideButtons
+  sideButtons,
+  accountButton
 }) => {
   const { t } = useTranslation();
   const isMobile = useIsMobile();
+  const haptic = useHaptics();
   const [mascot, setMascot] = useState({ mood: MASCOT_MOODS.HAPPY, reacting: false, exiting: false });
 
   // Expression change + recoil, then slide under the card, then navigate mid-slide.
@@ -55,7 +58,7 @@ export const GameMenu = ({
   return (
     <CenteredLayout className={`${theme.bg} -mb-8`}>
       <MascotProvider value={triggerExit}>
-        {sideButtons && isMobile && <BurgerMenu>{sideButtons}</BurgerMenu>}
+        {sideButtons && isMobile && <BurgerMenu leading={accountButton}>{sideButtons}</BurgerMenu>}
 
         <div className="relative flex flex-col items-center gap-4 group/menu w-full max-w-md lg:w-auto lg:max-w-none">
           {!isMobile && (
@@ -74,6 +77,7 @@ export const GameMenu = ({
             {sideButtons && !isMobile && (
               <div className="absolute left-full bottom-0 ml-4 z-30 flex flex-col-reverse gap-2 items-end mb-6">
                 {sideButtons}
+                {accountButton}
               </div>
             )}
 
@@ -90,7 +94,10 @@ export const GameMenu = ({
               <div className="text-center mb-6 lg:mb-8 relative">
                 {onPrevious && (
                   <button
-                    onClick={onPrevious}
+                    onClick={() => {
+                      haptic(HAPTIC_PATTERNS.SELECTION);
+                      onPrevious();
+                    }}
                     className={`absolute top-2 left-0 lg:top-4 lg:left-6 p-2 lg:p-3 ${theme.buttonSecondary} rounded-full transition-colors cursor-pointer ${MASCOT_TRIGGER.HOVER}`}
                     title={previousTooltip}
                   >
@@ -99,7 +106,10 @@ export const GameMenu = ({
                 )}
                 {onNext && (
                   <button
-                    onClick={onNext}
+                    onClick={() => {
+                      haptic(HAPTIC_PATTERNS.SELECTION);
+                      onNext();
+                    }}
                     className={`absolute top-2 right-0 lg:top-4 lg:right-6 p-2 lg:p-3 ${theme.buttonSecondary} rounded-full transition-colors cursor-pointer ${MASCOT_TRIGGER.HOVER}`}
                     title={nextTooltip}
                   >
@@ -118,7 +128,10 @@ export const GameMenu = ({
             {otherModes.map((mode) => (
               <button
                 key={mode.key}
-                onClick={() => onModeChange(mode.key)}
+                onClick={() => {
+                  haptic(HAPTIC_PATTERNS.SELECTION);
+                  onModeChange(mode.key);
+                }}
                 className={`${theme.cardBg} backdrop-blur-sm rounded-2xl shadow-lg px-4 py-2 transition-all duration-200 cursor-pointer hover:scale-105 hover:opacity-100 opacity-80 flex-1 ${MASCOT_TRIGGER.HOVER}`}
               >
                 <div className="text-center">
