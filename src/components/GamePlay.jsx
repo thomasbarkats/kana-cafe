@@ -27,7 +27,7 @@ import {
 
 export const GamePlay = () => {
   const { t } = useTranslation();
-  const { handleSubmit, resetGame } = useGameActions();
+  const { handleSubmit, isCorrectAnswer, resetGame } = useGameActions();
   const {
     currentStep,
     stepData,
@@ -102,14 +102,19 @@ export const GamePlay = () => {
   }, [feedback]);
 
   useEffect(() => {
-    if (!feedback && inputRef.current) {
-      setTimeout(() => {
-        inputRef.current?.focus();
-        if (isMobile) {
-          inputRef.current?.scrollIntoView({ block: 'center', behavior: 'smooth' });
-        }
-      }, TIMING.INPUT_FOCUS_DELAY);
-    }
+    if (feedback || !inputRef.current) return;
+
+    // Focused synchronously: on mobile a deferred focus no longer counts as user-driven
+    // and the browser refuses to raise the keyboard.
+    inputRef.current.focus();
+
+    if (!isMobile) return;
+
+    const scrollTimeout = setTimeout(() => {
+      inputRef.current?.scrollIntoView({ block: 'center', behavior: 'smooth' });
+    }, TIMING.INPUT_FOCUS_DELAY);
+
+    return () => clearTimeout(scrollTimeout);
   }, [feedback, currentItem, isMobile]);
 
   useEffect(() => {
@@ -168,6 +173,16 @@ export const GamePlay = () => {
       }
     };
   }, [feedback, skipFeedback, pauseFeedback, resumeFeedback, feedbackPaused, showStopModal]);
+
+  const handleInputChange = (e) => {
+    const value = e.target.value;
+    setUserInput(value);
+
+    // Mobile has no easy Enter key: submit as soon as the typed answer is the right one
+    if (isMobile && !feedback && !showStopModal && isCorrectAnswer(value)) {
+      handleSubmit(value);
+    }
+  };
 
   const handleKeyDown = (e) => {
     if ((e.key === 'Enter') && !feedback && !showStopModal) {
@@ -425,7 +440,7 @@ export const GamePlay = () => {
                 <KanjiReadingsChips stepData={stepData} theme={theme} />
               )}
 
-              {feedback ? (
+              {feedback && (
                 <div className="pt-2 mb-6">
                   <div>
                     {feedback.type === FEEDBACK_TYPES.SUCCESS ? (
@@ -499,31 +514,33 @@ export const GamePlay = () => {
                     </div>
                   </div>
                 </div>
-              ) : (
-                <div className="pt-2 mb-6">
-                  <input
-                    ref={inputRef}
-                    type="text"
-                    value={userInput}
-                    onChange={(e) => setUserInput(e.target.value)}
-                    onKeyDown={handleKeyDown}
-                    placeholder={
-                      isKanjiMode
-                        ? t('gameplay.commaSeparated')
-                        : isVocabularyMode
-                          ? t('gameplay.typeTranslation')
-                          : t('gameplay.typeReading')
-                    }
-                    className={`w-full text-xl lg:text-2xl text-center py-3 lg:py-4 px-4 lg:px-6 border-2 ${theme.inputBorder} ${theme.inputBg} ${theme.text} rounded-xl focus:ring-4 focus:ring-blue-200 outline-none transition-all`}
-                    autoComplete="off"
-                    disabled={feedback !== null}
-                  />
-                </div>
               )}
+
+              {/* Kept mounted through feedback: re-focusing the same element is what lets
+                  mobile browsers re-open the keyboard, and hiding it closes the keyboard. */}
+              <div className={`pt-2 mb-6 ${feedback ? 'hidden' : ''}`}>
+                <input
+                  ref={inputRef}
+                  type="text"
+                  value={userInput}
+                  onChange={handleInputChange}
+                  onKeyDown={handleKeyDown}
+                  placeholder={
+                    isKanjiMode
+                      ? t('gameplay.commaSeparated')
+                      : isVocabularyMode
+                        ? t('gameplay.typeTranslation')
+                        : t('gameplay.typeReading')
+                  }
+                  className={`w-full text-xl lg:text-2xl text-center py-3 lg:py-4 px-4 lg:px-6 border-2 ${theme.inputBorder} ${theme.inputBg} ${theme.text} rounded-xl focus:ring-4 focus:ring-blue-200 outline-none transition-all`}
+                  autoComplete="off"
+                  disabled={feedback !== null}
+                />
+              </div>
 
               {!feedback && (
                 <button
-                  onClick={handleSubmit}
+                  onClick={() => handleSubmit()}
                   disabled={!userInput.trim()}
                   className="bg-gradient-to-r from-blue-500 to-purple-600 text-white font-semibold py-3 px-6 lg:px-8 rounded-xl hover:from-blue-600 hover:to-purple-700 disabled:opacity-50 disabled:cursor-not-allowed transform hover:scale-105 transition-all duration-200 shadow-lg cursor-pointer"
                 >
@@ -533,7 +550,7 @@ export const GamePlay = () => {
 
               {!feedback && !userInput.trim() && (
                 <button
-                  onClick={() => handleSubmit(true)}
+                  onClick={() => handleSubmit('')}
                   className={`ml-2 font-semibold py-3 px-6 lg:px-8 rounded-xl ${theme.buttonSkip} ransform hover:scale-105 transition-all duration-200 shadow-lg cursor-pointer`}
                 >
                   {t('gameplay.skip')}

@@ -200,10 +200,26 @@ export const useGameActions = () => {
     }
   };
 
-  const handleKanjiStepSubmit = () => {
+  // Shared by the submit path and the live "answer is already right" detection in GamePlay
+  const isCorrectAnswer = (answer) => {
+    if (!currentItem || !answer.trim()) return false;
+
+    switch (gameMode) {
+      case GAME_MODES.KANJI:
+        return validateKanjiAnswer(answer, currentItem, currentStep);
+      case GAME_MODES.VOCABULARY: {
+        const isToJapanese = vocabularyMode === VOCABULARY_MODES.TO_JAPANESE;
+        return checkVocabularyAnswer(answer, currentItem.answer, isToJapanese ? currentItem.speechText : null);
+      }
+      default:
+        return answer.toLowerCase().trim() === currentItem.answer.toLowerCase();
+    }
+  };
+
+  const handleKanjiStepSubmit = (answer) => {
     if (!currentItem) return;
 
-    const isCorrect = validateKanjiAnswer(userInput, currentItem, currentStep);
+    const isCorrect = isCorrectAnswer(answer);
     const expectedAnswers = getExpectedAnswerForFeedback(currentItem, currentStep);
     const correctAnswer = expectedAnswers.join(', ');
     const feedbackType = isCorrect ? FEEDBACK_TYPES.SUCCESS : FEEDBACK_TYPES.ERROR;
@@ -215,7 +231,7 @@ export const useGameActions = () => {
     setFeedback({
       type: feedbackType,
       correctAnswer,
-      userAnswer: userInput.trim(),
+      userAnswer: answer.trim(),
     });
 
     const isLastStep = currentStep === KANJI_STEPS.MEANINGS;
@@ -312,11 +328,13 @@ export const useGameActions = () => {
     }
   };
 
-  const handleSubmit = () => {
+  const handleSubmit = (answerOverride = null) => {
     if (!currentItem) return;
 
+    const answer = answerOverride ?? userInput;
+
     if (gameMode === GAME_MODES.KANJI) {
-      handleKanjiStepSubmit();
+      handleKanjiStepSubmit(answer);
       return;
     }
 
@@ -324,10 +342,7 @@ export const useGameActions = () => {
     const isVocabularyMode = gameMode === GAME_MODES.VOCABULARY;
 
     const correctAnswer = currentItem.answer;
-    const isToJapanese = isVocabularyMode && vocabularyMode === VOCABULARY_MODES.TO_JAPANESE;
-    const isCorrect = isVocabularyMode
-      ? checkVocabularyAnswer(userInput, correctAnswer, isToJapanese ? currentItem.speechText : null)
-      : userInput.toLowerCase().trim() === correctAnswer.toLowerCase();
+    const isCorrect = isCorrectAnswer(answer);
 
     const feedbackType = isCorrect ? FEEDBACK_TYPES.SUCCESS : FEEDBACK_TYPES.ERROR;
 
@@ -338,7 +353,7 @@ export const useGameActions = () => {
     setFeedback({
       type: feedbackType,
       correctAnswer: correctAnswer,
-      userAnswer: userInput.trim()
+      userAnswer: answer.trim()
     });
 
     const { newProgress, newStats } = updateStats(currentItem, isCorrect, timeSpent);
@@ -457,6 +472,7 @@ export const useGameActions = () => {
 
   return {
     handleSubmit,
+    isCorrectAnswer,
     resetGame,
     clearGameData,
     finishSession,
