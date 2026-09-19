@@ -29,7 +29,6 @@ export { SkeletonButton } from './ui/SkeletonLoading';
 export { ProfileButton } from './ui/ProfileButton';
 export { LockedContentSection } from './ui/LockedContentSection';
 export { ServerErrorModal } from './ui/ServerErrorModal';
-export { BuyMeACoffeeButton } from './ui/BuyMeACoffeeButton';
 export { ReviewProgressHeader } from './ui/ReviewProgressHeader';
 export { StopGameModal } from './ui/StopGameModal';
 export { Mascot } from './ui/Mascot';

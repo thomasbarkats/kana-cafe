@@ -22,7 +22,6 @@ import {
   ProfileButton,
   RotateDeviceOverlay,
   ServerErrorModal,
-  BuyMeACoffeeButton,
   KeyboardKey,
   KeyboardHelpContent,
 } from './components';
@@ -138,7 +137,6 @@ function App() {
           case APP_MODES.KANA:
             return (
               <GameMenuKana sideButtons={<>
-                <BuyMeACoffeeButton />
                 <div ref={profileButtonRef}>
                   <ProfileButton showLegalButton showLoginModal={showLoginModal} onToggleLoginModal={toggleLoginModal} />
                 </div>
@@ -147,7 +145,6 @@ function App() {
           case APP_MODES.VOCABULARY:
             return (
               <GameMenuVocabulary sideButtons={<>
-                <BuyMeACoffeeButton />
                 {KeyboardButton}
                 <div className="relative group">
                   <div className="opacity-0 group-hover:opacity-100 transition-opacity duration-200 absolute top-0 left-0 w-12 h-12 pointer-events-none flex items-center justify-center">
@@ -178,7 +175,6 @@ function App() {
           case APP_MODES.KANJI:
             return (
               <GameMenuKanji sideButtons={<>
-                <BuyMeACoffeeButton />
                 {KeyboardButton}
                 <div className="relative group">
                   <div className="opacity-0 group-hover:opacity-100 transition-opacity duration-200 absolute top-0 left-0 w-12 h-12 pointer-events-none flex items-center justify-center">
