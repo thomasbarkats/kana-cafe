@@ -127,10 +127,13 @@ export const useTheme = () => {
 
   const theme = getThemeClasses();
 
-  // Paints the overscroll area (mobile rubber-band) instead of the default white
+  // Paints the overscroll area (mobile rubber-band) instead of the default white,
+  // and the installed app's status bar through theme-color
   useEffect(() => {
     const root = document.documentElement;
     root.classList.add(theme.rootBg);
+    document.querySelector('meta[name="theme-color"]')
+      ?.setAttribute('content', getComputedStyle(root).backgroundColor);
     return () => root.classList.remove(theme.rootBg);
   }, [theme.rootBg]);
 

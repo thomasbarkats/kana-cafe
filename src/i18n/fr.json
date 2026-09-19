@@ -218,6 +218,18 @@
     "vocabularyTranslationsTitle": "Traductions :",
     "vocabularyTranslationsDesc": "Les accents, espaces, parenthèses (et leur contenu), \"/\", \"-\" et autres caractères peuvent être ignorés. En cas de traductions multiples, les séparateurs peuvent être ignorés et l'ordre de saisie n'importe pas."
   },
+  "installApp": {
+    "title": "Installer l'application",
+    "intro": "Ajoutez Kana.Cafe à votre écran d'accueil pour l'utiliser en plein écran, comme une vraie application.",
+    "iosTitle": "iPhone / iPad (Safari) :",
+    "iosStep1": "Touchez le bouton Partager (carré avec une flèche), dans le menu ••• si besoin",
+    "iosStep2": "Choisissez « Sur l'écran d'accueil »",
+    "iosStep3": "Touchez « Ajouter »",
+    "androidTitle": "Android (Chrome) :",
+    "androidStep1": "Touchez le menu ⋮ en haut à droite",
+    "androidStep2": "Choisissez « Ajouter à l'écran d'accueil » ou « Installer l'application »",
+    "androidStep3": "Confirmez avec « Installer »"
+  },
   "tooltips": {
     "typeJapanese": "Tapez en japonais",
     "typeTranslation": "Tapez la traduction",
@@ -237,7 +249,8 @@
     "toggleFurigana": "Afficher/masquer les furigana",
     "addToFavorites": "Ajouter aux favoris",
     "removeFromFavorites": "Retirer des favoris",
-    "menu": "Menu"
+    "menu": "Menu",
+    "installApp": "Installer l'application"
   },
   "languages": {
     "fr": "Français",

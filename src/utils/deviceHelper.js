@@ -54,7 +54,7 @@ const getBrowserInfo = () => {
   return `${browser} on ${os}`;
 };
 
-// Which mobile OS the Japanese keyboard instructions should target, null on desktop
+// Which mobile OS the keyboard and install instructions should target, null on desktop
 export const getMobilePlatform = () => {
   const ua = navigator.userAgent;
 
@@ -66,3 +66,7 @@ export const getMobilePlatform = () => {
   }
   return null;
 };
+
+// Already launched from the home screen: no browser chrome left to get rid of
+export const isInstalledApp = () =>
+  window.matchMedia('(display-mode: standalone)').matches || navigator.standalone === true;

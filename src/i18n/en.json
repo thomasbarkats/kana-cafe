@@ -238,6 +238,18 @@
     "vocabularyTranslationsTitle": "Translations:",
     "vocabularyTranslationsDesc": "Accents, spaces, parentheses (and their content), \"/\", \"-\", and other characters can be ignored. With multiple translations, separators can be ignored and input order doesn't matter."
   },
+  "installApp": {
+    "title": "Install the app",
+    "intro": "Add Kana.Cafe to your home screen to use it full screen, just like a real app.",
+    "iosTitle": "iPhone / iPad (Safari):",
+    "iosStep1": "Tap the Share button (square with an arrow), under the ••• menu if needed",
+    "iosStep2": "Choose \"Add to Home Screen\"",
+    "iosStep3": "Tap \"Add\"",
+    "androidTitle": "Android (Chrome):",
+    "androidStep1": "Tap the ⋮ menu at the top right",
+    "androidStep2": "Choose \"Add to Home screen\" or \"Install app\"",
+    "androidStep3": "Confirm with \"Install\""
+  },
   "tooltips": {
     "typeJapanese": "Type Japanese",
     "typeTranslation": "Type translation",
@@ -257,7 +269,8 @@
     "toggleFurigana": "Toggle furigana",
     "addToFavorites": "Add to favorites",
     "removeFromFavorites": "Remove from favorites",
-    "menu": "Menu"
+    "menu": "Menu",
+    "installApp": "Install the app"
   },
   "languages": {
     "fr": "Français",

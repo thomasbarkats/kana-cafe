@@ -1,4 +1,4 @@
-import { HelpCircle, Keyboard } from 'lucide-react';
+import { Download, HelpCircle, Keyboard } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
 import { GAME_STATES, APP_MODES, GAME_MODES, STORAGE_KEYS } from './constants';
 import { useGameContext } from './contexts/GameContext';
@@ -7,7 +7,7 @@ import { useGameContextVocabulary } from './contexts/GameContextVocabulary';
 import { useTranslation } from './contexts/I18nContext';
 import { usePreferences } from './contexts/PreferencesContext';
 import { useAuth } from './contexts/AuthContext';
-import { useKeyboardNavigation, useKeyboardShortcuts } from './hooks';
+import { useInstallApp, useKeyboardNavigation, useKeyboardShortcuts } from './hooks';
 import { getSortedStats } from './services/statsService';
 import {
   GameMenuKana,
@@ -24,6 +24,7 @@ import {
   ServerErrorModal,
   KeyboardKey,
   KeyboardHelpContent,
+  InstallAppContent,
 } from './components';
 import {
   useGameActions,
@@ -57,6 +58,8 @@ function App() {
   const [showKeyboardModal, setShowKeyboardModal] = useState(false);
   const [showHelpModal, setShowHelpModal] = useState(false);
   const [showLoginModal, setShowLoginModal] = useState(false);
+  const [showInstallModal, setShowInstallModal] = useState(false);
+  const { canInstall, hasNativePrompt, promptInstall } = useInstallApp();
 
   useKeyboardNavigation();
 
@@ -83,6 +86,15 @@ function App() {
 
   const toggleHelpModal = () => {
     setShowHelpModal(!showHelpModal);
+  };
+
+  // Android Chrome hands over its native dialog; elsewhere (iOS) the modal lists the steps
+  const toggleInstallModal = () => {
+    if (!showInstallModal && hasNativePrompt) {
+      promptInstall();
+      return;
+    }
+    setShowInstallModal(!showInstallModal);
   };
 
   useKeyboardShortcuts({
@@ -140,6 +152,17 @@ function App() {
                 <div ref={profileButtonRef}>
                   <ProfileButton showLegalButton showLoginModal={showLoginModal} onToggleLoginModal={toggleLoginModal} />
                 </div>
+                {canInstall && (
+                  <FloatingHelpButton
+                    icon={Download}
+                    tooltip={t('tooltips.installApp')}
+                    title={t('installApp.title')}
+                    show={showInstallModal}
+                    onToggle={toggleInstallModal}
+                  >
+                    <InstallAppContent />
+                  </FloatingHelpButton>
+                )}
               </>} />
             );
           case APP_MODES.VOCABULARY:

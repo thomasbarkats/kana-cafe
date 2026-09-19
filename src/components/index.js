@@ -34,6 +34,7 @@ export { StopGameModal } from './ui/StopGameModal';
 export { Mascot } from './ui/Mascot';
 export { MascotTrigger } from './ui/MascotTrigger';
 export { KeyboardHelpContent } from './ui/KeyboardHelpContent';
+export { InstallAppContent } from './ui/InstallAppContent';
 export { BurgerMenu } from './ui/BurgerMenu';
 export { CenteredLayout } from './ui/CenteredLayout';
 export { RotateDeviceOverlay } from './ui/RotateDeviceOverlay';

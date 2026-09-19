@@ -238,6 +238,18 @@
     "vocabularyTranslationsTitle": "訳：",
     "vocabularyTranslationsDesc": "アクセント、スペース、括弧（とその内容）、「/」、「-」などは無視されます。複数の訳がある場合、区切り文字は無視され、入力順序は問いません。"
   },
+  "installApp": {
+    "title": "アプリをインストール",
+    "intro": "Kana.Cafe をホーム画面に追加すると、アプリのように全画面で使えます。",
+    "iosTitle": "iPhone / iPad（Safari）：",
+    "iosStep1": "共有ボタン（矢印付きの四角）をタップ（必要なら ••• メニューから）",
+    "iosStep2": "「ホーム画面に追加」を選択",
+    "iosStep3": "「追加」をタップ",
+    "androidTitle": "Android（Chrome）：",
+    "androidStep1": "右上の ⋮ メニューをタップ",
+    "androidStep2": "「ホーム画面に追加」または「アプリをインストール」を選択",
+    "androidStep3": "「インストール」で確定"
+  },
   "tooltips": {
     "typeJapanese": "日本語を入力",
     "typeTranslation": "訳を入力",
@@ -257,7 +269,8 @@
     "toggleFurigana": "ふりがなを切替",
     "addToFavorites": "お気に入りに追加",
     "removeFromFavorites": "お気に入りから削除",
-    "menu": "メニュー"
+    "menu": "メニュー",
+    "installApp": "アプリをインストール"
   },
   "languages": {
     "fr": "Français",
