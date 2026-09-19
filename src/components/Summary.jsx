@@ -287,7 +287,7 @@ export const Summary = ({ onNewSession, onRestartSameMode, sortedStats }) => {
 
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Button onClick={onNewSession} variant="primary" className="h-12">
-              {t('summary.newSession')}
+              {t('summary.backToMenu')}
             </Button>
             <Button onClick={onRestartSameMode} variant="success" className="h-12">
               {t('summary.restartSameMode')}

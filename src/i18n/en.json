@@ -124,7 +124,7 @@
     "sortByWord": "Sort by word",
     "sortByKanji": "Sort by kanji",
     "restart": "Restart",
-    "newSession": "New session",
+    "backToMenu": "Back to menu",
     "restartSameMode": "Restart same mode",
     "changeSettings": "Change settings"
   },

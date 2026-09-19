@@ -104,7 +104,7 @@
     "sortByWord": "Trier par mot",
     "sortByKanji": "Trier par kanji",
     "restart": "Recommencer",
-    "newSession": "Nouvelle session",
+    "backToMenu": "Revenir au menu",
     "restartSameMode": "Recommencer le même mode",
     "changeSettings": "Changer les paramètres"
   },

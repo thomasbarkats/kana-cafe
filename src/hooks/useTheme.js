@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 
 const STORAGE_KEY = 'theme';
@@ -23,6 +23,7 @@ export const useTheme = () => {
     if (darkMode) {
       return {
         bg: 'bg-gradient-to-br from-night-950 via-night-900 to-night-950',
+        rootBg: 'bg-night-950',
         cardBg: 'bg-night-800',
         modalBg: 'bg-night-800',
         selectorBg: 'bg-night-800',
@@ -73,6 +74,7 @@ export const useTheme = () => {
     } else {
       return {
         bg: 'bg-gradient-to-br from-purple-100 via-blue-50 to-cyan-100',
+        rootBg: 'bg-blue-50',
         cardBg: 'bg-white',
         modalBg: 'bg-white',
         selectorBg: 'bg-white',
@@ -123,9 +125,18 @@ export const useTheme = () => {
     }
   };
 
+  const theme = getThemeClasses();
+
+  // Paints the overscroll area (mobile rubber-band) instead of the default white
+  useEffect(() => {
+    const root = document.documentElement;
+    root.classList.add(theme.rootBg);
+    return () => root.classList.remove(theme.rootBg);
+  }, [theme.rootBg]);
+
   return {
     darkMode,
     toggleDarkMode,
-    theme: getThemeClasses()
+    theme
   };
 };
