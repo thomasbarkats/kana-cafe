@@ -157,8 +157,15 @@ export const KANJI_PROGRESS_TYPES = {
   [KANJI_STEPS.MEANINGS]: 'meanings',
 };
 
+export const THEME_MODES = {
+  AUTO: 'auto',
+  LIGHT: 'light',
+  DARK: 'dark',
+};
+
 export const STORAGE_KEYS = {
   PENDING_GOOGLE_LOGIN: 'pendingGoogleLogin',
+  THEME: 'theme',
 };
 
 // The lg: breakpoint, read from the Tailwind theme at runtime so the JS layout forks and the

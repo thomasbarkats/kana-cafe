@@ -39,6 +39,7 @@
     "inReadingOrder": "(in reading order)",
     "switchToLightMode": "Switch to light mode",
     "switchToDarkMode": "Switch to dark mode",
+    "switchToAutoMode": "Switch to automatic theme",
     "escapeKey": "Esc",
     "enterKey": "Enter",
     "skipFeedback": "Ignore correction",

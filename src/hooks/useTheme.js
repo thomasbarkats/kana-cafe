@@ -1,22 +1,33 @@
 import { useEffect, useState } from 'react';
+import { STORAGE_KEYS, THEME_MODES } from '../constants';
+import { useMediaQuery } from './useMediaQuery';
 
-
-const STORAGE_KEY = 'theme';
 
 export const useTheme = () => {
-  const getInitialTheme = () => {
-    const savedTheme = localStorage.getItem(STORAGE_KEY);
-    return savedTheme === 'dark';
+  const getInitialThemeMode = () => {
+    const savedMode = localStorage.getItem(STORAGE_KEYS.THEME);
+    return Object.values(THEME_MODES).includes(savedMode) ? savedMode : THEME_MODES.AUTO;
   };
 
-  const [darkMode, setDarkMode] = useState(getInitialTheme);
+  const [themeMode, setThemeMode] = useState(getInitialThemeMode);
+  const systemPrefersDark = useMediaQuery('(prefers-color-scheme: dark)');
 
-  const toggleDarkMode = () => {
-    setDarkMode(prev => {
-      const newMode = !prev;
-      localStorage.setItem(STORAGE_KEY, newMode ? 'dark' : 'light');
-      return newMode;
-    });
+  const darkMode = themeMode === THEME_MODES.AUTO
+    ? systemPrefersDark
+    : themeMode === THEME_MODES.DARK;
+
+  // Cycle: auto -> the device theme forced -> the opposite theme -> auto.
+  // Ordered so auto is only ever reached from the opposite theme, where it repaints:
+  // landing on a theme identical to the current one would read as a dead button.
+  const systemThemeMode = systemPrefersDark ? THEME_MODES.DARK : THEME_MODES.LIGHT;
+  const oppositeThemeMode = systemPrefersDark ? THEME_MODES.LIGHT : THEME_MODES.DARK;
+  const nextThemeMode = themeMode === THEME_MODES.AUTO
+    ? systemThemeMode
+    : (themeMode === systemThemeMode ? oppositeThemeMode : THEME_MODES.AUTO);
+
+  const cycleThemeMode = () => {
+    localStorage.setItem(STORAGE_KEYS.THEME, nextThemeMode);
+    setThemeMode(nextThemeMode);
   };
 
   const getThemeClasses = () => {
@@ -139,7 +150,9 @@ export const useTheme = () => {
 
   return {
     darkMode,
-    toggleDarkMode,
+    themeMode,
+    nextThemeMode,
+    cycleThemeMode,
     theme
   };
 };

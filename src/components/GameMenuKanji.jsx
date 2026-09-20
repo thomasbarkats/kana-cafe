@@ -45,7 +45,6 @@ export const GameMenuKanji = ({ sideButtons, accountButton }) => {
     getSoundModeIcon,
     theme,
     darkMode,
-    toggleDarkMode,
     kanjiMode,
     handleKanjiModeChange,
     kanjiLoopMode,
@@ -193,8 +192,6 @@ export const GameMenuKanji = ({ sideButtons, accountButton }) => {
 
         <MenuControls
           theme={theme}
-          darkMode={darkMode}
-          toggleDarkMode={toggleDarkMode}
           cycleSoundMode={cycleSoundMode}
           getSoundModeIcon={getSoundModeIcon}
           requiredSuccesses={requiredSuccesses}

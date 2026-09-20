@@ -39,6 +39,7 @@
     "inReadingOrder": "（読み順）",
     "switchToLightMode": "ライトモードに切替",
     "switchToDarkMode": "ダークモードに切替",
+    "switchToAutoMode": "自動テーマに切り替え",
     "escapeKey": "Esc",
     "enterKey": "Enter",
     "skipFeedback": "訂正を無視する",

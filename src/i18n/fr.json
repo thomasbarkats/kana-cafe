@@ -39,6 +39,7 @@
     "inReadingOrder": "(dans l'ordre des lectures)",
     "switchToLightMode": "Passer en mode clair",
     "switchToDarkMode": "Passer en mode sombre",
+    "switchToAutoMode": "Passer en thème automatique",
     "escapeKey": "Échap",
     "enterKey": "Entrée",
     "skipFeedback": "Ignorer la correction",

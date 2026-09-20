@@ -15,6 +15,7 @@ export { MultiSelection } from './ui/MultiSelection';
 export { HelpModal } from './ui/HelpModal';
 export { GameMenu } from './GameMenu';
 export { MenuControls } from './ui/MenuControls';
+export { ThemeModeButton } from './ui/ThemeModeButton';
 export { LanguageSelector } from './ui/LanguageSelector';
 export { ReviewLayout } from './Review';
 export { ReviewKana } from './ReviewKana';

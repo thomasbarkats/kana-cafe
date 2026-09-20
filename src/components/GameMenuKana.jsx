@@ -36,7 +36,6 @@ export const GameMenuKana = ({ sideButtons, accountButton }) => {
     getSoundModeIcon,
     theme,
     darkMode,
-    toggleDarkMode,
   } = usePreferences();
 
   const [dakutenOnDisabled, setDakutenOnDisabled] = useState(combinationsMode === KANA_INCLUSION.ONLY);
@@ -159,8 +158,6 @@ export const GameMenuKana = ({ sideButtons, accountButton }) => {
 
       <MenuControls
         theme={theme}
-        darkMode={darkMode}
-        toggleDarkMode={toggleDarkMode}
         cycleSoundMode={cycleSoundMode}
         getSoundModeIcon={getSoundModeIcon}
         requiredSuccesses={requiredSuccesses}

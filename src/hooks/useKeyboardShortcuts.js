@@ -14,7 +14,7 @@ export function useKeyboardShortcuts({
   onToggleLoopMode
 } = {}) {
   const { gameState } = useGameContext();
-  const { toggleDarkMode, cycleSoundMode } = usePreferences();
+  const { cycleThemeMode, cycleSoundMode } = usePreferences();
 
   useEffect(() => {
     const handleKeyDown = (e) => {
@@ -60,10 +60,10 @@ export function useKeyboardShortcuts({
         return;
       }
 
-      // L key - toggle light/dark mode
+      // L key - cycle light/dark/auto theme
       if (e.key === 'l' || e.key === 'L') {
         e.preventDefault();
-        toggleDarkMode();
+        cycleThemeMode();
       }
 
       // M key - toggle sound mode
@@ -84,5 +84,5 @@ export function useKeyboardShortcuts({
     return () => {
       window.removeEventListener('keydown', handleKeyDown);
     };
-  }, [gameState, onToggleLogin, onToggleKeyboard, onToggleHelp, toggleDarkMode, cycleSoundMode, showLoginModal, showKeyboardModal, showHelpModal, onToggleLoopMode]);
+  }, [gameState, onToggleLogin, onToggleKeyboard, onToggleHelp, cycleThemeMode, cycleSoundMode, showLoginModal, showKeyboardModal, showHelpModal, onToggleLoopMode]);
 }

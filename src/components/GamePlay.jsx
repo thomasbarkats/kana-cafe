@@ -1,5 +1,5 @@
 import * as wanakana from 'wanakana';
-import { Clock, Square, Sun, Moon, Volume2, Bookmark, Languages, Pause, Play } from 'lucide-react';
+import { Clock, Square, Volume2, Bookmark, Languages, Pause, Play } from 'lucide-react';
 import { useRef, useEffect, useState } from 'react';
 import { useAuth } from '../contexts/AuthContext';
 import { useGameContext } from '../contexts/GameContext';
@@ -12,6 +12,7 @@ import { formatTime, cleanJapaneseText, speakReading, containsKana, getMeaningsF
 import { ProgressBar, KeyboardKey, FeedbackProgressBar } from '.';
 import { CenteredLayout } from './ui/CenteredLayout';
 import { StopGameModal } from './ui/StopGameModal';
+import { ThemeModeButton } from './ui/ThemeModeButton';
 import { Mascot } from './ui/Mascot';
 import {
   FEEDBACK_TYPES,
@@ -42,7 +43,6 @@ export const GamePlay = () => {
     handleShowFuriganaChange,
     theme,
     darkMode,
-    toggleDarkMode,
     cycleSoundMode,
     getSoundModeIcon,
   } = usePreferences();
@@ -344,21 +344,7 @@ export const GamePlay = () => {
                     <KeyboardKey keyLabel="M" position="above" />
                   </div>
                 </div>
-                <div className="relative group">
-                  <button
-                    onClick={toggleDarkMode}
-                    className={`p-2 ${theme.buttonSecondary} rounded-full transition-colors cursor-pointer`}
-                    title={darkMode ? t('gameplay.switchToLightMode') : t('gameplay.switchToDarkMode')}
-                  >
-                    {darkMode
-                      ? <Moon className="w-5 h-5" />
-                      : <Sun className="w-5 h-5" />
-                    }
-                  </button>
-                  <div className="opacity-0 group-hover:opacity-100 transition-opacity duration-200 absolute inset-0 pointer-events-none flex items-center justify-center">
-                    <KeyboardKey keyLabel="L" position="above" />
-                  </div>
-                </div>
+                <ThemeModeButton keyPosition="above" />
                 {isVocabularyMode && vocabularyMode === VOCABULARY_MODES.FROM_JAPANESE && (
                   <button
                     onClick={() => handleShowFuriganaChange(!showFurigana)}

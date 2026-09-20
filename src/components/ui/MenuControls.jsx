@@ -1,4 +1,4 @@
-import { Sun, Moon, Globe, Repeat2 } from 'lucide-react';
+import { Globe, Repeat2 } from 'lucide-react';
 import { useState, useRef, useEffect } from 'react';
 import { REQUIRED_SUCCESSES_LIMITS } from '../../constants';
 import { useTranslation } from '../../contexts/I18nContext';
@@ -6,12 +6,11 @@ import { usePreferences } from '../../contexts/PreferencesContext';
 import { useIsMobile } from '../../hooks/useIsMobile';
 import { KeyboardKey } from './KeyboardKey';
 import { LanguageSettingsContent } from './LanguageSettingsContent';
+import { ThemeModeButton } from './ThemeModeButton';
 
 
 export const MenuControls = ({
   theme,
-  darkMode,
-  toggleDarkMode,
   cycleSoundMode,
   getSoundModeIcon,
   requiredSuccesses,
@@ -59,18 +58,7 @@ export const MenuControls = ({
           </div>
         </div>
 
-        <div className="relative group">
-          <button
-            onClick={toggleDarkMode}
-            className={`p-2 ${theme.buttonSecondary} rounded-full transition-colors cursor-pointer`}
-            title={darkMode ? t('gameplay.switchToLightMode') : t('gameplay.switchToDarkMode')}
-          >
-            {darkMode ? <Moon className="w-5 h-5" /> : <Sun className="w-5 h-5" />}
-          </button>
-          <div className="opacity-0 group-hover:opacity-100 transition-opacity duration-200 absolute inset-0 pointer-events-none flex items-center justify-center">
-            <KeyboardKey keyLabel="L" position="below" />
-          </div>
-        </div>
+        <ThemeModeButton keyPosition="below" />
 
         {/* On the mobile layout the language settings live in the burger */}
         {!isMobile && (

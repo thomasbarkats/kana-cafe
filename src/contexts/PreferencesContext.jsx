@@ -36,7 +36,7 @@ const DEFAULT_PREFERENCES = {
 };
 
 export const PreferencesProvider = ({ children }) => {
-  const { theme, darkMode, toggleDarkMode } = useTheme();
+  const { theme, darkMode, themeMode, nextThemeMode, cycleThemeMode } = useTheme();
   const { soundMode, cycleSoundMode, getSoundModeIcon, setSoundModeValue } = useSound();
 
   const [preferences, setPreferences] = useState(() => {
@@ -120,6 +120,8 @@ export const PreferencesProvider = ({ children }) => {
     preferences,
     theme,
     darkMode,
+    themeMode,
+    nextThemeMode,
     soundMode,
 
     // Individual preferences (shortcuts)
@@ -150,7 +152,7 @@ export const PreferencesProvider = ({ children }) => {
     handleShowFuriganaChange,
     handleTranslationLanguageChange,
     handleUiLanguageChange,
-    toggleDarkMode,
+    cycleThemeMode,
     cycleSoundMode,
     setSoundModeValue,
     getSoundModeIcon,

@@ -49,7 +49,6 @@ export const GameMenuVocabulary = ({ sideButtons, accountButton }) => {
     soundMode,
     theme,
     darkMode,
-    toggleDarkMode,
   } = usePreferences();
 
 
@@ -194,8 +193,6 @@ export const GameMenuVocabulary = ({ sideButtons, accountButton }) => {
 
         <MenuControls
           theme={theme}
-          darkMode={darkMode}
-          toggleDarkMode={toggleDarkMode}
           cycleSoundMode={cycleSoundMode}
           getSoundModeIcon={getSoundModeIcon}
           requiredSuccesses={requiredSuccesses}
