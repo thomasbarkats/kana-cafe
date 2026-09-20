@@ -169,6 +169,7 @@ export const GameMenuKanji = ({ sideButtons, accountButton }) => {
             totalCount={totalKanji}
             countLabel={t('common.kanjiSelected')}
             reviewLabel={t('common.reviewSelectedKanji')}
+            requiredSuccesses={requiredSuccesses}
             startGradient="bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-600 hover:to-teal-700"
             theme={theme}
             darkMode={darkMode}

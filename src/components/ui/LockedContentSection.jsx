@@ -17,6 +17,7 @@ export const LockedContentSection = ({
   totalCount,
   countLabel,
   reviewLabel,
+  requiredSuccesses,
   startGradient,
   theme,
   darkMode,
@@ -86,7 +87,7 @@ export const LockedContentSection = ({
               <div className="flex flex-col text-left mb-1">
                 <span className="text-lg">{t('common.startPractice')}</span>
                 <div className="text-xs opacity-80">
-                  {totalCount} {countLabel}
+                  {totalCount} {countLabel}{requiredSuccesses > 1 && ` × ${requiredSuccesses}`}
                 </div>
               </div>
             </div>

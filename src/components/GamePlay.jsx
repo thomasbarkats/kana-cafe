@@ -115,7 +115,7 @@ export const GamePlay = () => {
     }, TIMING.INPUT_FOCUS_DELAY);
 
     return () => clearTimeout(scrollTimeout);
-  }, [feedback, currentItem, isMobile]);
+  }, [feedback, currentItem, currentStep, isMobile]);
 
   useEffect(() => {
     if (!startTime) return;
@@ -507,18 +507,30 @@ export const GamePlay = () => {
                       </div>
                     )}
 
-                    {/* Skip hint */}
+                    {/* Skip hint: a shortcut on desktop, the only way to skip on mobile */}
                     <div className={`flex items-center justify-center gap-2 mt-3 ${theme.textSecondary} text-sm`}>
-                      <span className={`${theme.text} opacity-40`}>{t('gameplay.skipFeedback')}</span>
-                      <KeyboardKey keyLabel={t('gameplay.enterKey')} position="inline" />
+                      {isMobile ? (
+                        <button
+                          onClick={skipFeedback}
+                          className={`${theme.text} opacity-60 py-2 px-4 cursor-pointer`}
+                        >
+                          {t('gameplay.skipFeedback')}
+                        </button>
+                      ) : (
+                        <>
+                          <span className={`${theme.text} opacity-40`}>{t('gameplay.skipFeedback')}</span>
+                          <KeyboardKey keyLabel={t('gameplay.enterKey')} position="inline" />
+                        </>
+                      )}
                     </div>
                   </div>
                 </div>
               )}
 
-              {/* Kept mounted through feedback: re-focusing the same element is what lets
-                  mobile browsers re-open the keyboard, and hiding it closes the keyboard. */}
-              <div className={`pt-2 mb-6 ${feedback ? 'hidden' : ''}`}>
+              {/* Kept mounted and focused through feedback: a mobile browser only raises the
+                  keyboard on a user gesture, so an input that is hidden or disabled here can
+                  never get it back. Collapsed instead of hidden, read-only instead of disabled. */}
+              <div className={feedback ? (isMobile ? 'h-0 overflow-hidden' : 'hidden') : 'pt-2 mb-6'}>
                 <input
                   ref={inputRef}
                   type="text"
@@ -534,7 +546,7 @@ export const GamePlay = () => {
                   }
                   className={`w-full text-xl lg:text-2xl text-center py-3 lg:py-4 px-4 lg:px-6 border-2 ${theme.inputBorder} ${theme.inputBg} ${theme.text} rounded-xl focus:ring-4 focus:ring-blue-200 outline-none transition-all`}
                   autoComplete="off"
-                  disabled={feedback !== null}
+                  readOnly={feedback !== null}
                 />
               </div>
 
@@ -544,7 +556,7 @@ export const GamePlay = () => {
                   disabled={!userInput.trim()}
                   className="bg-gradient-to-r from-blue-500 to-purple-600 text-white font-semibold py-3 px-6 lg:px-8 rounded-xl hover:from-blue-600 hover:to-purple-700 disabled:opacity-50 disabled:cursor-not-allowed transform hover:scale-105 transition-all duration-200 shadow-lg cursor-pointer"
                 >
-                  {t('gameplay.validate')}
+                  {isMobile ? t('gameplay.validateShort') : t('gameplay.validate')}
                 </button>
               )}
 

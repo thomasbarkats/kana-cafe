@@ -26,6 +26,7 @@
     "typeReading": "Type the reading...",
     "commaSeparated": "... (comma separated)",
     "validate": "Validate (Enter)",
+    "validateShort": "Validate",
     "skip": "Skip",
     "correct": "Correct!",
     "youWrote": "You wrote:",
@@ -337,7 +338,9 @@
     "title": "Stop Session?",
     "message": "Are you sure you want to stop the current session? Your progress will be saved.",
     "cancel": "Continue Playing",
-    "confirm": "Stop Session"
+    "cancelShort": "Continue",
+    "confirm": "Stop Session",
+    "confirmShort": "Quit"
   },
   "legal": {
     "title": "Legal Information",

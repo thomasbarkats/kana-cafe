@@ -2,6 +2,7 @@ import { AlertCircle } from 'lucide-react';
 import { useEffect } from 'react';
 import { useTranslation } from '../../contexts/I18nContext';
 import { usePreferences } from '../../contexts/PreferencesContext';
+import { useIsMobile } from '../../hooks';
 import { EscapeKey } from './EscapeKey';
 import { Button } from './Button';
 
@@ -9,6 +10,7 @@ import { Button } from './Button';
 export const StopGameModal = ({ isOpen, onConfirm, onCancel }) => {
   const { t } = useTranslation();
   const { theme, darkMode } = usePreferences();
+  const isMobile = useIsMobile();
 
   useEffect(() => {
     if (!isOpen) return;
@@ -48,10 +50,10 @@ export const StopGameModal = ({ isOpen, onConfirm, onCancel }) => {
 
           <div className="flex gap-3">
             <Button onClick={onCancel} variant="ghost" className="flex-1 h-12">
-              {t('stopGame.cancel')}
+              {isMobile ? t('stopGame.cancelShort') : t('stopGame.cancel')}
             </Button>
             <Button onClick={onConfirm} variant="danger" className="flex-1 h-12">
-              {t('stopGame.confirm')}
+              {isMobile ? t('stopGame.confirmShort') : t('stopGame.confirm')}
             </Button>
           </div>
         </div>

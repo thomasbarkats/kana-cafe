@@ -26,6 +26,7 @@
     "typeReading": "読み方を入力...",
     "commaSeparated": "... (カンマ区切り)",
     "validate": "確認 (Enter)",
+    "validateShort": "確認",
     "skip": "スキップ",
     "correct": "正解！",
     "youWrote": "あなたの答え：",
@@ -337,7 +338,9 @@
     "title": "セッションを終了？",
     "message": "本当にセッションを終了しますか？進捗は保存されます。",
     "cancel": "続ける",
-    "confirm": "終了"
+    "cancelShort": "続ける",
+    "confirm": "終了",
+    "confirmShort": "終了"
   },
   "legal": {
     "title": "法的情報",

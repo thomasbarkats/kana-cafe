@@ -170,6 +170,7 @@ export const GameMenuVocabulary = ({ sideButtons, accountButton }) => {
             totalCount={totalWords}
             countLabel={t('common.wordsSelected')}
             reviewLabel={t('common.reviewSelectedWords')}
+            requiredSuccesses={requiredSuccesses}
             startGradient="bg-gradient-to-r from-indigo-500 to-purple-600 hover:from-indigo-600 hover:to-purple-700"
             theme={theme}
             darkMode={darkMode}
