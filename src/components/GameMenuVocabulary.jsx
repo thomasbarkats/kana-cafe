@@ -16,7 +16,7 @@ import {
 } from '.';
 
 
-export const GameMenuVocabulary = ({ sideButtons, accountButton }) => {
+export const GameMenuVocabulary = ({ sideButtons, accountButton, mobileAccountButton }) => {
   const { t } = useTranslation();
   const { initializeVocabularyGame } = useGameLogicVocabulary();
   const { isAuthenticated } = useAuth();
@@ -149,6 +149,7 @@ export const GameMenuVocabulary = ({ sideButtons, accountButton }) => {
         onModeChange={updateAppMode}
         sideButtons={sideButtons}
         accountButton={accountButton}
+      mobileAccountButton={mobileAccountButton}
       >
         <div className="space-y-4">
           <MultiSelection

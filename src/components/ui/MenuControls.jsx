@@ -90,14 +90,19 @@ export const MenuControls = ({
           {t('menu.repetitions')}
         </label>
         <div className="flex items-center space-x-1">
-          <input
-            type="number"
-            min={REQUIRED_SUCCESSES_LIMITS.MIN}
-            max={REQUIRED_SUCCESSES_LIMITS.MAX}
+          <select
             value={requiredSuccesses}
             onChange={onRequiredSuccessesChange}
-            className={`${theme.inputBg} ${theme.border} rounded-lg px-1 py-2 w-12 text-sm text-center focus:outline-none focus:ring-2 focus:ring-blue-500 shadow-sm ${theme.text}`}
-          />
+            className={`${theme.inputBg} ${theme.border} appearance-none [-webkit-appearance:none] rounded-lg px-1 py-2 w-12 text-base lg:text-sm text-center focus:outline-none focus:ring-2 focus:ring-blue-500 shadow-sm ${theme.text} cursor-pointer`}
+            aria-label={t('menu.repetitions')}
+          >
+            {Array.from(
+              { length: REQUIRED_SUCCESSES_LIMITS.MAX - REQUIRED_SUCCESSES_LIMITS.MIN + 1 },
+              (_, index) => REQUIRED_SUCCESSES_LIMITS.MIN + index
+            ).map((value) => (
+              <option key={value} value={value}>{value}</option>
+            ))}
+          </select>
           {showLoopMode && (
             <div className="relative group">
               <button

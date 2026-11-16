@@ -1,12 +1,12 @@
 export const SegmentedControl = ({ value, onChange, options, label, theme }) => {
   return (
-    <div className="flex flex-wrap items-center justify-between gap-2 py-3">
+    <div className="flex flex-nowrap items-center justify-between gap-2 py-3">
       {label && (
-        <div className={`flex items-center gap-2 text-sm font-medium ${theme.text}`}>
-          <span>{label}</span>
+        <div className={`min-w-0 flex items-center gap-2 text-sm font-medium ${theme.text}`} title={label}>
+          <span className="truncate">{label}</span>
         </div>
       )}
-      <div className={`inline-flex rounded-lg ${theme.darkMode ? 'bg-night-700' : 'bg-gray-200'} p-1`}>
+      <div className={`shrink-0 inline-flex rounded-lg ${theme.darkMode ? 'bg-night-700' : 'bg-gray-200'} p-1`}>
         {options.map((option) => (
           <button
             key={option.value}

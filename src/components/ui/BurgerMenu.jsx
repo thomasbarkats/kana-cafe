@@ -3,9 +3,8 @@ import { useEffect, useRef, useState } from 'react';
 import { useTranslation } from '../../contexts/I18nContext';
 import { usePreferences } from '../../contexts/PreferencesContext';
 
-// Mobile home for the buttons that flank the card on desktop: pinned to the screen corner,
-// outside the card, revealing them as a column on tap. `leading` stays visible on its left
-// (the account button, whose own dropdown can't nest inside this menu).
+// Mobile home for the buttons that flank the card on desktop: pinned to the screen corner
+// and revealed as a column on tap.
 export const BurgerMenu = ({ leading, children }) => {
   const { t } = useTranslation();
   const { theme } = usePreferences();
@@ -50,11 +49,9 @@ export const BurgerMenu = ({ leading, children }) => {
             {isOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
           </button>
 
-          {isOpen && (
-            <div className="flex flex-col items-end gap-2">
-              {children}
-            </div>
-          )}
+          <div className={isOpen ? 'flex flex-col items-end gap-2' : 'hidden'}>
+            {children}
+          </div>
         </div>
       </div>
     </>

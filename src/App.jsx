@@ -146,6 +146,7 @@ function App() {
   const accountButton = (
     <ProfileButton showLoginModal={showLoginModal} onToggleLoginModal={toggleLoginModal} />
   );
+  const mobileAccountButton = !isAuthenticated ? accountButton : null;
 
   // Rendered apart from the side buttons: those unmount when the mobile burger closes,
   // which a tap inside an open modal would otherwise trigger.
@@ -199,7 +200,7 @@ function App() {
         switch (appMode) {
           case APP_MODES.KANA:
             return (
-              <GameMenuKana accountButton={accountButton} sideButtons={<>
+              <GameMenuKana accountButton={accountButton} mobileAccountButton={mobileAccountButton} sideButtons={<>
                 {installButton}
                 {isMobile && <LanguageMenu />}
                 {!isAuthenticated && (
@@ -209,7 +210,7 @@ function App() {
             );
           case APP_MODES.VOCABULARY:
             return (
-              <GameMenuVocabulary accountButton={accountButton} sideButtons={<>
+              <GameMenuVocabulary accountButton={accountButton} mobileAccountButton={mobileAccountButton} sideButtons={<>
                 {installButton}
                 {isMobile && <LanguageMenu />}
                 {helpMenu}
@@ -217,7 +218,7 @@ function App() {
             );
           case APP_MODES.KANJI:
             return (
-              <GameMenuKanji accountButton={accountButton} sideButtons={<>
+              <GameMenuKanji accountButton={accountButton} mobileAccountButton={mobileAccountButton} sideButtons={<>
                 {installButton}
                 {isMobile && <LanguageMenu />}
                 {helpMenu}

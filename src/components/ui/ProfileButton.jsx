@@ -4,6 +4,7 @@ import { createPortal } from 'react-dom';
 import { useAuth } from '../../contexts/AuthContext';
 import { useTranslation } from '../../contexts/I18nContext';
 import { usePreferences } from '../../contexts/PreferencesContext';
+import { useIsMobile } from '../../hooks/useIsMobile';
 import { subscriptionAPI } from '../../services/apiService';
 import { LoginModal } from '../LoginModal';
 import { UnlockModal } from '../UnlockModal';
@@ -16,6 +17,7 @@ export const ProfileButton = ({ showLoginModal, onToggleLoginModal }) => {
   const { user, isAuthenticated, hasActiveSubscription, hasLifetimeAccess, logout } = useAuth();
   const { theme, darkMode } = usePreferences();
   const { t } = useTranslation();
+  const isMobile = useIsMobile();
   const [showMenu, setShowMenu] = useState(false);
   const [showUnlockModal, setShowUnlockModal] = useState(false);
   const [showContactModal, setShowContactModal] = useState(false);
@@ -31,11 +33,11 @@ export const ProfileButton = ({ showLoginModal, onToggleLoginModal }) => {
       }
     };
 
-    if (showMenu) {
+    if (showMenu && !isMobile) {
       document.addEventListener('mousedown', handleClickOutside);
       return () => document.removeEventListener('mousedown', handleClickOutside);
     }
-  }, [showMenu]);
+  }, [showMenu, isMobile]);
 
   const handleLogout = async () => {
     setShowMenu(false);
@@ -102,6 +104,80 @@ export const ProfileButton = ({ showLoginModal, onToggleLoginModal }) => {
     return 'U';
   };
 
+  const profileMenuContent = (mobile = false) => (
+    <>
+      <div className={mobile ? `pb-4 border-b ${theme.border}` : `px-4 py-3 border-b ${theme.border}`}>
+        <div className="flex-1 min-w-0">
+          <p className="font-semibold truncate">
+            {user?.firstName} {user?.lastName}
+          </p>
+          <p className="text-xs opacity-70 truncate">
+            {user?.email}
+          </p>
+          {hasActiveSubscription &&
+            <p className="pt-4 text-xs opacity-50 truncate">
+              {t('profile.activeSubscription')}
+              &nbsp;-&nbsp;
+              {t('profile.renewOn')}&nbsp;
+              {new Date(user.subscriptionEndDate).toLocaleDateString()}
+            </p>
+          }
+        </div>
+      </div>
+
+      <div className={mobile ? 'pt-3 space-y-1' : 'py-1'}>
+        {hasLifetimeAccess && (
+          <div className={`${mobile ? 'px-3 rounded-xl' : 'px-4'} py-2.5 flex items-center gap-3`}>
+            <Crown className="w-4 h-4 text-amber-500" />
+            <span className="font-medium text-amber-600 dark:text-amber-400">
+              {t('profile.lifetimeAccess')}
+            </span>
+          </div>
+        )}
+
+        {!hasLifetimeAccess && (
+          <button
+            onClick={isStripeEnabled ? handleManageSubscription : undefined}
+            disabled={!isStripeEnabled}
+            className={`
+              w-full ${mobile ? 'px-3 rounded-xl' : 'px-4'} py-2.5 flex items-center gap-3
+              ${isStripeEnabled ? theme.selectorHover : 'opacity-50'}
+              transition-colors text-left
+              ${isStripeEnabled ? 'cursor-pointer' : 'cursor-not-allowed'}
+            `}
+          >
+            <CreditCard className="w-4 h-4" />
+            <span>{isStripeEnabled ? t('profile.manageSubscription') : t('subscription.comingSoon')}</span>
+          </button>
+        )}
+
+        <button
+          onClick={handleContactSupport}
+          className={`w-full ${mobile ? 'px-3 rounded-xl' : 'px-4'} py-2.5 flex items-center gap-3 ${theme.selectorHover} transition-colors text-left cursor-pointer`}
+        >
+          <Mail className="w-4 h-4" />
+          <span>{t('profile.contactSupport')}</span>
+        </button>
+
+        <button
+          onClick={handleLegalInfo}
+          className={`w-full ${mobile ? 'px-3 rounded-xl' : 'px-4'} py-2.5 flex items-center gap-3 ${theme.selectorHover} transition-colors text-left cursor-pointer`}
+        >
+          <Info className="w-4 h-4" />
+          <span>{t('legal.menuItem')}</span>
+        </button>
+
+        <button
+          onClick={handleLogout}
+          className={`w-full ${mobile ? 'px-3 rounded-xl' : 'px-4'} py-2.5 flex items-center gap-3 ${theme.selectorHover} transition-colors text-left text-red-600 hover:text-red-700 cursor-pointer`}
+        >
+          <LogOut className="w-4 h-4" />
+          <span>{t('auth.logout')}</span>
+        </button>
+      </div>
+    </>
+  );
+
   return (
     <>
       <div className="flex flex-col gap-2 items-end">
@@ -127,93 +203,11 @@ export const ProfileButton = ({ showLoginModal, onToggleLoginModal }) => {
           </button>
 
           {/* Dropdown Menu - Only for authenticated users */}
-          {isAuthenticated && showMenu && (
+          {isAuthenticated && showMenu && !isMobile && (
             <div
-              className={`absolute top-full mt-2 lg:top-auto lg:bottom-full lg:mt-0 lg:mb-2 right-0 ${theme.selectorBg} ${theme.text} rounded-lg shadow-xl min-w-[220px] border ${theme.border} overflow-hidden`}
+              className={`absolute z-40 top-full mt-2 lg:top-auto lg:bottom-full lg:mt-0 lg:mb-2 right-0 ${theme.selectorBg} ${theme.text} rounded-lg shadow-xl min-w-[220px] border ${theme.border} overflow-hidden`}
             >
-              {/* User Info */}
-              <div className={`px-4 py-3 border-b ${theme.border}`}>
-                <div className="flex-1 min-w-0">
-                  <p className="font-semibold truncate">
-                    {user?.firstName} {user?.lastName}
-                  </p>
-                  <p className="text-xs opacity-70 truncate">
-                    {user?.email}
-                  </p>
-                  {hasActiveSubscription &&
-                    <p className="pt-4 text-xs opacity-50 truncate">
-                      {t('profile.activeSubscription')}
-                      &nbsp;-&nbsp;
-                      {t('profile.renewOn')}&nbsp;
-                      {new Date(user.subscriptionEndDate).toLocaleDateString()}
-                    </p>
-                  }
-                </div>
-              </div>
-
-              {/* Menu Items */}
-              <div className="py-1">
-                {/* Lifetime Access - Non-clickable */}
-                {hasLifetimeAccess && (
-                  <div className="px-4 py-2.5 flex items-center gap-3">
-                    <Crown className="w-4 h-4 text-amber-500" />
-                    <span className="font-medium text-amber-600 dark:text-amber-400">
-                      {t('profile.lifetimeAccess')}
-                    </span>
-                  </div>
-                )}
-
-                {/* Manage Subscription - For users without lifetime access */}
-                {!hasLifetimeAccess && (
-                  <button
-                    onClick={isStripeEnabled ? handleManageSubscription : undefined}
-                    disabled={!isStripeEnabled}
-                    className={`
-                    w-full px-4 py-2.5 flex items-center gap-3
-                    ${isStripeEnabled ? theme.selectorHover : 'opacity-50'}
-                    transition-colors text-left
-                    ${isStripeEnabled ? 'cursor-pointer' : 'cursor-not-allowed'}
-                  `}
-                  >
-                    <CreditCard className="w-4 h-4" />
-                    <span>
-                      {isStripeEnabled ? t('profile.manageSubscription') : t('subscription.comingSoon')}
-                    </span>
-                  </button>
-                )}
-
-                {/* Contact Support */}
-                <button
-                  onClick={handleContactSupport}
-                  className={`
-                  w-full px-4 py-2.5 flex items-center gap-3
-                  ${theme.selectorHover}
-                  transition-colors text-left
-                  cursor-pointer
-                `}
-                >
-                  <Mail className="w-4 h-4" />
-                  <span>{t('profile.contactSupport')}</span>
-                </button>
-
-                {/* Legal Information */}
-                <button
-                  onClick={handleLegalInfo}
-                  className={`w-full px-4 py-2.5 flex items-center gap-3 ${theme.selectorHover} transition-colors text-left cursor-pointer`}
-                >
-                  <Info className="w-4 h-4" />
-                  <span>{t('legal.menuItem')}</span>
-                </button>
-
-                {/* Logout */}
-                <button
-                  onClick={handleLogout}
-                  className={`w-full px-4 py-2.5 flex items-center gap-3 ${theme.selectorHover} transition-colors text-left text-red-600 hover:text-red-700 cursor-pointer`}
-                >
-                  <LogOut className="w-4 h-4" />
-                  <span>{t('auth.logout')}</span>
-                </button>
-              </div>
+              {profileMenuContent()}
             </div>
           )}
         </div>
@@ -227,6 +221,16 @@ export const ProfileButton = ({ showLoginModal, onToggleLoginModal }) => {
         theme={theme}
         darkMode={darkMode}
       />
+
+      <HelpModal
+        show={isAuthenticated && isMobile && showMenu}
+        onClose={() => setShowMenu(false)}
+        title={t('profile.title')}
+      >
+        <div className={`${theme.text}`}>
+          {profileMenuContent(true)}
+        </div>
+      </HelpModal>
 
       <UnlockModal
         isOpen={showUnlockModal}

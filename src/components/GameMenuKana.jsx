@@ -10,7 +10,7 @@ import { GameMenu, MascotTrigger, MenuControls, SegmentedControl, SkeletonButton
 import { MASCOT_TRIGGER } from './ui/MascotTrigger';
 
 
-export const GameMenuKana = ({ sideButtons, accountButton }) => {
+export const GameMenuKana = ({ sideButtons, accountButton, mobileAccountButton }) => {
   const { t } = useTranslation();
   const { initializeKanaGame } = useGameLogicKana();
 
@@ -74,7 +74,7 @@ export const GameMenuKana = ({ sideButtons, accountButton }) => {
     handleCombinationsModeChange(value);
   };
 
-  const renderModeSection = (mode, icon, labelKey, gradientClass) => {
+  const renderModeSection = (mode, icon, labelKey, gradientClass, hideIconOnSmall = false) => {
     if (kanaLoading) {
       return <SkeletonButton gradientClass={gradientClass} />;
     }
@@ -87,8 +87,8 @@ export const GameMenuKana = ({ sideButtons, accountButton }) => {
         className={`w-full ${gradientClass} text-white font-semibold py-3 px-4 lg:px-6 rounded-xl transform hover:scale-105 transition-all duration-200 shadow-lg cursor-pointer ${MASCOT_TRIGGER.HOVER}`}
       >
         <div className="flex items-center justify-center">
-          <span className="text-3xl mr-4 font-normal">{icon}</span>
-          <div className="flex flex-col text-left mb-1">
+          <span className={`text-3xl mr-4 font-normal ${hideIconOnSmall ? 'max-[419px]:hidden' : ''}`}>{icon}</span>
+          <div className="min-w-0 flex flex-col text-left mb-1">
             <span className="text-lg">{t(labelKey)}</span>
             <span className="text-xs opacity-80">
               {kanaCount} {t('common.kana')}{requiredSuccesses > 1 && ` × ${requiredSuccesses}`}
@@ -110,6 +110,7 @@ export const GameMenuKana = ({ sideButtons, accountButton }) => {
       onModeChange={updateAppMode}
       sideButtons={sideButtons}
       accountButton={accountButton}
+      mobileAccountButton={mobileAccountButton}
     >
       <div className="space-y-4">
         <MascotTrigger
@@ -127,9 +128,9 @@ export const GameMenuKana = ({ sideButtons, accountButton }) => {
           </div>
         </MascotTrigger>
 
-        <div className="flex flex-col lg:flex-row gap-3">
-          {renderModeSection(GAME_MODES.HIRAGANA, 'ひ', 'modes.hiragana', 'bg-gradient-to-r from-pink-500 to-purple-600 hover:from-pink-600 hover:to-purple-700')}
-          {renderModeSection(GAME_MODES.KATAKANA, 'カ', 'modes.katakana', 'bg-gradient-to-r from-blue-500 to-cyan-600 hover:from-blue-600 hover:to-cyan-700')}
+        <div className="flex flex-row gap-3">
+          {renderModeSection(GAME_MODES.HIRAGANA, 'ひ', 'modes.hiragana', 'bg-gradient-to-r from-pink-500 to-purple-600 hover:from-pink-600 hover:to-purple-700', true)}
+          {renderModeSection(GAME_MODES.KATAKANA, 'カ', 'modes.katakana', 'bg-gradient-to-r from-blue-500 to-cyan-600 hover:from-blue-600 hover:to-cyan-700', true)}
         </div>
         {renderModeSection(GAME_MODES.BOTH, 'ひカ', 'modes.both', 'bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-600 hover:to-teal-700')}
       </div>

@@ -16,7 +16,7 @@ import {
 } from '.';
 
 
-export const GameMenuKanji = ({ sideButtons, accountButton }) => {
+export const GameMenuKanji = ({ sideButtons, accountButton, mobileAccountButton }) => {
   const { t } = useTranslation();
   const { initializeKanjiGame } = useGameLogicKanji();
   const { isAuthenticated } = useAuth();
@@ -148,6 +148,7 @@ export const GameMenuKanji = ({ sideButtons, accountButton }) => {
         onModeChange={updateAppMode}
         sideButtons={sideButtons}
         accountButton={accountButton}
+      mobileAccountButton={mobileAccountButton}
       >
         <div className="space-y-4">
           <MultiSelection

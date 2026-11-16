@@ -1,5 +1,29 @@
 @import "tailwindcss";
 
+/* Keep scrolling inside the app instead of handing it to the page viewport. This prevents
+   scroll chaining on supported mobile browsers; iOS Safari may still show its native
+   rubber-band briefly, but it no longer exposes an unpainted page behind the app. */
+html,
+body,
+#root {
+  height: 100%;
+}
+
+html,
+body {
+  overscroll-behavior-y: none;
+}
+
+body {
+  overflow: hidden;
+}
+
+#root {
+  overflow-y: auto;
+  overscroll-behavior-y: none;
+  -webkit-overflow-scrolling: touch;
+}
+
 /* Restated at its default value so it is emitted as a CSS variable: the JS layout forks
    read it instead of hardcoding the breakpoint the lg: prefix already encodes. */
 @theme {
