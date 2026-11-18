@@ -7,19 +7,19 @@
     "@react-oauth/google": "^0.13.5",
     "canvas-confetti": "^1.9.4",
     "jwt-decode": "^4.0.0",
-    "lucide-react": "^1.17.0",
-    "react": "^19.2.7",
-    "react-dom": "^19.2.7",
+    "lucide-react": "^1.75.0",
+    "react": "^19.3.1",
+    "react-dom": "^19.3.1",
     "wanakana": "^5.3.1"
   },
   "devDependencies": {
-    "@tailwindcss/vite": "^4.3.0",
-    "@vitejs/plugin-react": "^6.0.2",
-    "format-commit": "^1.1.0",
-    "glob": "^13.0.6",
-    "postcss": "^8.5.15",
-    "tailwindcss": "^4.3.0",
-    "vite": "^8.0.16"
+    "@tailwindcss/vite": "^4.3.5",
+    "@vitejs/plugin-react": "^6.3.0",
+    "format-commit": "^2.0.0",
+    "glob": "^14.0.6",
+    "postcss": "^8.5.33",
+    "tailwindcss": "^4.3.5",
+    "vite": "^8.3.8"
   },
   "scripts": {
     "dev": "vite",
